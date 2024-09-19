@@ -3,12 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/D:/swp/ChildrenCare/src/java/model/User.java</file>
             <file>file:/D:/swp/ChildrenCare/web/index.html</file>
             <file>file:/D:/swp/ChildrenCare/web/login.jsp</file>
             <file>file:/D:/swp/ChildrenCare/src/java/dal/DBContext.java</file>
             <file>file:/D:/swp/ChildrenCare/src/java/dal/UserDAO.java</file>
             <file>file:/D:/swp/ChildrenCare/src/java/controller/LoginServlet.java</file>
+=======
+            <file>file:/D:/HK%205/SWP391/img/Children%20Care/web/index.html</file>
+            <file>file:/D:/HK%205/SWP391/img/Children%20Care/web/css/style.css</file>
+>>>>>>> thanhnt
         </group>
     </open-files>
 </project-private>
