@@ -4,12 +4,15 @@
  */
 package controller;
 
+import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import model.User;
 
 /**
  *
@@ -69,7 +72,19 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        UserDAO userdao = new UserDAO();
+        List<User> ulist = userdao.getAllUser();
+        if(request.getParameter("submit")!=null){
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            String check="false";
+            for(User u: ulist){
+                if(email.equals(u.getEmail())&&password.equals(u.getPassword())){
+                    check="true";
+                }
+            }
+            request.setAttribute(check, "check");
+        }
     }
 
     /**
