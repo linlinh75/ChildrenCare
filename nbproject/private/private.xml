@@ -6,7 +6,8 @@
             <file>file:/D:/swp/ChildrenCare/src/java/model/User.java</file>
             <file>file:/D:/swp/ChildrenCare/web/index.html</file>
             <file>file:/D:/swp/ChildrenCare/web/login.jsp</file>
-            <file>file:/D:/swp/ChildrenCare/web/WEB-INF/web.xml</file>
+            <file>file:/D:/swp/ChildrenCare/src/java/dal/DBContext.java</file>
+            <file>file:/D:/swp/ChildrenCare/src/java/dal/UserDAO.java</file>
             <file>file:/D:/swp/ChildrenCare/src/java/controller/LoginServlet.java</file>
         </group>
     </open-files>
