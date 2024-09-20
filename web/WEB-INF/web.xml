@@ -4,6 +4,9 @@
         <servlet-name>homePageServlet</servlet-name>
         <servlet-class>controller.homePageServlet</servlet-class>
     </servlet>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
     <servlet>
         <servlet-name>homePageServlet</servlet-name>
         <servlet-class>controller.homePageServlet</servlet-class>
@@ -12,12 +15,22 @@
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>controller.LoginServlet</servlet-class>
     </servlet>
+=======
+>>>>>>> thanhnt
+>>>>>>> 3a0c5bea3a5bcf518b8dbb8a2f5d459967ad309b
     <servlet-mapping>
         <servlet-name>homePageServlet</servlet-name>
         <url-pattern>/home</url-pattern>
     </servlet-mapping>
+<<<<<<< HEAD
+</web-app>
+=======
+<<<<<<< HEAD
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
+=======
+>>>>>>> thanhnt
 </web-app>
+>>>>>>> 3a0c5bea3a5bcf518b8dbb8a2f5d459967ad309b
