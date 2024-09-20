@@ -1,57 +1,32 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dal;
 
-import java.sql.*;
+/**
+ *
+ * @author Admin
+ */
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DBContext {
-
     protected Connection connection;
-    protected ResultSet resultSet;
-    protected PreparedStatement statement;
-
-    /**
-     * get a connection
-     *
-     * @return connection or null
-     * @throws ClassNotFoundException
-     */
-    public Connection getConnection() {
+    public DBContext() {
+        String url = "jdbc:mysql://localhost:3306/swp"; // Update with your DB name
+        String user = "root"; // MySQL username
+        String password = "nguyetanh2311"; // MySQL password
+        
         try {
-//            Class.forName("com.mysql.cj.jdbc.Driver");
-//            String url = "jdbc:mysql://buycard123.mysql.database.azure.com:3306/sold_card_system3";
-//            String user = "g3"; // Change to your MySQL username
-//            String password = "Grouppp3"; // Change to your MySQL password
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/swp";
-            String user = "demo"; // Change to your MySQL username
-            String password = "123456"; // Change to your MySQL password
-            connection = DriverManager.getConnection(url, user, password);
-            return connection;
-        } catch (SQLException | ClassNotFoundException e) {
-//            System.err.println("Error " + e.getMessage() + " at DBContext");
+             connection = DriverManager.getConnection(url, user, password);
+            System.out.println("Connection successful!");
+
+        } catch (SQLException e) {
+            System.out.println("Connection failed!");
             e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static void main(String[] args) {
-        DBContext test = new DBContext();
-        test.connection = test.getConnection();
-        System.out.println(test.connection);
-    }
-
-    public void closeConnection() {
-        try {
-            if (resultSet != null) {
-                resultSet.close();
-            }
-            if (statement != null) {
-                statement.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
-        } catch (Exception e) {
-            System.err.println("Error " + e.getMessage() + " at closeConnection");
         }
     }
 }
+
