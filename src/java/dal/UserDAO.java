@@ -12,19 +12,16 @@ import model.User;
  */
 public class UserDAO extends DBContext {
 
-    /**
-     * Updates the user's profile information, except for the email.
-     *
-     * @param user The user object containing the updated information.
-     * @return The number of rows affected by the update.
-     * @throws SQLException If there is an error executing the SQL query.
-     */
+
+    PreparedStatement stm;
+    ResultSet rs;
+
     public int updateProfile(User user) throws SQLException {
         String sql = "UPDATE users "
                 + "SET fullName = ?, gender = ?, mobile = ?, address = ?, imageLink = ? "
                 + "WHERE id = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, user.getFullName());
             stmt.setBoolean(2, user.isGender());
             stmt.setString(3, user.getMobile());
@@ -46,7 +43,7 @@ public class UserDAO extends DBContext {
     public User getProfileById(int userId) throws SQLException {
         String sql = "SELECT * FROM users WHERE id = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -70,17 +67,16 @@ public class UserDAO extends DBContext {
         return null;
     }
 
-    PreparedStatement stm;
-    ResultSet rs;
-
     public List<User> getAllUser() {
         List<User> ulist = new ArrayList<>();
         String s = "Select * from user";
         try {
             stm = connection.prepareStatement(s);
             rs = stm.executeQuery();
-            while (rs.next()) {
-                User u = new User(rs.getInt("id"), rs.getString("email"), rs.getString("password"), rs.getString("full_name"), rs.getInt("gender"), rs.getString("mobile"), rs.getString("address"), rs.getString("image_link"), rs.getInt("role_id"), rs.getInt("status"));
+
+            while(rs.next()){
+                User u = new User(rs.getInt("id"), rs.getString("email"),  rs.getString("password"), rs.getString("full_name"),rs.getBoolean("gender") , rs.getString("mobile"), rs.getString("address"), rs.getString("image_link"), rs.getInt("role_id"), rs.getInt("status"));
+
                 ulist.add(u);
             }
         } catch (SQLException ex) {
