@@ -17,7 +17,7 @@ public class DBContext {
     public DBContext() {
         String url = "jdbc:mysql://localhost:3306/swp"; // Update with your DB name
         String user = "root"; // MySQL username
-        String password = "nguyetanh2311"; // MySQL password
+        String password = "123"; // MySQL password
         
         try {
              connection = DriverManager.getConnection(url, user, password);
