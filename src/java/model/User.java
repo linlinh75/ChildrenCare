@@ -1,26 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
+
 /**
- *
- * @author Admin
+ * Represents a user of the application.
  */
 public class User {
     private int id;
     private String email;
     private String password;
     private String fullName;
-    private int gender;
+    private boolean gender;
     private String mobile;
     private String address;
-    private String imgLink;
-    private int roleId ;
+    private String imageLink;
+    private int roleId;
     private int status;
 
-    public User(int id, String email, String password, String fullName, int gender, String mobile, String address, String imgLink, int roleId, int status) {
+    public User() {
+    }
+
+    public User(int id, String email, String password, String fullName, boolean gender, String mobile, String address, String imageLink, int roleId, int status) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -28,7 +27,7 @@ public class User {
         this.gender = gender;
         this.mobile = mobile;
         this.address = address;
-        this.imgLink = imgLink;
+        this.imageLink = imageLink;
         this.roleId = roleId;
         this.status = status;
     }
@@ -65,11 +64,11 @@ public class User {
         this.fullName = fullName;
     }
 
-    public int getGender() {
+    public boolean isGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(boolean gender) {
         this.gender = gender;
     }
 
@@ -89,12 +88,12 @@ public class User {
         this.address = address;
     }
 
-    public String getImgLink() {
-        return imgLink;
+    public String getImageLink() {
+        return imageLink;
     }
 
-    public void setImgLink(String imgLink) {
-        this.imgLink = imgLink;
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
     }
 
     public int getRoleId() {
@@ -112,7 +111,4 @@ public class User {
     public void setStatus(int status) {
         this.status = status;
     }
-    
-            
-            
 }
