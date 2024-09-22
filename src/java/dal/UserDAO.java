@@ -19,7 +19,7 @@ public class UserDAO extends DBContext {
 
     PreparedStatement stm;
     ResultSet rs;
-
+    
     public int updateProfile(User user) throws SQLException {
         String sql = "UPDATE users "
                 + "SET fullName = ?, gender = ?, mobile = ?, address = ?, imageLink = ? "
