@@ -90,7 +90,7 @@ public class LoginServlet extends HttpServlet {
                request.setAttribute("ms","Invalid email or password"); 
                request.getRequestDispatcher("login.jsp").forward(request, response);
             }else{
-                request.setAttribute("ma", "Login successfully!");
+                request.setAttribute("ms", "Login successfully!");
                 response.sendRedirect("/ChildrenCare");
             }
         }
