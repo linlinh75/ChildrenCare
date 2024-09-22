@@ -18,7 +18,7 @@ public class PostDAO extends DBContext {
      */
     public Post getPostById(int postId) {
         Post post = null;
-        try (Connection connection = getConnection();
+        try (
              PreparedStatement statement = connection.prepareStatement(
                  "SELECT * FROM posts WHERE id = ?")) {
             statement.setInt(1, postId);
@@ -51,7 +51,7 @@ public class PostDAO extends DBContext {
      */
     public String getAuthorNameByPostId(int postId) {
         String authorName = null;
-        try (Connection connection = getConnection();
+        try (
              PreparedStatement statement = connection.prepareStatement(
                  "SELECT u.name AS authorName "
                  + "FROM posts p "
@@ -77,7 +77,7 @@ public class PostDAO extends DBContext {
      */
     public String getCategoryNameByPostId(int postId) {
         String categoryName = null;
-        try (Connection connection = getConnection();
+        try (
              PreparedStatement statement = connection.prepareStatement(
                  "SELECT c.name AS categoryName "
                  + "FROM posts p "
@@ -102,7 +102,7 @@ public class PostDAO extends DBContext {
      */
     public List<String> getPostCategories() {
         List<String> categories = new ArrayList<>();
-        try (Connection connection = getConnection();
+        try (
              PreparedStatement statement = connection.prepareStatement(
                  "SELECT DISTINCT name FROM categories")) {
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -126,7 +126,7 @@ public class PostDAO extends DBContext {
      */
     public List<Post> searchPosts(String query, int pageSize, int pageNumber) {
         List<Post> posts = new ArrayList<>();
-        try (Connection connection = getConnection();
+        try (
              PreparedStatement statement = connection.prepareStatement(
                  "SELECT * FROM posts WHERE title LIKE ? OR content LIKE ? ORDER BY updatedDate DESC LIMIT ?, ?")) {
             statement.setString(1, "%" + query + "%");

@@ -77,13 +77,22 @@ public class LoginServlet extends HttpServlet {
         if(request.getParameter("submit")!=null){
             String email = request.getParameter("email");
             String password = request.getParameter("password");
-            String check="false";
+            System.out.println(email);
+            System.out.println(password);
+            boolean check=false;
             for(User u: ulist){
                 if(email.equals(u.getEmail())&&password.equals(u.getPassword())){
-                    check="true";
+                    check=true;
+                    break;
                 }
             }
-            request.setAttribute(check, "check");
+            if(check==false){
+               request.setAttribute("ms","Invalid email or password"); 
+               request.getRequestDispatcher("login.jsp").forward(request, response);
+            }else{
+                request.setAttribute("ms", "Login successfully!");
+                response.sendRedirect("/ChildrenCare");
+            }
         }
     }
 

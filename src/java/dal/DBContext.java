@@ -17,13 +17,14 @@ public class DBContext {
     public DBContext() {
         String url = "jdbc:mysql://localhost:3306/swp"; // Update with your DB name
         String user = "root"; // MySQL username
-        String password = "123"; // MySQL password
+        String password = "nguyetanh2311"; // MySQL password
         
         try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
              connection = DriverManager.getConnection(url, user, password);
             System.out.println("Connection successful!");
 
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Connection failed!");
             e.printStackTrace();
         }
