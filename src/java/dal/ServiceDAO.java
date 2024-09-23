@@ -50,7 +50,6 @@ public class ServiceDAO extends DBContext {
         List<Service> ulist = sd.getAllService();
         for (Service u : ulist) {
             System.out.print(u.getThumbnailLink());
-
         }
         System.out.println(ulist.size());
     }

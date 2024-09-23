@@ -1,9 +1,8 @@
 <%-- 
-    Document   : login
-    Created on : Sep 19, 2024, 8:37:52 AM
+    Document   : changePw
+    Created on : Sep 22, 2024, 8:46:00 AM
     Author     : Admin
 --%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -11,7 +10,7 @@
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Login</title>
+        <title>Change Password</title>
     </head>
     <body>
         <section class="vh-100" style="background-color: #1A76D1;">
@@ -29,10 +28,8 @@
                 <form action = "login" method="post">
                   <div class="d-flex align-items-center mb-3 pb-1">
                     <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
-                    <span class="h1 fw-bold mb-0">Login</span>
+                    <span class="h1 fw-bold mb-0">Change Password</span>
                   </div>
-
-                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
                   <div data-mdb-input-init class="form-outline mb-4">
                     <input type="text" name="email" id="form2Example17"  class="form-control form-control-lg" />
                     <label class="form-label" for="form2Example17">Email</label>

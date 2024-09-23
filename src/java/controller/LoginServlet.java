@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.User;
 
@@ -72,18 +73,29 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
         UserDAO userdao = new UserDAO();
         List<User> ulist = userdao.getAllUser();
         if(request.getParameter("submit")!=null){
             String email = request.getParameter("email");
             String password = request.getParameter("password");
-            String check="false";
+            System.out.println(email);
+            System.out.println(password);
+            boolean check=false;
             for(User u: ulist){
                 if(email.equals(u.getEmail())&&password.equals(u.getPassword())){
-                    check="true";
+                    check=true;
+                    break;
                 }
             }
-            request.setAttribute(check, "check");
+            if(check==false){
+               request.setAttribute("ms","Invalid email or password"); 
+               request.getRequestDispatcher("login.jsp").forward(request, response);
+            }else{
+                request.setAttribute("ms", "Login successfully!");
+                session.setAttribute("email", email);
+                response.sendRedirect("/ChildrenCare");
+            }
         }
     }
 
