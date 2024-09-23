@@ -64,7 +64,7 @@
                         <div class="col-lg-6 col-md-5 col-12">
                             <!-- Contact -->
                             <ul class="top-link">
-                                <li style="margin-left: 10px;"><i class="fa fa-map-marker" style="color: #1A76D1;"></i> Hoa Lac, Ha Noi, Viet Nam</li>
+                                <li style="margin-left: 10px;"><i class="fa fa-map-marker" style="color: #1A76D1;"></i>Address: Hoa Lac, Ha Noi, Viet Nam</li>
                             </ul>
                             <!-- End Contact -->
                         </div>
@@ -118,7 +118,6 @@
                                                         </c:forEach>
                                                 </ul>
                                             </li>
-                                            <li><a href="contact.html">Contact Us</a></li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -350,7 +349,6 @@
                                 <!-- Social -->
                                 <ul class="social">
                                     <li><a href="#"><i class="icofont-facebook"></i></a></li>
-                                    <li><a href="#"><i class="icofont-google-plus"></i></a></li>
                                 </ul>
                                 <!-- End Social -->
                             </div>
@@ -362,15 +360,12 @@
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <ul>
                                             <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Home</a></li>
-                                            <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>About Us</a></li>
                                             <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Services</a></li>
                                         </ul>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <ul>
                                             <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Blogs</a></li>	
-                                            <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Contact Us</a></li>	
-
                                         </ul>
                                     </div>
                                 </div>
