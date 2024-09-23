@@ -2,4 +2,5 @@
 
 /dist/
 
-/web/WEB-INF/
+/MyShop/build/
+/MyShop/nbproject/private/

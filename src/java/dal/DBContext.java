@@ -15,9 +15,9 @@ import java.sql.SQLException;
 public class DBContext {
     protected Connection connection;
     public DBContext() {
-        String url = "jdbc:mysql://localhost:3306/swp"; // Update with your DB name
-        String user = "root"; // MySQL username
-        String password = "nguyetanh2311"; // MySQL password
+        String url = "jdbc:mysql://localhost:3306/swp"; 
+        String user = "root"; 
+        String password = "nguyetanh2311"; 
         
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -28,6 +28,9 @@ public class DBContext {
             System.out.println("Connection failed!");
             e.printStackTrace();
         }
+    }
+    public static void main(String[] args) {
+        DBContext dbcon = new DBContext();
     }
 }
 
