@@ -7,6 +7,10 @@
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <web-module-libraries>
                 <library dirs="200">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 32e5ee7682ddd8eb0c08ef2647baa57a19eace45
                     <file>${file.reference.jakarta.servlet.jsp.jstl-2.0.0.jar-1}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -24,6 +28,26 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.sqljdbc42.jar-1}</file>
+<<<<<<< HEAD
+=======
+=======
+                    <file>${file.reference.mysql-connector-java-8.0.30.jar}</file>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jaxb-api-2.3.1.jar}</file>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.javax.mail-1.6.2.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jakarta.servlet.jsp.jstl-2.0.0.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jakarta.servlet.jsp.jstl-api-2.0.0.jar}</file>
+>>>>>>> 98abbdb31976413abeb51a69640dbcc81ea9d826
+>>>>>>> 32e5ee7682ddd8eb0c08ef2647baa57a19eace45
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
