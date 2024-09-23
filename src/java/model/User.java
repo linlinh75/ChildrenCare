@@ -1,6 +1,5 @@
 package model;
 
-
 /**
  * Represents a user of the application.
  */
