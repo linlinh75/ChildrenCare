@@ -10,7 +10,7 @@
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Change Password</title>
+        <title>Forgot Password</title>
     </head>
     <body>
         <section class="vh-100" style="background-color: #1A76D1;">
@@ -23,14 +23,11 @@
                 <form action = "newPassword" method="post">
                   <div class="d-flex align-items-center mb-3 pb-1">
                     <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
-                    <span class="h1 fw-bold mb-0">Enter New Password</span>
+                    <span class="h1 fw-bold mb-0">Enter New  Password</span>
                   </div>
-                    <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="Old password" id="form2Example17"  class="form-control form-control-lg" />
-                    <label class="form-label" for="form2Example17">Old Password</label>
-                  </div>
+
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="New password" id="form2Example17"  class="form-control form-control-lg" />
+                    <input type="password" name="password" id="form2Example17"  class="form-control form-control-lg" />
                     <label class="form-label" for="form2Example17">New Password</label>
                   </div>
                     <div data-mdb-input-init class="form-outline mb-4">
