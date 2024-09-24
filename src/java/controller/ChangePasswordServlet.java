@@ -44,8 +44,7 @@ public class ChangePasswordServlet extends HttpServlet {
             HttpSession session = request.getSession();
             String email = (String)session.getAttribute("email");
             UserDAO udao = new UserDAO();
-            if(udao.getProfileByEmail(email)!=null){
-                if(oldPass!=null&&newPass!=null&& checkPass!=null&&oldPass.equals(udao.getProfileByEmail(email).getPassword())){
+                if(oldPass!=null&&newPass!=null&& checkPass!=null&&oldPass.equals(udao.getUserByEmail(email).getPassword())){
                     if(newPass.equals(checkPass)){
                         udao.changePassword(email, newPass);
                         response.sendRedirect("profile.jsp");
@@ -55,7 +54,6 @@ public class ChangePasswordServlet extends HttpServlet {
                 request.getRequestDispatcher("changePw.jsp").forward(request, response);
             }
                 }
-            }
             
         } catch (SQLException ex) {
             Logger.getLogger(ChangePasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
