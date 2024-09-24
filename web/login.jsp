@@ -4,7 +4,7 @@
     Author     : Admin
 --%>
 
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -47,6 +47,11 @@
                 Invalid email or password!
             </div>
                      </c:if>
+                  <c:if test="${status!=null}">
+                    <div class="alert alert-danger" role="alert">
+                        ${status}
+                    </div>
+                  </c:if>
                   <div class="pt-1 mb-4">
                       <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" name="submit" value="submit">Login</button>
                   </div>

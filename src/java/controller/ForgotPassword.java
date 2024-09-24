@@ -8,6 +8,7 @@ import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ import javax.mail.internet.MimeMessage;
  *
  * @author Admin
  */
+@WebServlet("/forgot")
 public class ForgotPassword extends HttpServlet {
 
     /**
@@ -100,12 +102,11 @@ public class ForgotPassword extends HttpServlet {
 			props.put("mail.smtp.port", "465");
 			Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication("nguyetanh0945@gmail.com", "nmyz rizo oqri ihat");// Put your email
+					return new PasswordAuthentication("nguyetanh0945@gmail.com", "nmyz rizo oqri ihat");
 																									// id and
 																									// password here
 				}
 			});
-			// compose message
 			try {
 				MimeMessage message = new MimeMessage(session);
 				message.setFrom(new InternetAddress(email));// change accordingly
