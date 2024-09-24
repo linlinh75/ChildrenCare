@@ -36,47 +36,25 @@ public class ActivateServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
+            String code = request.getParameter("code");
             HttpSession session = request.getSession();
-            String enteredCode = request.getParameter("verificationCode");
-            String verificationCode = (String) session.getAttribute("verificationCode");
-            LocalDateTime expireAt = (LocalDateTime) session.getAttribute("expireAt");
-            LocalDateTime now = LocalDateTime.now();
+            String expectedCode = (String) session.getAttribute("verificationCode");
+            User newUser = (User) session.getAttribute("user");
+            out.print((String) session.getAttribute("verificationCode"));
+            if (code != null && code.equals(expectedCode)) {
+                UserDAO userdao = new UserDAO();
+                userdao.addUser(newUser);
+                out.println("<h1>Account activated successfully!</h1>");
+                out.println("<a href='login.jsp'>Go to Login</a>");
 
-            UserDAO userdao = new UserDAO();
-            if (verificationCode != null && verificationCode.equals(enteredCode) && now.isBefore(expireAt)) {
-
-                String fullname = (String) session.getAttribute("fullname");
-                String address = (String) session.getAttribute("address");
-                Boolean gender = (Boolean) session.getAttribute("gender");
-                String mobile = (String) session.getAttribute("mobile");
-                String email = (String) session.getAttribute("email");
-                String password = (String) session.getAttribute("password");
-
-                User newUser = new User();
-                newUser.setEmail(email);
-                newUser.setPassword(password);
-                newUser.setFullName(fullname);
-                newUser.setGender(gender);
-                newUser.setMobile(mobile);
-                newUser.setAddress(address);
-                newUser.setImageLink("default.jpg");
-                newUser.setRoleId(4);
-                newUser.setStatus(17);
-                try {
-                    userdao.addUser(newUser);
-                } catch (SQLException ex) {
-                    Logger.getLogger(ActivateServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                session.invalidate();
-                session.setAttribute("alert", "Veriry successfull, now you can login to the web!");
-                response.sendRedirect("login.jsp");
+                session.removeAttribute("verificationCode");
+                session.removeAttribute("user");
             } else {
-                session.setAttribute("error", "Error!");
-                response.sendRedirect("register.jsp");
+                out.println("<h1>Invalid verification code!</h1>");
             }
         }
     }
@@ -93,7 +71,11 @@ public class ActivateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ActivateServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -107,7 +89,11 @@ public class ActivateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ActivateServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
