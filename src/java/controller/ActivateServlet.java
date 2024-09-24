@@ -5,25 +5,26 @@
 package controller;
 
 import dal.UserDAO;
-import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.mail.Session;
 import model.User;
 
 /**
  *
- * @author Admin
+ * @author admin
  */
-public class ChangePasswordServlet extends HttpServlet {
+@WebServlet(name = "ActivateServlet", urlPatterns = {"/activate"})
+public class ActivateServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,29 +36,26 @@ public class ChangePasswordServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            response.setContentType("text/html;charset=UTF-8");
-            String oldPass = request.getParameter("Old password");
-            String newPass = request.getParameter("New password");
-            String checkPass = request.getParameter("confPassword");
+            throws ServletException, IOException, SQLException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            String code = request.getParameter("code");
             HttpSession session = request.getSession();
-            String email = (String)session.getAttribute("email");
-            UserDAO udao = new UserDAO();
-                if(oldPass!=null&&newPass!=null&& checkPass!=null&&oldPass.equals(udao.getUserByEmail(email).getPassword())){
-                    if(newPass.equals(checkPass)){
-                        udao.changePassword(email, newPass);
-                        response.sendRedirect("profile.jsp");
-                    }else{
-                String erChange = "Wrong Confirm Password";
-                request.setAttribute("erChange", udao);
-                request.getRequestDispatcher("changePw.jsp").forward(request, response);
+            String expectedCode = (String) session.getAttribute("verificationCode");
+            User newUser = (User) session.getAttribute("user");
+            out.print((String) session.getAttribute("verificationCode"));
+            if (code != null && code.equals(expectedCode)) {
+                UserDAO userdao = new UserDAO();
+                userdao.addUser(newUser);
+                out.println("<h1>Account activated successfully!</h1>");
+                out.println("<a href='login.jsp'>Go to Login</a>");
+
+                session.removeAttribute("verificationCode");
+                session.removeAttribute("user");
+            } else {
+                out.println("<h1>Invalid verification code!</h1>");
             }
-
-                }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ChangePasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -73,7 +71,11 @@ public class ChangePasswordServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ActivateServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -87,7 +89,11 @@ public class ChangePasswordServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ActivateServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

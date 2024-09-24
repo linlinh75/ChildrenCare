@@ -35,9 +35,8 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String code=request.getParameter("code");
-        GoogleLogin gg = new GoogleLogin();
-        String accessToken = gg.getToken(code);
-        GoogleAccount acc = gg.getUserInfo(accessToken);
+        String accessToken = GoogleLogin.getToken(code);
+        GoogleAccount acc = GoogleLogin.getUserInfo(accessToken);
         System.out.println(acc);
     }
 
@@ -90,7 +89,7 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("account", loggedInUser);
                 session.setAttribute("email", email);
                 request.setAttribute("ms", "Login successfully!");
-                response.sendRedirect("/ChildrenCare");
+                response.sendRedirect("/ChildrenCare/HomeServlet");
             }
         }
     }
