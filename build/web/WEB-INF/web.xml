@@ -4,6 +4,7 @@
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>controller.LoginServlet</servlet-class>
     </servlet>
+
     <servlet>
         <servlet-name>PostServlet</servlet-name>
         <servlet-class>controller.PostServlet</servlet-class>

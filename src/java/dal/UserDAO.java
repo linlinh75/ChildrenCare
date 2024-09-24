@@ -47,7 +47,7 @@ public class UserDAO extends DBContext {
      * @throws SQLException If there is an error executing the SQL query.
      */
     public User getProfileById(int userId) throws SQLException {
-        String sql = "SELECT * FROM users WHERE id = ?";
+        String sql = "SELECT * FROM user WHERE id = ?";
 
         try ( PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);

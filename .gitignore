@@ -3,6 +3,11 @@
 
 /dist/
 
+<<<<<<< HEAD
+/MyShop/build/
+/MyShop/nbproject/private/
+=======
 =======
 /dist/
 >>>>>>> thanhnt
+>>>>>>> main
