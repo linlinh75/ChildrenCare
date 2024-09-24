@@ -53,7 +53,9 @@ public class ChangePasswordServlet extends HttpServlet {
                 request.setAttribute("erChange", udao);
                 request.getRequestDispatcher("changePw.jsp").forward(request, response);
             }
-                }            
+
+                }
+
         } catch (SQLException ex) {
             Logger.getLogger(ChangePasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
