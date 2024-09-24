@@ -72,13 +72,11 @@ public class UserDAO extends DBContext {
 
         return null;
     }
-
     public User getUserByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM user WHERE email = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
-
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new User(
@@ -96,10 +94,21 @@ public class UserDAO extends DBContext {
                 }
             }
         }
-
         return null;
     }
-
+    public int changePassword(String email, String password){
+        String s ="update user set password = ? where email=?";
+        int count=0;
+        try {
+            stm = connection.prepareStatement(s);
+            stm.setString(1, password);
+            stm.setString(2, email);
+            count=stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return count;
+    }
     public List<User> getAllUser() {
         List<User> ulist = new ArrayList<>();
         String s = "Select * from user";
