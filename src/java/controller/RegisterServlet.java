@@ -4,6 +4,7 @@
  */
 package controller;
 //doing
+
 import dal.UserDAO;
 import model.User;
 import java.io.IOException;
@@ -14,12 +15,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.SQLException;
+import static java.lang.System.out;
 import java.time.LocalDateTime;
 import java.util.Random;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 /**
  *
@@ -37,20 +38,43 @@ public class RegisterServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private void sendVerificationEmail(String email, String verificationCode) {
+        String subject = "Verify your account on Children Care System";
+        String content = "Your Verification Code is: " + verificationCode + "\n"
+                + "Please click the link below to activate your account:\n"
+                + "http://localhost:8080/ChildrenCare/activate?code=" + verificationCode;
+
+        Properties props = new Properties();
+			props.put("mail.smtp.host", "smtp.gmail.com");
+			props.put("mail.smtp.socketFactory.port", "465");
+			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.port", "465");
+			Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication("nguyetanh0945@gmail.com", "nmyz rizo oqri ihat");
+																									// id and
+																									// password here
+				}
+			});
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("nguyetanh0945@gmail.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+            message.setSubject(subject);
+            message.setText(content);
+            Transport.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet RegisterServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet RegisterServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+
         }
     }
 
@@ -88,10 +112,10 @@ public class RegisterServlet extends HttpServlet {
         String mobile = request.getParameter("phone");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        
+        out.print(submit);
         Random rand = new Random();
         String verificationCode = String.format("%06d", rand.nextInt(1000000));
-        
+
         HttpSession session = request.getSession();
         session.setAttribute("fullname", fullname);
         session.setAttribute("address", address);
@@ -100,10 +124,13 @@ public class RegisterServlet extends HttpServlet {
         session.setAttribute("email", email);
         session.setAttribute("password", password);
         session.setAttribute("verificationCode", verificationCode);
-        session.setAttribute("expireAt", LocalDateTime.now().plusMinutes(3)); 
-        response.sendRedirect("verify.jsp");
-
+        session.setAttribute("expireAt", LocalDateTime.now().plusMinutes(3));
         
+        sendVerificationEmail(email, verificationCode);
+        
+        session.setAttribute("verificationCode", verificationCode);
+        session.setAttribute("expireAt", LocalDateTime.now().plusMinutes(3)); 
+        //response.sendRedirect("verify.jsp");
     }
 
     /**
