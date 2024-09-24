@@ -67,40 +67,31 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
         UserDAO userdao = new UserDAO();
         List<User> ulist = userdao.getAllUser();
-        if(request.getParameter("submit")!=null){
+        if (request.getParameter("submit") != null) {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             System.out.println(email);
             System.out.println(password);
-            boolean check=false;
-            for(User u: ulist){
-                if(email.equals(u.getEmail())&&password.equals(u.getPassword())){
-                    check=true;
+            User loggedInUser = null;
+            for (User u : ulist) {
+                if (email.equals(u.getEmail()) && password.equals(u.getPassword())) {
+                    loggedInUser = u;
                     break;
                 }
             }
-            if(check==false){
-               request.setAttribute("ms","Invalid email or password"); 
-               request.getRequestDispatcher("login.jsp").forward(request, response);
-            }else{
-                request.setAttribute("ms", "Login successfully!");
+            if (loggedInUser == null) {
+                request.setAttribute("ms", "Invalid email or password");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            } else {
+                // Lưu thông tin người dùng vào session
+                session.setAttribute("account", loggedInUser);
                 session.setAttribute("email", email);
+                request.setAttribute("ms", "Login successfully!");
                 response.sendRedirect("/ChildrenCare");
             }
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

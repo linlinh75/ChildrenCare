@@ -1,6 +1,5 @@
 package model;
 
-import java.sql.Date;
 
 /**
  * Represents a user of the application.
