@@ -84,7 +84,7 @@ public class UserDAO extends DBContext {
                             rs.getInt("id"),
                             rs.getString("email"),
                             rs.getString("password"),
-                            rs.getString("full_ame"),
+                            rs.getString("full_name"),
                             rs.getBoolean("gender"),
                             rs.getString("mobile"),
                             rs.getString("address"),
