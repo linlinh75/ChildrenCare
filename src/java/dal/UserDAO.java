@@ -48,7 +48,6 @@ public class UserDAO extends DBContext {
      */
     public User getProfileById(int userId) throws SQLException {
         String sql = "SELECT * FROM user WHERE id = ?";
-
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
 
@@ -72,9 +71,10 @@ public class UserDAO extends DBContext {
 
         return null;
     }
+
     public User getUserByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM user WHERE email = ?";
-        try ( PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -96,19 +96,21 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
-    public int changePassword(String email, String password){
-        String s ="update user set password = ? where email=?";
-        int count=0;
+
+    public int changePassword(String email, String password) {
+        String s = "update user set password = ? where email=?";
+        int count = 0;
         try {
             stm = connection.prepareStatement(s);
             stm.setString(1, password);
             stm.setString(2, email);
-            count=stm.executeUpdate();
+            count = stm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return count;
     }
+
     public List<User> getAllUser() {
         List<User> ulist = new ArrayList<>();
         String s = "Select * from user";
@@ -147,36 +149,37 @@ public class UserDAO extends DBContext {
     public static void main(String[] args) {
         UserDAO userdao = new UserDAO();
         List<User> ulist = userdao.getAllUser();
-        for (User u : ulist) {
-            System.out.println(u.getId());
-            //System.out.println(u.getId());
-        }
-        /*User newUser = new User();
-            newUser.setEmail("testuser@example.com");
-            newUser.setPassword("password123");
-            newUser.setFullName("Test User");
-            newUser.setGender(true);
-            newUser.setMobile("1234567890");
-            newUser.setAddress("123 Test Street");
-            newUser.setImageLink("default.jpg");
-            newUser.setRoleId(4);
-            newUser.setStatus(17);
-            
-            try {
-            // Gọi phương thức addUser để thêm người dùng mới
-            int result = userdao.addUser(newUser);
-            if (result > 0) {
-            System.out.println("User added successfully!");
-            } else {
-            System.out.println("Failed to add user.");
-            }
-            } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+//        for (User u : ulist) {
+//            System.out.println(u.getId());
+//            //System.out.println(u.getId());
+//        }
+//        User newUser = new User();
+//            newUser.setEmail("giangtthe153299@fpt.edu.vn");
+//            newUser.setPassword("password123");
+//            newUser.setFullName("Test User");
+//            newUser.setGender(true);
+//            newUser.setMobile("1234567890");
+//            newUser.setAddress("123 Test Street");
+//            newUser.setImageLink("default.jpg");
+//            newUser.setRoleId(4);
+//            newUser.setStatus(17);
+
+//            try {
+//            // Gọi phương thức addUser để thêm người dùng mới
+//            int result = userdao.addUser(newUser);
+//            if (result > 0) {
+//            System.out.println("User added successfully!");
+//            } else {
+//            System.out.println("Failed to add user.");
+//            }
+//            } catch (SQLException ex) {
+//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         try {
             System.out.println(userdao.getUserByEmail("thanhthanh16102004@gmail.com"));
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }
