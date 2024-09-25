@@ -55,7 +55,7 @@ public class CustomerFilter implements Filter {
 //        UserDAO userdao = new UserDAO();
         if (loggedIn) {
             User user = (User) session.getAttribute("account");
-            if (managerPageRequest && user.isCustomer()) {
+            if (managerPageRequest && !user.isCustomer()) {
                 resp.sendRedirect(loginURI);
             } else {
                 chain.doFilter(request, response);

@@ -55,7 +55,7 @@ public class StaffFilter implements Filter {
 //        UserDAO userdao = new UserDAO();
         if (loggedIn) {
             User user = (User) session.getAttribute("account");
-            if (managerPageRequest && user.isStaff()) {
+            if (managerPageRequest && !user.isStaff()) {
                 resp.sendRedirect(loginURI);
             } else {
                 chain.doFilter(request, response);
