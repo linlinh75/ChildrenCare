@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.User;
 
 /**
@@ -12,19 +15,16 @@ import model.User;
  */
 public class UserDAO extends DBContext {
 
-    /**
-     * Updates the user's profile information, except for the email.
-     *
-     * @param user The user object containing the updated information.
-     * @return The number of rows affected by the update.
-     * @throws SQLException If there is an error executing the SQL query.
-     */
-    public int updateProfile(User user) throws SQLException {
-        String sql = "UPDATE users "
-                + "SET fullName = ?, gender = ?, mobile = ?, address = ?, imageLink = ? "
+    PreparedStatement stm;
+    ResultSet rs;
+
+    public boolean updateProfile(User user) {
+        String sql = "UPDATE user "
+                + "SET full_name = ?, gender = ?, mobile = ?, address = ?, image_link = ? "
                 + "WHERE id = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, user.getFullName());
             stmt.setBoolean(2, user.isGender());
             stmt.setString(3, user.getMobile());
@@ -32,8 +32,11 @@ public class UserDAO extends DBContext {
             stmt.setString(5, user.getImageLink());
             stmt.setInt(6, user.getId());
 
-            return stmt.executeUpdate();
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     /**
@@ -44,9 +47,8 @@ public class UserDAO extends DBContext {
      * @throws SQLException If there is an error executing the SQL query.
      */
     public User getProfileById(int userId) throws SQLException {
-        String sql = "SELECT * FROM users WHERE id = ?";
-
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = "SELECT * FROM user WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -70,8 +72,44 @@ public class UserDAO extends DBContext {
         return null;
     }
 
-    PreparedStatement stm;
-    ResultSet rs;
+    public User getUserByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM user WHERE email = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                            rs.getInt("id"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            rs.getString("full_name"),
+                            rs.getBoolean("gender"),
+                            rs.getString("mobile"),
+                            rs.getString("address"),
+                            rs.getString("image_link"),
+                            rs.getInt("role_id"),
+                            rs.getInt("status")
+                    );
+                }
+            }
+        }
+        return null;
+    }
+
+    public int changePassword(String email, String password) {
+        String s = "update user set password = ? where email=?";
+        int count = 0;
+        try {
+            stm = connection.prepareStatement(s);
+            stm.setString(1, password);
+            stm.setString(2, email);
+            count = stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return count;
+    }
 
     public List<User> getAllUser() {
         List<User> ulist = new ArrayList<>();
@@ -80,7 +118,7 @@ public class UserDAO extends DBContext {
             stm = connection.prepareStatement(s);
             rs = stm.executeQuery();
             while (rs.next()) {
-                User u = new User(rs.getInt("id"), rs.getString("email"), rs.getString("password"), rs.getString("full_name"), rs.getInt("gender"), rs.getString("mobile"), rs.getString("address"), rs.getString("image_link"), rs.getInt("role_id"), rs.getInt("status"));
+                User u = new User(rs.getInt("id"), rs.getString("email"), rs.getString("password"), rs.getString("full_name"), rs.getBoolean("gender"), rs.getString("mobile"), rs.getString("address"), rs.getString("image_link"), rs.getInt("role_id"), rs.getInt("status"));
                 ulist.add(u);
             }
         } catch (SQLException ex) {
@@ -89,11 +127,59 @@ public class UserDAO extends DBContext {
         return ulist;
     }
 
+    public int addUser(User user) throws SQLException {
+        String sql = "INSERT INTO user (email, password, full_name, gender, mobile, address, image_link, role_id, status) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, user.getEmail());
+            stmt.setString(2, user.getPassword());
+            stmt.setString(3, user.getFullName());
+            stmt.setBoolean(4, user.isGender());
+            stmt.setString(5, user.getMobile());
+            stmt.setString(6, user.getAddress());
+            stmt.setString(7, user.getImageLink());
+            stmt.setInt(8, user.getRoleId());
+            stmt.setInt(9, user.getStatus());
+
+            return stmt.executeUpdate();
+        }
+    }
+
     public static void main(String[] args) {
         UserDAO userdao = new UserDAO();
         List<User> ulist = userdao.getAllUser();
-        for (User u : ulist) {
-            System.out.println(u.getId());
+//        for (User u : ulist) {
+//            System.out.println(u.getId());
+//            //System.out.println(u.getId());
+//        }
+//        User newUser = new User();
+//            newUser.setEmail("giangtthe153299@fpt.edu.vn");
+//            newUser.setPassword("password123");
+//            newUser.setFullName("Test User");
+//            newUser.setGender(true);
+//            newUser.setMobile("1234567890");
+//            newUser.setAddress("123 Test Street");
+//            newUser.setImageLink("default.jpg");
+//            newUser.setRoleId(4);
+//            newUser.setStatus(17);
+
+//            try {
+//            // Gọi phương thức addUser để thêm người dùng mới
+//            int result = userdao.addUser(newUser);
+//            if (result > 0) {
+//            System.out.println("User added successfully!");
+//            } else {
+//            System.out.println("Failed to add user.");
+//            }
+//            } catch (SQLException ex) {
+//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+        try {
+            System.out.println(userdao.getUserByEmail("thanhthanh16102004@gmail.com"));
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }
