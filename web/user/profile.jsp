@@ -175,9 +175,20 @@
 
                     </div>
                 </div>
+                                  
                 <div class="container-fluid">
                     <div class="layout-specing">
+                        <c:if test="${successChange!=null}">
+                                <div class="container-fluid bg-success text-center">
+                                    ${successChange}
+                                </div></c:if>
+                         <c:if test="${erChange!=null}">
+                        <div class="container-fluid bg-danger text-center">
+                            ${erChange}
+                        </div>
+                    </c:if>
                         <div class="d-md-flex justify-content-between">
+                              
                             <h5 class="mb-0">Profile</h5>
 
                             <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">

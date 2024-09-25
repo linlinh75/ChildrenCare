@@ -21,12 +21,13 @@ public class ProfileUserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
         HttpSession session = request.getSession();
         User loggedInUser = (User) session.getAttribute("account");
-        
+        // bo sung message (na)
         if (loggedInUser != null) {
             request.setAttribute("user", loggedInUser);
+            request.setAttribute("successChange", request.getParameter("successChange"));
+            request.setAttribute("erChange", request.getParameter("erChange"));
             request.getRequestDispatcher("user/profile.jsp").forward(request, response);
         } else {
             // Nếu không có người dùng đăng nhập, chuyển hướng về trang đăng nhập
