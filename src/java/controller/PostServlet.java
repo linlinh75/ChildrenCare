@@ -27,7 +27,9 @@ public class PostServlet extends HttpServlet {
             int postId = Integer.parseInt(request.getParameter("id"));
             Post post = postDAO.getPostById(postId);
             List<Post> recentPosts = postDAO.getNewest();
+            String authorName = postDAO.getAuthorNameByPostId(postId);
             request.setAttribute("post", post);
+            request.setAttribute("authorName", authorName);
             request.setAttribute("recentPosts", recentPosts);
             request.getRequestDispatcher("blog-single.jsp").forward(request, response);
         } else {
