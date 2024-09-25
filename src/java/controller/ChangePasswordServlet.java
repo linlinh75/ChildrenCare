@@ -43,14 +43,20 @@ public class ChangePasswordServlet extends HttpServlet {
                 if(oldPass!=null&&newPass!=null&& checkPass!=null&&oldPass.equals(udao.getUserByEmail(email).getPassword())){
                     if(newPass.equals(checkPass)){
                         udao.changePassword(email, newPass);
-                        response.sendRedirect("profile.jsp");
+                        String successChange = "Password Changed!";
+                     request.setAttribute("successChange", successChange);
+                     request.getRequestDispatcher("/profile").forward(request, response);
                     }else{
                 String erChange = "Wrong Confirm Password";
-                request.setAttribute("erChange", udao);
-                request.getRequestDispatcher("changePw.jsp").forward(request, response);
+                request.setAttribute("erChange", erChange);
+                request.getRequestDispatcher("/profile").forward(request, response);
             }
-
+                     }else{
+                   String erChange = "Password Change gone wrong!";
+                request.setAttribute("erChange", erChange);
+                request.getRequestDispatcher("/profile").forward(request, response); 
                 }
+                
 
         } catch (SQLException ex) {
             Logger.getLogger(ChangePasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
