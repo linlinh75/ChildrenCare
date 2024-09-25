@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.GoogleAccount;
 import model.User;
 
 /**
@@ -33,18 +34,10 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        String code=request.getParameter("code");
+        String accessToken = GoogleLogin.getToken(code);
+        GoogleAccount acc = GoogleLogin.getUserInfo(accessToken);
+        System.out.println(acc);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -73,40 +66,31 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
         UserDAO userdao = new UserDAO();
         List<User> ulist = userdao.getAllUser();
-        if(request.getParameter("submit")!=null){
+        if (request.getParameter("submit") != null) {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             System.out.println(email);
             System.out.println(password);
-            boolean check=false;
-            for(User u: ulist){
-                if(email.equals(u.getEmail())&&password.equals(u.getPassword())){
-                    check=true;
+            User loggedInUser = null;
+            for (User u : ulist) {
+                if (email.equals(u.getEmail()) && password.equals(u.getPassword())) {
+                    loggedInUser = u;
                     break;
                 }
             }
-            if(check==false){
-               request.setAttribute("ms","Invalid email or password"); 
-               request.getRequestDispatcher("login.jsp").forward(request, response);
-            }else{
-                request.setAttribute("ms", "Login successfully!");
+            if (loggedInUser == null) {
+                request.setAttribute("ms", "Invalid email or password");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            } else {
+                // Lưu thông tin người dùng vào session
+                session.setAttribute("account", loggedInUser);
                 session.setAttribute("email", email);
-                response.sendRedirect("/ChildrenCare");
+                request.setAttribute("ms", "Login successfully!");
+                response.sendRedirect("/ChildrenCare/HomeServlet");
             }
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }
