@@ -55,7 +55,7 @@ public class ManagerFilter implements Filter {
 //        UserDAO userdao = new UserDAO();
         if (loggedIn) {
             User user = (User) session.getAttribute("account");
-            if (managerPageRequest && (user.isAdmin() || user.isManager())) {
+            if (managerPageRequest && !user.isAdmin() && !user.isManager()) {
                 resp.sendRedirect(loginURI);
             } else {
                 chain.doFilter(request, response);

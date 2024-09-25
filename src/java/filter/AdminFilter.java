@@ -55,7 +55,7 @@ public class AdminFilter implements Filter {
 //        UserDAO userdao = new UserDAO();
         if (loggedIn) {
             User user = (User) session.getAttribute("account");
-            if (managerPageRequest && user.isAdmin()) {
+            if (managerPageRequest && !user.isAdmin()) {
                 resp.sendRedirect(loginURI);
             } else {
                 chain.doFilter(request, response);
