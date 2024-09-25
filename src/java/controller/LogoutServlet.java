@@ -4,7 +4,6 @@
  */
 package controller;
 
-import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,18 +12,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import model.User;
 
 /**
  *
  * @author admin
  */
-@WebServlet(name = "ActivateServlet", urlPatterns = {"/activate"})
-public class ActivateServlet extends HttpServlet {
+@WebServlet(name = "LogoutServlet", urlPatterns = {"/LogoutServlet"})
+public class LogoutServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,25 +30,15 @@ public class ActivateServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String code = request.getParameter("code");
-            HttpSession session = request.getSession();
-            String expectedCode = (String) session.getAttribute("verificationCode");
-            User newUser = (User) session.getAttribute("user");
-            if (code != null && code.equals(expectedCode)) {
-                UserDAO userdao = new UserDAO();
-                userdao.addUser(newUser);
-                out.println("<h1>Account activated successfully!</h1>");
-                out.println("<a href='login.jsp'>Go to Login</a>");
-
-                session.removeAttribute("verificationCode");
-                session.removeAttribute("user");
-            } else {
-                out.println("<h1>Invalid verification code!</h1>");
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
             }
+            response.sendRedirect("HomeServlet");
         }
     }
 
@@ -70,11 +54,7 @@ public class ActivateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(ActivateServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -88,11 +68,7 @@ public class ActivateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(ActivateServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**

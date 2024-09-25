@@ -135,7 +135,7 @@ public class RegisterServlet extends HttpServlet {
         newUser.setGender(gender);
         newUser.setMobile(mobile);
         newUser.setAddress(address);
-        newUser.setImageLink("default.jpg");
+        newUser.setImageLink("assets/images/default.png");
         newUser.setRoleId(4);
         newUser.setStatus(17);
 
