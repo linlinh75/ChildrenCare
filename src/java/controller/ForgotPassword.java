@@ -111,8 +111,8 @@ public class ForgotPassword extends HttpServlet {
 				MimeMessage message = new MimeMessage(session);
 				message.setFrom(new InternetAddress(email));// change accordingly
 				message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-				message.setSubject("Hello");
-				message.setText("your OTP is: " + otpvalue);
+				message.setSubject("Reset Password");
+				message.setText("Click this link to go to reset page: " + otpvalue);
 				// send message
 				Transport.send(message);
 				System.out.println("message sent successfully");
