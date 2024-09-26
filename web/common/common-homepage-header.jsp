@@ -58,10 +58,30 @@
                         <!--/ End Main Menu -->
                     </div>
                     <div class="col-lg-3 col-12">
-                        <div class="get-quote">
-                            <a href="register.jsp" class="btn" style="background-color: orange;">Register</a>
-                            <a href="login.jsp" class="btn">Login</a>
-                        </div>
+                        <c:choose>
+                            <c:when test="${not empty sessionScope.account}">
+                                <div class="parent-div" style="display: flex; justify-content: end; align-items: center;">
+                                    <div class="dropdown" style="display: flex; align-items: center;">
+                                        <span style="margin-right: 10px;">${sessionScope.account.getFullName()}</span>
+                                        <div id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display: flex; align-items: center; justify-content: center; width: 60px; height: 60px;">
+                                            <img src="./${sessionScope.account.getImageLink()}" alt="Avatar" class="rounded-circle" style="width: 60px; height: 50px;">
+                                        </div>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                            <a class="dropdown-item" href="/ChildrenCare/profile">Profile</a>
+                                            <a class="dropdown-item" href="#">Reservation</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="LogoutServlet">Logout</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </c:when>
+                            <c:otherwise>
+                                <a href="register.jsp" class="btn" style="background-color: orange;">Register</a>
+                                <a href="login.jsp" class="btn">Login</a>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </div>
