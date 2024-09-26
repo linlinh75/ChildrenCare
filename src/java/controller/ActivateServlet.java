@@ -44,7 +44,6 @@ public class ActivateServlet extends HttpServlet {
             HttpSession session = request.getSession();
             String expectedCode = (String) session.getAttribute("verificationCode");
             User newUser = (User) session.getAttribute("user");
-            out.print((String) session.getAttribute("verificationCode"));
             if (code != null && code.equals(expectedCode)) {
                 UserDAO userdao = new UserDAO();
                 userdao.addUser(newUser);

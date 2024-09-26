@@ -1,10 +1,10 @@
 package model;
 
-
 /**
  * Represents a user of the application.
  */
 public class User {
+
     private int id;
     private String email;
     private String password;
@@ -110,5 +110,21 @@ public class User {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public boolean isAdmin() {
+        return roleId == 1;
+    }
+    
+    public boolean isManager() {
+        return roleId == 2;
+    }
+    
+    public boolean isStaff() {
+        return roleId == 3;
+    }
+    
+    public boolean isCustomer() {
+        return roleId == 4;
     }
 }

@@ -103,7 +103,7 @@
                                             <li class="active"><a href="HomeServlet">Home</i></a>
                                             </li>
                                             <li>
-                                                <a href="#">Services<i class="icofont-rounded-down"></i></a>
+                                                <a href="/ChildrenCare/service">Services<i class="icofont-rounded-down"></i></a>
                                                 <ul class="dropdown">
                                                     <c:forEach var="service" items="${list_sc}">
                                                         <li><a href="#">${service.getName()}</a></li>
@@ -111,7 +111,7 @@
                                                 </ul>
                                             </li>
 
-                                            <li><a href="#">Blogs<i class="icofont-rounded-down"></i></a>
+                                            <li><a href="/ChildrenCare/post">Blogs<i class="icofont-rounded-down"></i></a>
                                                 <ul class="dropdown">
                                                     <c:forEach var="post" items="${list_pc}">
                                                         <li><a href="#">${post.getName()}</a></li>
@@ -125,10 +125,33 @@
                             </div>
                             <div class="col-lg-3 col-12">
                                 <div class="get-quote">
-                                    <a href="register.jsp" class="btn" style="background-color: orange;">Register</a>
-                                    <a href="login.jsp" class="btn">Login</a>
+                                    <c:choose>
+                                        <c:when test="${not empty sessionScope.account}">
+                                            <div class="parent-div" style="display: flex; justify-content: end; align-items: center;">
+                                                <div class="dropdown" style="display: flex; align-items: center;">
+                                                    <span style="margin-right: 10px;">${sessionScope.account.getFullName()}</span>
+                                                    <div id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display: flex; align-items: center; justify-content: center; width: 60px; height: 60px;">
+                                                        <img src="./${sessionScope.account.getImageLink()}" alt="Avatar" class="rounded-circle" style="width: 60px; height: 50px;">
+                                                    </div>
+                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                                        <a class="dropdown-item" href="/ChildrenCare/profile">Profile</a>
+                                                        <a class="dropdown-item" href="#">Reservation</a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href="LogoutServlet">Logout</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a href="register.jsp" class="btn" style="background-color: orange;">Register</a>
+                                            <a href="login.jsp" class="btn">Login</a>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -359,8 +382,8 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <ul>
-                                            <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Home</a></li>
-                                            <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Services</a></li>
+                                            <li><a href="HomeServlet"><i class="fa fa-caret-right" aria-hidden="true"></i>Home</a></li>
+                                            <li><a href="/ChildrenCare/service"><i class="fa fa-caret-right" aria-hidden="true"></i>Services</a></li>
                                         </ul>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-12">

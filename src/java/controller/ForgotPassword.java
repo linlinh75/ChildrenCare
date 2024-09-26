@@ -36,6 +36,7 @@ public class ForgotPassword extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
+
         RequestDispatcher dispatcher;
         HttpSession mySession = request.getSession();
         UserDAO udao = new UserDAO();
@@ -44,7 +45,6 @@ public class ForgotPassword extends HttpServlet {
             String token = udao.addToken(email);
             String resetPasswordLink = "http://localhost:8080/ChildrenCare/newPassword?token=" + token;
 
-            
             Properties props = new Properties();
             props.put("mail.smtp.host", "smtp.gmail.com");
             props.put("mail.smtp.socketFactory.port", "465");

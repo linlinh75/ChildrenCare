@@ -15,6 +15,7 @@
     </head>
     <body>
         <section class="vh-100" >
+
   <div class="container-fluid h-100 py-5 " style="background-color: #1A76D1;">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-xl-10">
@@ -95,3 +96,4 @@
 </section>
     </body>
 </html>
+

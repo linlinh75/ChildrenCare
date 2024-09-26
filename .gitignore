@@ -1,13 +1,4 @@
-<<<<<<< HEAD
-/build/
+# Compiled class file
+*.class
 
-/dist/
-
-<<<<<<< HEAD
-/MyShop/build/
-/MyShop/nbproject/private/
-=======
-=======
-/dist/
->>>>>>> thanhnt
->>>>>>> main
+# NetBeans specific

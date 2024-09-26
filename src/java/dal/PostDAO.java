@@ -43,21 +43,21 @@ public class PostDAO extends DBContext {
      */
     public String getAuthorNameByPostId(int postId) {
         String authorName = null;
-        try (
-                PreparedStatement statement = connection.prepareStatement(
-                        "SELECT u.name AS authorName "
-                        + "FROM posts p "
-                        + "JOIN users u ON p.authorId = u.id "
-                        + "WHERE p.id = ?")) {
-            statement.setInt(1, postId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    authorName = resultSet.getString("authorName");
+        String query = "SELECT u.full_name AS author_name FROM post p "
+                + "JOIN user u ON p.author_id = u.id "
+                + "WHERE p.id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, postId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    authorName = rs.getString("author_name");
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error getting author name for post ID: " + postId, e);
         }
+
         return authorName;
     }
 
@@ -166,7 +166,7 @@ public class PostDAO extends DBContext {
 
     public List<Post> getNewest() {
         List<Post> posts = new ArrayList<>();
-        String query = "SELECT * FROM post ORDER BY updated_date DESC LIMIT 3"; 
+        String query = "SELECT * FROM post ORDER BY updated_date DESC LIMIT 3";
 
         try {
             PreparedStatement stm = connection.prepareStatement(query);
@@ -200,10 +200,9 @@ public class PostDAO extends DBContext {
     public static void main(String[] args) {
         PostDAO postDAO = new PostDAO();
         postDAO.getNewest().stream().forEach(item -> {
-            
+
             System.out.println(item.getThumbnailLink());
         });
-        
 
     }
 }

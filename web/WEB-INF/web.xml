@@ -42,12 +42,48 @@
         <url-pattern>/profile</url-pattern>
     </servlet-mapping>
 
-        <servlet>
+    <servlet>
         <servlet-name>ChangePasswordServlet</servlet-name>
         <servlet-class>controller.ChangePasswordServlet</servlet-class>
     </servlet>
-        <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>ChangePasswordServlet</servlet-name>
         <url-pattern>/change</url-pattern>
     </servlet-mapping>
+    
+    <filter>
+        <filter-name>AdminFilter</filter-name>
+        <filter-class>filter.AdminFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdminFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <filter>
+        <filter-name>CustomerFilter</filter-name>
+        <filter-class>filter.CustomerFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CustomerFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <filter>
+        <filter-name>ManagerFilter</filter-name>
+        <filter-class>filter.ManagerFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ManagerFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <filter>
+        <filter-name>StaffFilter</filter-name>
+        <filter-class>filter.StaffFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>StaffFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>

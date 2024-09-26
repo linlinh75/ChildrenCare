@@ -43,7 +43,7 @@
 
                     <ul class="sidebar-menu pt-3">
                         <li><a href="index.html"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
-                        <li><a href="appointment.html"><i class="uil uil-stethoscope me-2 d-inline-block"></i>Appointment</a></li>
+                        <li><a href="changePw.jsp"><i class="uil uil-user me-2 d-inline-block"></i>Change password</a></li>
 
                         <li class="sidebar-dropdown">
                             <a href="javascript:void(0)"><i class="uil uil-user me-2 d-inline-block"></i>Doctors</a>
@@ -175,9 +175,20 @@
 
                     </div>
                 </div>
+                                  
                 <div class="container-fluid">
                     <div class="layout-specing">
+                        <c:if test="${successChange!=null}">
+                                <div class="container-fluid bg-success text-center">
+                                    ${successChange}
+                                </div></c:if>
+                         <c:if test="${erChange!=null}">
+                        <div class="container-fluid bg-danger text-center">
+                            ${erChange}
+                        </div>
+                    </c:if>
                         <div class="d-md-flex justify-content-between">
+                              
                             <h5 class="mb-0">Profile</h5>
 
                             <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">

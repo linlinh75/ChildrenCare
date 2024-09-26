@@ -4,22 +4,21 @@
  */
 package controller;
 
-import dal.UserDAO;
 import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author Admin
+ * @author admin
  */
-public class ChangePasswordServlet extends HttpServlet {
+@WebServlet(name = "LogoutServlet", urlPatterns = {"/LogoutServlet"})
+public class LogoutServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,34 +31,14 @@ public class ChangePasswordServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            response.setContentType("text/html;charset=UTF-8");
-            String oldPass = request.getParameter("Old password");
-            String newPass = request.getParameter("New password");
-            String checkPass = request.getParameter("confPassword");
-            HttpSession session = request.getSession();
-            String email = (String)session.getAttribute("email");
-            UserDAO udao = new UserDAO();
-                if(oldPass!=null&&newPass!=null&& checkPass!=null&&oldPass.equals(udao.getUserByEmail(email).getPassword())){
-                    if(newPass.equals(checkPass)){
-                        udao.changePassword(email, newPass);
-                        String successChange = "Password Changed!";
-                     request.setAttribute("successChange", successChange);
-                     request.getRequestDispatcher("/profile").forward(request, response);
-                    }else{
-                String erChange = "Wrong Confirm Password";
-                request.setAttribute("erChange", erChange);
-                request.getRequestDispatcher("/profile").forward(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
             }
-                     }else{
-                   String erChange = "Password Change gone wrong!";
-                request.setAttribute("erChange", erChange);
-                request.getRequestDispatcher("/profile").forward(request, response); 
-                }
-                
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ChangePasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
+            response.sendRedirect("HomeServlet");
         }
     }
 
