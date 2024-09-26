@@ -1,11 +1,15 @@
 package dal;
 
+import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import static java.time.LocalDateTime.now;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
@@ -96,7 +100,62 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
-    public int changePassword(String email, String password){
+    public void updateToken(String email, String token){
+        String s = "Update password_reset_tokens set token";
+    }
+    public String addToken(String email){
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 20;
+        Random random = new Random();
+        StringBuilder buffer = new StringBuilder(targetStringLength);
+        for (int i = 0; i < targetStringLength; i++) {
+            int randomLimitedInt = leftLimit + (int)
+                    (random.nextFloat() * (rightLimit - leftLimit + 1));
+            buffer.append((char) randomLimitedInt);
+        }
+        String token = buffer.toString();
+        LocalDateTime now = LocalDateTime.now();
+    LocalDateTime expiresAt = now.plusHours(1); // Token valid for 1 hour
+    
+        try {
+            stm = connection.prepareStatement("INSERT INTO password_reset_tokens (token, email, created_at, expires_at, user_id) VALUES (?, ?, ?, ?,?)") ;
+            stm.setString(1, token);
+            stm.setString(2, email);
+            stm.setTimestamp(3, Timestamp.valueOf(now));
+            stm.setTimestamp(4, Timestamp.valueOf(expiresAt));
+            stm.setInt(5, getUserByEmail(email).getId());
+            stm.executeUpdate();
+        }
+         catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return token;
+    }
+    public boolean isTokenValid(String token) {
+    try {
+         stm = connection.prepareStatement("SELECT expires_at FROM password_reset_tokens WHERE token = ?") ;
+        stm.setString(1, token);
+        ResultSet rs = stm.executeQuery();
+        if (rs.next()) {
+            Timestamp expiresAt = rs.getTimestamp("expires_at");
+            return expiresAt.after(Timestamp.valueOf(LocalDateTime.now()));
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return false; 
+}
+public void cleanupExpiredTokens() {
+    try {
+        stm = connection.prepareStatement("DELETE FROM password_reset_tokens WHERE expires_at < ?");
+        stm.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+        stm.executeUpdate();
+    } catch (SQLException ex) {
+        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}
+public int changePassword(String email, String password){
         String s ="update user set password = ? where email=?";
         int count=0;
         try {

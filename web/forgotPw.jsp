@@ -3,7 +3,7 @@
     Created on : Sep 19, 2024, 8:37:52 AM
     Author     : Admin
 --%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -25,13 +25,16 @@
                     <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
                     <span class="h1 fw-bold mb-0">Forgot Password</span>
                   </div>
-
+                    <c:if test="${message!=null}">
+                    <div class="alert alert-success" role="alert">
+                        ${message}
+                    </div>
+                  </c:if>
                   <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Enter email to let us help you out</h5>
                   <div data-mdb-input-init class="form-outline mb-4">
                     <input type="text" name="email" id="form2Example17"  class="form-control form-control-lg" />
                     <label class="form-label" for="form2Example17">Email</label>
                   </div>
-                     </c:if>
                   <div class="pt-1 mb-4 row">
                       <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" name="submit" value="submit">Send email!</button>
                       <a href=""></a>
