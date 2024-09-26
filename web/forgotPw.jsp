@@ -3,7 +3,7 @@
     Created on : Sep 24, 2024, 11:42:59 AM
     Author     : Admin
 --%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -25,10 +25,12 @@
                     <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
                     <span class="h1 fw-bold mb-0">Enter New Password</span>
                   </div>
-                    <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="Old password" id="form2Example17"  class="form-control form-control-lg" />
-                    <label class="form-label" for="form2Example17">Old Password</label>
-                  </div>
+                    <c:if test="${message!=null}">
+                    <div class="alert alert-success" role="alert">
+                        ${message}
+                    </div>
+                  </c:if>
+                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Enter email to let us help you out</h5>
                   <div data-mdb-input-init class="form-outline mb-4">
                     <input type="password" name="New password" id="form2Example17"  class="form-control form-control-lg" />
                     <label class="form-label" for="form2Example17">New Password</label>
