@@ -47,20 +47,10 @@
                                     <li class="active"><a href="HomeServlet">Home</i></a>
                                     </li>
                                     <li>
-                                        <a href="#">Services<i class="icofont-rounded-down"></i></a>
-                                        <ul class="dropdown">
-                                            <c:forEach var="service" items="${list_sc}">
-                                                <li><a href="#">${service.getName()}</a></li>
-                                            </c:forEach>
-                                        </ul>
+                                        <a href="${pageContext.request.contextPath}/service">Services<i class="icofont-rounded-down"></i></a>
                                     </li>
 
-                                    <li><a href="#">Blogs<i class="icofont-rounded-down"></i></a>
-                                        <ul class="dropdown">
-                                            <c:forEach var="post" items="${list_pc}">
-                                                <li><a href="#">${post.getName()}</a></li>
-                                            </c:forEach>
-                                        </ul>
+                                    <li><a href="${pageContext.request.contextPath}/post">Blogs<i class="icofont-rounded-down"></i></a>
                                     </li>
                                 </ul>
                             </nav>
