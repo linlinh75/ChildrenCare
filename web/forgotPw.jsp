@@ -12,6 +12,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Change Password</title>
     </head>
+     <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
     <body>
         <section class="vh-100" style="background-color: #1A76D1;">
   <div class="container py-5 h-100">
@@ -20,10 +21,10 @@
         <div class="card" style="border-radius: 1rem;">
             <div class="col-md-6 col-lg-7 d-flex align-items-center">
               <div class="card-body p-4 p-lg-5 text-black">
-                <form action = "newPassword" method="post">
+                <form action = "forgot" method="post">
                   <div class="d-flex align-items-center mb-3 pb-1">
                     <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
-                    <span class="h1 fw-bold mb-0">Enter New Password</span>
+                    <span class="h1 fw-bold mb-0">Reset Password</span>
                   </div>
                     <c:if test="${message!=null}">
                     <div class="alert alert-success" role="alert">
@@ -31,16 +32,13 @@
                     </div>
                   </c:if>
                   <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Enter email to let us help you out</h5>
-                  <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="New password" id="form2Example17"  class="form-control form-control-lg" />
-                    <label class="form-label" for="form2Example17">New Password</label>
-                  </div>
+
                     <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="confPassword" id="form2Example17"  class="form-control form-control-lg" />
-                    <label class="form-label" for="form2Example17">Re-Enter Password</label>
+                    <input type="email" name="email" id="form2Example17"  class="form-control form-control-lg" />
+                    <label class="form-label" for="form2Example17">Email</label>
                   </div>
                   <div class="pt-1 mb-4 row">
-                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" name="submit" value="submit">Change Password</button>
+                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" name="submit" value="submit">Send Email!</button>
                   </div>
                 </form>
 
@@ -53,4 +51,5 @@
   </div>
 </section>
     </body>
+    <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
 </html>
