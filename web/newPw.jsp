@@ -12,6 +12,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Forgot Password</title>
     </head>
+     <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
     <body>
         <section class="vh-100" style="background-color: #1A76D1;">
   <div class="container py-5 h-100">
@@ -48,4 +49,5 @@
   </div>
 </section>
     </body>
+    <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
 </html>
