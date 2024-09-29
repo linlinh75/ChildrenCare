@@ -22,7 +22,7 @@ public class PostServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String action = request.getParameter("action");
-        
+        request.setAttribute("active", "post");
         if ("detail".equals(action)) {
             int postId = Integer.parseInt(request.getParameter("id"));
             Post post = postDAO.getPostById(postId);
