@@ -52,4 +52,6 @@
 </section>
     </body>
     <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+
 </html>
+

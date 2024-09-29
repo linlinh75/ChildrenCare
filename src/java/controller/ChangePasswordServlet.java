@@ -38,7 +38,7 @@ public class ChangePasswordServlet extends HttpServlet {
             String oldPass = request.getParameter("Old password");
             String newPass = request.getParameter("New password");
             String checkPass = request.getParameter("confPassword");
-            HttpSession session = request.getSession();
+            HttpSession session = request.getSession(false);
             String email = (String)session.getAttribute("email");
             UserDAO udao = new UserDAO();
                 if(oldPass!=null&&newPass!=null&& checkPass!=null&&oldPass.equals(udao.getUserByEmail(email).getPassword())){

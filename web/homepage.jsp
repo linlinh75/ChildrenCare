@@ -309,7 +309,7 @@
                                 </div>
                                 <div class="service-body">
                                     <div class="service-content">
-                                        <h2><a href="#">${service.getFullname()}</a></h2>
+                                        <h2><a href="./service?action=details&id=${service.getId()}">${service.getFullname()}</a></h2>
                                         <p class="text">${service.getDescription()}</p>
                                     </div>
                                 </div>
@@ -345,7 +345,7 @@
                                 <div class="news-body">
                                     <div class="news-content">
                                         <div class="date">${post.updatedDate}</div> 
-                                        <h2><a href="">${post.getTitle()}</a></h2>
+                                        <h2><a href="./post?action=detail&id=${post.getId()}">${post.getTitle()}</a></h2>
                                         <p class="text">${post.getDescription()}</p>
                                     </div>
                                 </div>
