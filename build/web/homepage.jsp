@@ -103,7 +103,7 @@
                                             <li class="active"><a href="HomeServlet">Home</i></a>
                                             </li>
                                             <li>
-                                                <a href="/ChildrenCare/service">Services<i class="icofont-rounded-down"></i></a>
+                                                <a href="DataServlet?action=service">Services<i class="icofont-rounded-down"></i></a>
                                                 <ul class="dropdown">
                                                     <c:forEach var="service" items="${list_sc}">
                                                         <li><a href="#">${service.getName()}</a></li>
@@ -111,7 +111,7 @@
                                                 </ul>
                                             </li>
 
-                                            <li><a href="/ChildrenCare/post">Blogs<i class="icofont-rounded-down"></i></a>
+                                            <li><a href="DataServlet?action=post">Blogs<i class="icofont-rounded-down"></i></a>
                                                 <ul class="dropdown">
                                                     <c:forEach var="post" items="${list_pc}">
                                                         <li><a href="#">${post.getName()}</a></li>
@@ -129,9 +129,9 @@
                                         <c:when test="${not empty sessionScope.account}">
                                             <div class="parent-div" style="display: flex; justify-content: end; align-items: center;">
                                                 <div class="dropdown" style="display: flex; align-items: center;">
-                                                    <span style="margin-right: 10px;">${sessionScope.account.getFullName()}</span>
+                                                    <span style="margin-right: 10px;">${account.getFullName()}</span>
                                                     <div id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display: flex; align-items: center; justify-content: center; width: 60px; height: 60px;">
-                                                        <img src="./${sessionScope.account.getImageLink()}" alt="Avatar" class="rounded-circle" style="width: 60px; height: 50px;">
+                                                        <img src="./${account.getImageLink()}" alt="Avatar" class="rounded-circle" style="width: 60px; height: 50px;">
                                                     </div>
                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                                                         <a class="dropdown-item" href="/ChildrenCare/profile">Profile</a>
@@ -145,8 +145,8 @@
 
                                         </c:when>
                                         <c:otherwise>
-                                            <a href="register.jsp" class="btn" style="background-color: orange;">Register</a>
-                                            <a href="login.jsp" class="btn">Login</a>
+                                            <a href="DataServlet?action=register" class="btn" style="background-color: orange;">Register</a>
+                                            <a href="DataServlet?action=login" class="btn">Login</a>
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
@@ -309,7 +309,7 @@
                                 </div>
                                 <div class="service-body">
                                     <div class="service-content">
-                                        <h2><a href="#">${service.getFullname()}</a></h2>
+                                        <h2><a href="./service?action=details&id=${service.getId()}">${service.getFullname()}</a></h2>
                                         <p class="text">${service.getDescription()}</p>
                                     </div>
                                 </div>
@@ -345,7 +345,7 @@
                                 <div class="news-body">
                                     <div class="news-content">
                                         <div class="date">${post.updatedDate}</div> 
-                                        <h2><a href="">${post.getTitle()}</a></h2>
+                                        <h2><a href="./post?action=detail&id=${post.getId()}">${post.getTitle()}</a></h2>
                                         <p class="text">${post.getDescription()}</p>
                                     </div>
                                 </div>
@@ -383,12 +383,12 @@
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <ul>
                                             <li><a href="HomeServlet"><i class="fa fa-caret-right" aria-hidden="true"></i>Home</a></li>
-                                            <li><a href="/ChildrenCare/service"><i class="fa fa-caret-right" aria-hidden="true"></i>Services</a></li>
+                                            <li><a href="DataServlet?action=service"><i class="fa fa-caret-right" aria-hidden="true"></i>Services</a></li>
                                         </ul>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <ul>
-                                            <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Blogs</a></li>	
+                                            <li><a href="DataServlet?action=post"><i class="fa fa-caret-right" aria-hidden="true"></i>Blogs</a></li>	
                                         </ul>
                                     </div>
                                 </div>

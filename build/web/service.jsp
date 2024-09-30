@@ -109,6 +109,9 @@
                             <div class="single-service">
                                 <i class="icofont icofont-tooth"></i>
                                 <h4><a href="service?action=details&id=${service.id}">${service.fullname}</a></h4>
+                                <img src="https://mediplus-html.vercel.app/img/service-details-bg.jpg" width="50%">
+                                <p>Price: ${service.originalPrice} $</p>
+                                <p>Sale price: ${service.salePrice} $</p>
                                 <p>${service.description}</p>
                             </div>
                         </div>

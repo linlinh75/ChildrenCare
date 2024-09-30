@@ -12,6 +12,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Forgot Password</title>
     </head>
+     <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
     <body>
         <section class="vh-100" style="background-color: #1A76D1;">
   <div class="container py-5 h-100">
@@ -25,8 +26,8 @@
                     <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
                     <span class="h1 fw-bold mb-0">Enter New  Password</span>
                   </div>
-
-                  <div data-mdb-input-init class="form-outline mb-4">
+                  
+                <div data-mdb-input-init class="form-outline mb-4">
                     <input type="password" name="password" id="form2Example17"  class="form-control form-control-lg" />
                     <label class="form-label" for="form2Example17">New Password</label>
                   </div>
@@ -48,4 +49,5 @@
   </div>
 </section>
     </body>
+    <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
 </html>
