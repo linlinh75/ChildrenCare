@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.User;
 
 /**
  *
@@ -37,24 +38,30 @@ public class ChangePasswordServlet extends HttpServlet {
             String oldPass = request.getParameter("Old password");
             String newPass = request.getParameter("New password");
             String checkPass = request.getParameter("confPassword");
-            HttpSession session = request.getSession();
+            HttpSession session = request.getSession(false);
             String email = (String)session.getAttribute("email");
             UserDAO udao = new UserDAO();
                 if(oldPass!=null&&newPass!=null&& checkPass!=null&&oldPass.equals(udao.getUserByEmail(email).getPassword())){
                     if(newPass.equals(checkPass)){
                         udao.changePassword(email, newPass);
                         String successChange = "Password Changed!";
+                     session.setAttribute("account", udao.getUserByEmail(email));
+                request.setAttribute("user", udao.getUserByEmail(email));
                      request.setAttribute("successChange", successChange);
-                     request.getRequestDispatcher("/profile").forward(request, response);
+                     request.getRequestDispatcher("user/profile.jsp").forward(request, response);
                     }else{
                 String erChange = "Wrong Confirm Password";
                 request.setAttribute("erChange", erChange);
-                request.getRequestDispatcher("/profile").forward(request, response);
+                session.setAttribute("account", udao.getUserByEmail(email));
+                request.setAttribute("user", udao.getUserByEmail(email));
+                request.getRequestDispatcher("user/profile.jsp").forward(request, response);
             }
                      }else{
                    String erChange = "Password Change gone wrong!";
                 request.setAttribute("erChange", erChange);
-                request.getRequestDispatcher("/profile").forward(request, response); 
+                session.setAttribute("account", udao.getUserByEmail(email));
+                request.setAttribute("user", udao.getUserByEmail(email));
+                request.getRequestDispatcher("user/profile.jsp").forward(request, response); 
                 }
                 
 

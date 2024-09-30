@@ -178,7 +178,7 @@
                                             <h5><a href="post?action=detail&id=${recentPost.id}">${recentPost.title}</a></h5>
                                             <ul class="comment">
                                                 <li><i class="fa fa-calendar" aria-hidden="true"></i>${recentPost.updatedDate}</li>
-                                                <li><i class="fa fa-user" aria-hidden="true"></i>${recentPost.authorId}</li>
+                                                <!--<li><i class="fa fa-user" aria-hidden="true"></i>${recentPost.authorId}</li>-->
                                             </ul>
                                         </div>
                                     </div>

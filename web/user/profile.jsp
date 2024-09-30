@@ -46,7 +46,7 @@
                                             </a>
                                         </div>-->
 
-                    <ul class="sidebar-menu pt-3">
+                    <ul class="sidebar-menu pt-3" >
                         <li><a href="index.html"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
                         <li><a href="changePw.jsp"><i class="uil uil-user me-2 d-inline-block"></i>Change password</a></li>
                             <c:if test="${user.roleId == '1'}">
@@ -139,6 +139,8 @@
                             <li><a href="${pageContext.request.contextPath}/landing/index-two.html" target="_blank"><i class="uil uil-window me-2 d-inline-block"></i>Landing page</a></li>
                             </c:if>
                     </ul>
+                    
+                       
                     <!-- sidebar-menu  -->
                 </div>
                 <!-- sidebar-content  -->
@@ -200,8 +202,8 @@
 
                             <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
                                 <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
-                                    <li class="breadcrumb-item"><a href="index.html">Doctris</a></li>
-                                    <li class="breadcrumb-item"><a href="patients.html">Patients</a></li>
+                                    <li class="breadcrumb-item"><a href="HomeServlet">Doctris</a></li>
+                                    <li class="breadcrumb-item"><a href="#">Patients</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Profile</li>
                                 </ul>
                             </nav>

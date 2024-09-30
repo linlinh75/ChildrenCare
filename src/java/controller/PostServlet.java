@@ -5,6 +5,9 @@
 package controller;
 
 import dal.PostDAO;
+import dal.ServiceDAO;
+import dal.SettingDAO;
+import dal.SliderDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +16,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import model.Post;
+import model.Service;
+import model.Setting;
+import model.Slider;
 
 public class PostServlet extends HttpServlet {
 
@@ -22,6 +28,34 @@ public class PostServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
+        ServiceDAO s = new ServiceDAO();
+        List<Service> list_service = s.getAllService();
+        PostDAO p = new PostDAO();
+        List<Post> list_post = p.getAllPosts();
+        List<Post> new_post = p.getNewest();
+        SettingDAO st = new SettingDAO();
+        List<Setting> s_category = st.getServiceCategory();
+        List<Setting> p_category = st.getPostCategory();
+        SliderDAO sliderDAO = new SliderDAO();
+        List<Slider> list_sliders = sliderDAO.getAllSliders();
+        request.setAttribute("list_sliders", list_sliders);
+        if (s_category == null || s_category.isEmpty()) {
+        } else {
+            request.setAttribute("list_sc", s_category);
+        }
+        if (p_category == null || p_category.isEmpty()) {
+        } else {
+            request.setAttribute("list_pc", p_category);
+        }
+        if (list_service == null || list_service.isEmpty()) {
+        } else {
+            request.setAttribute("services", list_service);
+        }
+        if (list_post == null || list_post.isEmpty()) {
+        } else {
+            request.setAttribute("posts", list_post);
+        }
+        request.setAttribute("new_posts", new_post);
         request.setAttribute("active", "post");
         if ("detail".equals(action)) {
             int postId = Integer.parseInt(request.getParameter("id"));

@@ -4,6 +4,10 @@
  */
 package controller;
 
+import dal.PostDAO;
+import dal.ServiceDAO;
+import dal.SettingDAO;
+import dal.SliderDAO;
 import dal.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -19,6 +23,11 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
+import model.Post;
+import model.Service;
+import model.Setting;
+import model.Slider;
 import model.User;
 
 @MultipartConfig(

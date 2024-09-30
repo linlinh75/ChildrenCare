@@ -122,7 +122,7 @@
                     <c:forEach var="service" items="${serviceList}">
                         <div class="col-lg-4 col-md-6 col-12">
                             <div class="single-service">
-                                <i class="icofont icofont-tooth"></i>
+                                <i class="icofont icofont-prescription"></i>
                                 <h4><a href="service?action=details&id=${service.id}">${service.fullname}</a></h4>
                                 <img src="${service.thumbnailLink}" width="50%">
                                 <p>Price: ${service.originalPrice} $</p>

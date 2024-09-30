@@ -1,9 +1,14 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package controller;
 
+import dal.PostDAO;
+import dal.ServiceDAO;
+import dal.SettingDAO;
+import dal.SliderDAO;
 import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,6 +19,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.GoogleAccount;
+import model.Post;
+import model.Service;
+import model.Setting;
+import model.Slider;
 import model.User;
 
 /**
@@ -34,7 +43,7 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String code=request.getParameter("code");
+        String code = request.getParameter("code");
         String accessToken = GoogleLogin.getToken(code);
         GoogleAccount acc = GoogleLogin.getUserInfo(accessToken);
         System.out.println(acc);
