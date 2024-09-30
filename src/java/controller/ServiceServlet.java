@@ -28,37 +28,38 @@ public class ServiceServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ServiceDAO s = new ServiceDAO();
-            List<Service> list_service = s.getAllService();
-            PostDAO p = new PostDAO();
-            List<Post> list_post = p.getAllPosts();
-            List<Post> new_post = p.getNewest();
-            SettingDAO st = new SettingDAO();
-            List<Setting> s_category = st.getServiceCategory();
-            List<Setting> p_category = st.getPostCategory();
-            SliderDAO sliderDAO = new SliderDAO();
-            List<Slider> list_sliders = sliderDAO.getAllSliders();
-            request.setAttribute("list_sliders", list_sliders);
-            if (s_category == null || s_category.isEmpty()) {
-            } else {
-                request.setAttribute("list_sc", s_category);
-            }
-            if (p_category == null || p_category.isEmpty()) {
-            } else {
-                request.setAttribute("list_pc", p_category);
-            }
-            if (list_service == null || list_service.isEmpty()) {
-            } else {
-                request.setAttribute("services", list_service);
-            }
-            if (list_post == null || list_post.isEmpty()) {
-            } else {
-                request.setAttribute("posts", list_post);
-            }
-            request.setAttribute("new_posts", new_post);
+        List<Service> list_service = s.getAllService();
+        PostDAO p = new PostDAO();
+        List<Post> list_post = p.getAllPosts();
+        List<Post> new_post = p.getNewest();
+        SettingDAO st = new SettingDAO();
+        List<Setting> s_category = st.getServiceCategory();
+        List<Setting> p_category = st.getPostCategory();
+        SliderDAO sliderDAO = new SliderDAO();
+        List<Slider> list_sliders = sliderDAO.getAllSliders();
+        request.setAttribute("list_sliders", list_sliders);
+        if (s_category == null || s_category.isEmpty()) {
+        } else {
+            request.setAttribute("list_sc", s_category);
+        }
+        if (p_category == null || p_category.isEmpty()) {
+        } else {
+            request.setAttribute("list_pc", p_category);
+        }
+        if (list_service == null || list_service.isEmpty()) {
+        } else {
+            request.setAttribute("services", list_service);
+        }
+        if (list_post == null || list_post.isEmpty()) {
+        } else {
+            request.setAttribute("posts", list_post);
+        }
+        request.setAttribute("new_posts", new_post);
         String action = request.getParameter("action");
         if (action == null) {
             action = "list"; // Default action
         }
+        request.setAttribute("active", "service");
         switch (action) {
             case "details":
                 showServiceDetails(request, response);

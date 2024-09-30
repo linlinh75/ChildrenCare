@@ -76,9 +76,9 @@
                         <div class="main-menu">
                             <nav class="navigation">
                                 <ul class="nav menu">
-                                    <li class="active"><a href="HomeServlet">Home</i></a>
+                                    <li class="${active == 'home' ? 'active' : ''}"><a href="HomeServlet">Home</i></a>
                                     </li>
-                                    <li>
+                                    <li class="${active == 'service' ? 'active' : ''}">
                                         <a href="DataServlet?action=service">Services<i class="icofont-rounded-down"></i></a>
                                         <ul class="dropdown">
                                             <c:forEach var="service" items="${list_sc}">
@@ -87,13 +87,14 @@
                                         </ul>
                                     </li>
 
-                                    <li><a href="DataServlet?action=post">Blogs<i class="icofont-rounded-down"></i></a>
+                                    <li class="${active == 'post' ? 'active' : ''}">
+                                        <a href="DataServlet?action=post">Blogs<i class="icofont-rounded-down"></i></a>
                                         <ul class="dropdown">
                                             <c:forEach var="post" items="${list_pc}">
                                                 <li><a href="#">${post.getName()}</a></li>
-                                                </c:forEach>
+                                            </c:forEach>
                                         </ul>
-                                    </li>
+                                    </li>                                    
                                 </ul>
                             </nav>
                         </div>
