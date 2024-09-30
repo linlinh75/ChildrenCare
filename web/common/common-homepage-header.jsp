@@ -44,13 +44,13 @@
                         <div class="main-menu">
                             <nav class="navigation">
                                 <ul class="nav menu">
-                                    <li class="active"><a href="HomeServlet">Home</i></a>
+                                    <li class="${active == 'home' ? 'active' : ''}"><a href="HomeServlet">Home</i></a>
                                     </li>
-                                    <li>
+                                    <li class="${active == 'service' ? 'active' : ''}">
                                         <a href="${pageContext.request.contextPath}/service">Services<i class="icofont-rounded-down"></i></a>
                                     </li>
 
-                                    <li><a href="${pageContext.request.contextPath}/post">Blogs<i class="icofont-rounded-down"></i></a>
+                                    <li class="${active == 'post' ? 'active' : ''}"><a href="${pageContext.request.contextPath}/post">Blogs<i class="icofont-rounded-down"></i></a>
                                     </li>
                                 </ul>
                             </nav>
@@ -58,30 +58,32 @@
                         <!--/ End Main Menu -->
                     </div>
                     <div class="col-lg-3 col-12">
-                        <c:choose>
-                            <c:when test="${not empty sessionScope.account}">
-                                <div class="parent-div" style="display: flex; justify-content: end; align-items: center;">
-                                    <div class="dropdown" style="display: flex; align-items: center;">
-                                        <span style="margin-right: 10px;">${sessionScope.account.getFullName()}</span>
-                                        <div id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display: flex; align-items: center; justify-content: center; width: 60px; height: 60px;">
-                                            <img src="./${sessionScope.account.getImageLink()}" alt="Avatar" class="rounded-circle" style="width: 60px; height: 50px;">
-                                        </div>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                                            <a class="dropdown-item" href="/ChildrenCare/profile">Profile</a>
-                                            <a class="dropdown-item" href="#">Reservation</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="LogoutServlet">Logout</a>
+                        <div class="get-quote">
+                            <c:choose>
+                                <c:when test="${not empty sessionScope.account}">
+                                    <div class="parent-div" style="display: flex; justify-content: end; align-items: center;">
+                                        <div class="dropdown" style="display: flex; align-items: center;">
+                                            <span style="margin-right: 10px;">${sessionScope.account.getFullName()}</span>
+                                            <div id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display: flex; align-items: center; justify-content: center; width: 60px; height: 60px;">
+                                                <img src="./${sessionScope.account.getImageLink()}" alt="Avatar" class="rounded-circle" style="width: 60px; height: 50px;">
+                                            </div>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                                <a class="dropdown-item" href="/ChildrenCare/profile">Profile</a>
+                                                <a class="dropdown-item" href="#">Reservation</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="LogoutServlet">Logout</a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
 
-                            </c:when>
-                            <c:otherwise>
-                                <a href="register.jsp" class="btn" style="background-color: orange;">Register</a>
-                                <a href="login.jsp" class="btn">Login</a>
-                            </c:otherwise>
-                        </c:choose>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="register.jsp" class="btn" style="background-color: orange;">Register</a>
+                                    <a href="login.jsp" class="btn">Login</a>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
                     </div>
                 </div>
             </div>

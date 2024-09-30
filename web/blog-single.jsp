@@ -97,7 +97,7 @@
                                 <div class="single-main">
                                     <!-- News Head -->
                                     <div class="news-head">
-                                        <img src="https://mediplus-html.vercel.app/img/blog2.jpg" alt="#">
+                                        <img src="${pageContext.request.contextPath}/${post.thumbnailLink}" alt="#">
                                     </div>
                                     <!-- News Title -->
                                     <h1 class="news-title"><a href="news-single.html">${post.title}</a></h1>
@@ -107,17 +107,17 @@
                                             <span class="author"><a href="#"><img src="img/author1.jpg" alt="#">${authorName}</a></span>
                                             <span class="date"><i class="fa fa-clock-o"></i>${post.updatedDate}</span>
                                         </div>
-                                        <div class="meta-right">
+<!--                                        <div class="meta-right">
                                             <span class="comments"><a href="#"><i class="fa fa-comments"></i>05 Comments</a></span>
                                             <span class="views"><i class="fa fa-eye"></i>33K Views</span>
-                                        </div>
+                                        </div>-->
                                     </div>
                                     <!-- News Text -->
                                     <div class="news-text">
                                         <p>${post.content}</p>
                                     </div>
-                                    <div class="blog-bottom">
-                                        <!-- Social Share -->
+<!--                                    <div class="blog-bottom">
+                                         Social Share 
                                         <ul class="social-share">
                                             <li class="facebook"><a href="#"><i class="fa fa-facebook"></i><span>Facebook</span></a></li>
                                             <li class="twitter"><a href="#"><i class="fa fa-twitter"></i><span>Twitter</span></a></li>
@@ -125,13 +125,13 @@
                                             <li class="linkedin"><a href="#"><i class="fa fa-linkedin"></i></a></li>
                                             <li class="pinterest"><a href="#"><i class="fa fa-pinterest"></i></a></li>
                                         </ul>
-                                        <!-- Next Prev -->
+                                         Next Prev 
                                         <ul class="prev-next">
                                             <li class="prev"><a href="#"><i class="fa fa-angle-double-left"></i></a></li>
                                             <li class="next"><a href="#"><i class="fa fa-angle-double-right"></i></a></li>
                                         </ul>
-                                        <!--/ End Next Prev -->
-                                    </div>
+                                        / End Next Prev 
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -139,15 +139,15 @@
                     <div class="col-lg-4 col-12">
                         <div class="main-sidebar">
                             <!-- Single Widget -->
-                            <div class="single-widget search">
+<!--                            <div class="single-widget search">
                                 <div class="form">
                                     <input type="email" placeholder="Search Here...">
                                     <a class="button" href="#"><i class="fa fa-search"></i></a>
                                 </div>
-                            </div>
+                            </div>-->
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
-                            <div class="single-widget category">
+<!--                            <div class="single-widget category">
                                 <h3 class="title">Blog Categories</h3>
                                 <ul class="categor-list">
                                     <li><a href="#">Men's Apparel</a></li>
@@ -156,7 +156,7 @@
                                     <li><a href="#">Accessories</a></li>
                                     <li><a href="#">Sun Glasses</a></li>
                                 </ul>
-                            </div>
+                            </div>-->
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
                             <div class="single-widget recent-post">
@@ -165,7 +165,7 @@
                                     <!-- Single Post -->
                                     <div class="single-post">
                                         <div class="image">
-                                            <img src="https://mediplus-html.vercel.app/img/blog-sidebar1.jpg" alt="${recentPost.title}">
+                                            <img src="${pageContext.request.contextPath}/${recentPost.thumbnailLink}" alt="${recentPost.title}">
                                         </div>
                                         <div class="content">
                                             <h5><a href="post?action=detail&id=${recentPost.id}">${recentPost.title}</a></h5>
@@ -182,7 +182,7 @@
                             <!-- Single Widget -->
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
-                            <div class="single-widget side-tags">
+<!--                            <div class="single-widget side-tags">
                                 <h3 class="title">Tags</h3>
                                 <ul class="tag">
                                     <li><a href="#">business</a></li>
@@ -193,7 +193,7 @@
                                     <li><a href="#">template</a></li>
                                     <li><a href="#">Ecommerce</a></li>
                                 </ul>
-                            </div>
+                            </div>-->
                             <!--/ End Single Widget -->
                         </div>
                     </div>

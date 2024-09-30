@@ -26,7 +26,7 @@ public class ServiceServlet extends HttpServlet {
         if (action == null) {
             action = "list"; // Default action
         }
-
+        request.setAttribute("active", "service");
         switch (action) {
             case "details":
                 showServiceDetails(request, response);

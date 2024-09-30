@@ -127,7 +127,7 @@
                                     <!-- Single Blog -->
                                     <div class="single-news">
                                         <div class="news-head">
-                                            <img src="https://mediplus-html.vercel.app/img/blog2.jpg" alt="#">
+                                            <img src="${pageContext.request.contextPath}/${post.thumbnailLink}" alt="#">
                                         </div>
                                         <div class="news-body">
                                             <div class="news-content">
@@ -145,15 +145,15 @@
                     <div class="col-lg-4 col-12">
                         <div class="main-sidebar">
                             <!-- Single Widget -->
-                            <div class="single-widget search">
+<!--                            <div class="single-widget search">
                                 <div class="form">
                                     <input type="email" placeholder="Search Here...">
                                     <a class="button" href="#"><i class="fa fa-search"></i></a>
                                 </div>
-                            </div>
+                            </div>-->
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
-                            <div class="single-widget category">
+<!--                            <div class="single-widget category">
                                 <h3 class="title">Blog Categories</h3>
                                 <ul class="categor-list">
                                     <li><a href="#">Men's Apparel</a></li>
@@ -162,76 +162,33 @@
                                     <li><a href="#">Accessories</a></li>
                                     <li><a href="#">Sun Glasses</a></li>
                                 </ul>
-                            </div>
+                            </div>-->
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
                             <div class="single-widget recent-post">
                                 <h3 class="title">Recent post</h3>
                                 <!-- Single Post -->
-                                <div class="single-post">
-                                    <div class="image">
-                                        <img src="img/blog-sidebar1.jpg" alt="#">
+                                <c:forEach var="recentPost" items="${recentPosts}">
+                                    <!-- Single Post -->
+                                    <div class="single-post">
+                                        <div class="image">
+                                            <img src="${pageContext.request.contextPath}/${recentPost.thumbnailLink}" alt="${recentPost.title}">
+                                        </div>
+                                        <div class="content">
+                                            <h5><a href="post?action=detail&id=${recentPost.id}">${recentPost.title}</a></h5>
+                                            <ul class="comment">
+                                                <li><i class="fa fa-calendar" aria-hidden="true"></i>${recentPost.updatedDate}</li>
+                                                <li><i class="fa fa-user" aria-hidden="true"></i>${recentPost.authorId}</li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div class="content">
-                                        <h5><a href="#">We have annnocuced our new product.</a></h5>
-                                        <ul class="comment">
-                                            <li>
-                                                <i class="fa fa-calendar" aria-hidden="true"></i>Jan 11,
-                                                2020
-                                            </li>
-                                            <li>
-                                                <i class="fa fa-commenting-o" aria-hidden="true"></i>35
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- End Single Post -->
-                                <!-- Single Post -->
-                                <div class="single-post">
-                                    <div class="image">
-                                        <img src="img/blog-sidebar2.jpg" alt="#">
-                                    </div>
-                                    <div class="content">
-                                        <h5>
-                                            <a href="#">Top five way for solving teeth problems.</a>
-                                        </h5>
-                                        <ul class="comment">
-                                            <li>
-                                                <i class="fa fa-calendar" aria-hidden="true"></i>Mar 05,
-                                                2019
-                                            </li>
-                                            <li>
-                                                <i class="fa fa-commenting-o" aria-hidden="true"></i>59
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- End Single Post -->
-                                <!-- Single Post -->
-                                <div class="single-post">
-                                    <div class="image">
-                                        <img src="img/blog-sidebar3.jpg" alt="#">
-                                    </div>
-                                    <div class="content">
-                                        <h5>
-                                            <a href="#">We provide highly business soliutions.</a>
-                                        </h5>
-                                        <ul class="comment">
-                                            <li>
-                                                <i class="fa fa-calendar" aria-hidden="true"></i>June
-                                                09, 2019
-                                            </li>
-                                            <li>
-                                                <i class="fa fa-commenting-o" aria-hidden="true"></i>44
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                    <!-- End Single Post -->
+                                </c:forEach>
                                 <!-- End Single Post -->
                             </div>
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
-                            <div class="single-widget side-tags">
+<!--                            <div class="single-widget side-tags">
                                 <h3 class="title">Tags</h3>
                                 <ul class="tag">
                                     <li><a href="#">business</a></li>
@@ -242,7 +199,7 @@
                                     <li><a href="#">template</a></li>
                                     <li><a href="#">Ecommerce</a></li>
                                 </ul>
-                            </div>
+                            </div>-->
                             <!--/ End Single Widget -->
                         </div>
                     </div>

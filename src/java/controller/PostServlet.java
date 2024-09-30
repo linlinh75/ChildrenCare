@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller;
 
 import dal.PostDAO;
@@ -16,13 +15,14 @@ import java.util.List;
 import model.Post;
 
 public class PostServlet extends HttpServlet {
+
     private final PostDAO postDAO = new PostDAO();
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         String action = request.getParameter("action");
-        
+        request.setAttribute("active", "post");
         if ("detail".equals(action)) {
             int postId = Integer.parseInt(request.getParameter("id"));
             Post post = postDAO.getPostById(postId);
@@ -35,34 +35,34 @@ public class PostServlet extends HttpServlet {
         } else {
             // Existing code for listing all posts
             List<Post> listPost = postDAO.getAllPosts();
+            List<Post> recentPosts = postDAO.getNewest();
             request.setAttribute("listPost", listPost);
+            request.setAttribute("recentPosts", recentPosts);
             request.getRequestDispatcher("blog-grid.jsp").forward(request, response);
         }
-    } 
-
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
-   
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PostServlet</title>");  
+            out.println("<title>Servlet PostServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet PostServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet PostServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    } 
+    }
 
 }
