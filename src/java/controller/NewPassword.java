@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import util.EncodePassword;
 
 /**
  * Servlet implementation class NewPassword
@@ -53,6 +54,7 @@ public class NewPassword extends HttpServlet {
 		if (newPassword != null && confPassword != null && newPassword.equals(confPassword)) {
 
 			try {
+                                newPassword = EncodePassword.encodeToSHA1(newPassword);
 				UserDAO udao = new UserDAO();
                                 int rowCount=udao.changePassword((String)session.getAttribute("email"), newPassword);
 				if (rowCount > 0) {

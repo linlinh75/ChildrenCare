@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.*;
 import javax.mail.internet.*;
+import util.EncodePassword;
 
 /**
  *
@@ -127,7 +128,7 @@ public class RegisterServlet extends HttpServlet {
         }
         Random rand = new Random();
         String verificationCode = String.format("%06d", rand.nextInt(1000000));
-
+        password=EncodePassword.encodeToSHA1(password);
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setPassword(password);

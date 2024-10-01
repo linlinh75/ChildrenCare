@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
+import util.EncodePassword;
 
 /**
  *
@@ -36,6 +37,7 @@ public class ChangePasswordServlet extends HttpServlet {
         try {
             response.setContentType("text/html;charset=UTF-8");
             String oldPass = request.getParameter("Old password");
+            oldPass = EncodePassword.encodeToSHA1(oldPass);
             String newPass = request.getParameter("New password");
             String checkPass = request.getParameter("confPassword");
             HttpSession session = request.getSession(false);
@@ -43,6 +45,7 @@ public class ChangePasswordServlet extends HttpServlet {
             UserDAO udao = new UserDAO();
                 if(oldPass!=null&&newPass!=null&& checkPass!=null&&oldPass.equals(udao.getUserByEmail(email).getPassword())){
                     if(newPass.equals(checkPass)){
+                        newPass = EncodePassword.encodeToSHA1(newPass);
                         udao.changePassword(email, newPass);
                         String successChange = "Password Changed!";
                      session.setAttribute("account", udao.getUserByEmail(email));
