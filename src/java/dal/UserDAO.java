@@ -101,61 +101,62 @@ public class UserDAO extends DBContext {
         return null;
     }
 
-    public void updateToken(String email, String token){
+    public void updateToken(String email, String token) {
         String s = "Update password_reset_tokens set token";
     }
-    public String addToken(String email){
+
+    public String addToken(String email) {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 20;
         Random random = new Random();
         StringBuilder buffer = new StringBuilder(targetStringLength);
         for (int i = 0; i < targetStringLength; i++) {
-            int randomLimitedInt = leftLimit + (int)
-                    (random.nextFloat() * (rightLimit - leftLimit + 1));
+            int randomLimitedInt = leftLimit + (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
             buffer.append((char) randomLimitedInt);
         }
         String token = buffer.toString();
         LocalDateTime now = LocalDateTime.now();
-    LocalDateTime expiresAt = now.plusHours(1); // Token valid for 1 hour
-    
+        LocalDateTime expiresAt = now.plusHours(1); // Token valid for 1 hour
+
         try {
-            stm = connection.prepareStatement("INSERT INTO password_reset_tokens (token, email, created_at, expires_at, user_id) VALUES (?, ?, ?, ?,?)") ;
+            stm = connection.prepareStatement("INSERT INTO password_reset_tokens (token, email, created_at, expires_at, user_id) VALUES (?, ?, ?, ?,?)");
             stm.setString(1, token);
             stm.setString(2, email);
             stm.setTimestamp(3, Timestamp.valueOf(now));
             stm.setTimestamp(4, Timestamp.valueOf(expiresAt));
             stm.setInt(5, getUserByEmail(email).getId());
             stm.executeUpdate();
-        }
-         catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return token;
     }
+
     public boolean isTokenValid(String token) {
-    try {
-         stm = connection.prepareStatement("SELECT expires_at FROM password_reset_tokens WHERE token = ?") ;
-        stm.setString(1, token);
-        ResultSet rs = stm.executeQuery();
-        if (rs.next()) {
-            Timestamp expiresAt = rs.getTimestamp("expires_at");
-            return expiresAt.after(Timestamp.valueOf(LocalDateTime.now()));
+        try {
+            stm = connection.prepareStatement("SELECT expires_at FROM password_reset_tokens WHERE token = ?");
+            stm.setString(1, token);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                Timestamp expiresAt = rs.getTimestamp("expires_at");
+                return expiresAt.after(Timestamp.valueOf(LocalDateTime.now()));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        return false;
     }
-    return false; 
-}
-public void cleanupExpiredTokens() {
-    try {
-        stm = connection.prepareStatement("DELETE FROM password_reset_tokens WHERE expires_at < ?");
-        stm.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
-        stm.executeUpdate();
-    } catch (SQLException ex) {
-        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+    public void cleanupExpiredTokens() {
+        try {
+            stm = connection.prepareStatement("DELETE FROM password_reset_tokens WHERE expires_at < ?");
+            stm.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-}
 
     public int changePassword(String email, String password) {
         String s = "update user set password = ? where email=?";
@@ -203,6 +204,36 @@ public void cleanupExpiredTokens() {
             stmt.setInt(9, user.getStatus());
 
             return stmt.executeUpdate();
+        }
+    }
+
+    public String getRoleString(int role) {
+        String sql = "SELECT name FROM setting\n"
+                + "where id = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setObject(1, role);
+            ResultSet resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean updateProfileImage(int userId, String imagePath) {
+        String sql = "UPDATE user SET image_link = ? WHERE id = ?";
+        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, imagePath);
+            stmt.setInt(2, userId);
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
