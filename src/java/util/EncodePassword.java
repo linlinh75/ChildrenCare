@@ -19,7 +19,7 @@ public class EncodePassword {
         try{
             byte[] dataBytes = str.getBytes("UTF-8");
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            rs = Base64.getEncoder().encodeToString(dataBytes);
+            rs = Base64.getEncoder().encodeToString(md.digest(dataBytes));
         }catch(Exception e){
             e.printStackTrace();
         }

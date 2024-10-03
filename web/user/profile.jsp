@@ -47,7 +47,7 @@
                                         </div>-->
 
                     <ul class="sidebar-menu pt-3" >
-                        <li><a href="index.html"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
+                        <li><a href="admin-dashboard.jsp"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
                         <li><a href="changePw.jsp"><i class="uil uil-user me-2 d-inline-block"></i>Change password</a></li>
                             <c:if test="${user.roleId == '1'}">
                             <li class="sidebar-dropdown">
@@ -189,11 +189,6 @@
                             <div class="container-fluid bg-success text-center">
                                 ${successChange}
                             </div></c:if>
-                        <c:if test="${erChange!=null}">
-                            <div class="container-fluid bg-danger text-center">
-                                ${erChange}
-                            </div>
-                        </c:if>
                         <div class="d-md-flex justify-content-between">
                             <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#">
                                 <i class="uil uil-bars"></i>
@@ -202,7 +197,7 @@
 
                             <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
                                 <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
-                                    <li class="breadcrumb-item"><a href="HomeServlet">Doctris</a></li>
+                                    <li class="breadcrumb-item"><a href="HomeServlet">Children Care</a></li>
                                     <li class="breadcrumb-item"><a href="#">Patients</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Profile</li>
                                 </ul>
