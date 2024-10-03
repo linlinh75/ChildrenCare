@@ -52,7 +52,7 @@
                   </div>
                     <div class="pt-1 mb-4 col-md-6">
                         <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="button" name="undo" value="undo">
-                            <a href="user/profile.jsp">Un-do Change Password</a>
+                            <a href="http://localhost:8080/ChildrenCare/user/profile.jsp">Un-do Change Password</a>
                         </button>
                   </div>
                     </div>
