@@ -15,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Post;
 import model.Service;
@@ -74,21 +75,33 @@ public class DataServlet extends HttpServlet {
             } else {
                 switch (action) {
                     case "register": {
-                        request.getRequestDispatcher("register.jsp").forward(request, response);
+                        HttpSession ses = request.getSession(false);
+                        if (ses.getAttribute("account") != null) {
+                            response.sendRedirect("/ChildrenCare/HomeServlet");
+                        } else {
+                            request.getRequestDispatcher("register.jsp").forward(request, response);
+                        }
                         break;
                     }
                     case "login": {
-                        request.getRequestDispatcher("login.jsp").forward(request, response);
+                        HttpSession ses = request.getSession(false);
+                        if (ses.getAttribute("account") != null) {
+                            response.sendRedirect("/ChildrenCare/HomeServlet");
+                        } else {
+                            request.getRequestDispatcher("login.jsp").forward(request, response);
+                        }
                         break;
                     }
-                    case "service":
-                    {
+                    case "service": {
                         request.getRequestDispatcher("./service").forward(request, response);
                         break;
                     }
-                    case "post":
-                    {
+                    case "post": {
                         request.getRequestDispatcher("./post").forward(request, response);
+                        break;
+                    }
+                    case "verify": {
+                        request.getRequestDispatcher("verify.jsp").forward(request, response);
                         break;
                     }
                     default:

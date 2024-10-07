@@ -42,6 +42,9 @@ public class HomeServlet extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             ServiceDAO s = new ServiceDAO();
             List<Service> list_service = s.getAllService();
+            if (list_service.size()>3){
+                list_service=list_service.subList(0, 3);
+            }
             PostDAO p = new PostDAO();
             List<Post> list_post = p.getAllPosts();
             List<Post> new_post = p.getNewest();

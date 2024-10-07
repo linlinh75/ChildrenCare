@@ -100,7 +100,30 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
+    public User getUserByPhoneNumber(String phone) throws SQLException {
+        String sql = "SELECT * FROM user WHERE mobile = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, phone);
 
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                            rs.getInt("id"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            rs.getString("full_name"),
+                            rs.getBoolean("gender"),
+                            rs.getString("mobile"),
+                            rs.getString("address"),
+                            rs.getString("image_link"),
+                            rs.getInt("role_id"),
+                            rs.getInt("status")
+                    );
+                }
+            }
+        }
+        return null;
+    }
     public void updateToken(String email, String token) {
         String s = "Update password_reset_tokens set token";
     }

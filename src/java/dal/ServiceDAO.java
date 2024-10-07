@@ -13,7 +13,7 @@ public class ServiceDAO extends DBContext {
 
     public List<Service> getAllService() {
         List<Service> ulist = new ArrayList<>();
-        String s = "SELECT * FROM service";
+        String s = "SELECT * FROM service where status = 1";
         
         try {
             if (connection != null) { 

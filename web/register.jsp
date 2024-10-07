@@ -1,10 +1,3 @@
-
-<%-- 
-    Document   : register
-    Created on : Sep 19, 2024, 8:37:52 AM
-    Author     : Admin
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -24,6 +17,16 @@
                 background-color: #2C2D3F;
                 color: floralwhite;
             }
+            .error{
+                color: gray;
+                font-size: 10px;
+                display: none;
+                position: absolute;
+            }
+            .form-outline {
+                position: relative;
+                margin-bottom: 15px;
+            }
         </style>
     </head>
     <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
@@ -39,7 +42,7 @@
                                     </div>
                                     <div class="col-md-6 col-lg-7 d-flex align-items-center">
                                         <div class="card-body p-4 p-lg-5 text-black">
-                                            <form action="RegisterServlet" method="post">
+                                            <form id="registerForm" action="RegisterServlet" method="post">
                                                 <div class="text-center mb-3 pb-1">
                                                     <span class="h1 fw-bold">Register now</span>
                                                 </div>
@@ -51,12 +54,14 @@
                                                         <div class="form-outline">
                                                             <label class="form-label" for="fullname">Full Name</label>
                                                             <input type="text" id="fullname" name="fullname" class="form-control form-control-lg" required />
+                                                            <span id="nameError" class="error">Please enter a name without special characters or accents.</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-outline">
                                                             <label class="form-label" for="address">Address</label>
                                                             <input type="text" id="address" name="address" class="form-control form-control-lg" required />
+                                                            <span id="addressError" class="error" >Please enter an address without special characters or accents.</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -77,6 +82,7 @@
                                                         <div class="form-outline">
                                                             <label class="form-label" for="phone">Phone Number</label>
                                                             <input type="tel" id="phone" name="phone" class="form-control form-control-lg" required />
+                                                            <span id="phoneError" style="color:red; display: none; font-size: 10px; position: absolute">Phone must have between 10-11 numbers and start with '0'.</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -84,20 +90,22 @@
                                                 <div class="row mb-4">
                                                     <div class="col-md-6">
                                                         <div class="form-outline">
-                                                            <label class="form-label" for="form2Example17">Email</label>
-                                                            <input type="email" id="form2Example17" name="email" class="form-control form-control-lg" required />
+                                                            <label class="form-label" for="formGmail">Email</label>
+                                                            <input type="email" id="formGmail" name="email" class="form-control form-control-lg" required />
+                                                            <span id="emailError" style="color: red; display: none; font-size: 10px; position: absolute">Please enter a gmail with domain @gmail.com .</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-outline">
-                                                            <label class="form-label" for="form2Example27">Password</label>
-                                                            <input type="password" id="form2Example27" name="password" class="form-control form-control-lg" required />
+                                                            <label class="form-label" for="formPassword">Password</label>
+                                                            <input type="password" id="formPassword" name="password" class="form-control form-control-lg" required />
+                                                            <span id="passwordError" style="color: red; display: none; font-size: 10px; position: absolute">Password must be between 8-24 characters, include at least one uppercase letter and one number.</span>
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="pt-1 mb-4" style="display: flex; justify-content: center; align-items: center; height: 100%;">
-                                                    <button class="btn btn-custom btn-lg" type="submit" name="submit" value="submit">Register</button>
+                                                    <button class="btn btn-custom btn-lg" type="submit" id="submitButton" name="submit" value="submit">Register</button>
                                                 </div>
 
                                                 <a href="#!" class="small text-muted">Terms of use.</a>
@@ -109,12 +117,102 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            <% if (request.getAttribute("error") != null) { %>
-            <script>alert("<%= request.getAttribute("error") %>");</script>
-            <% } %>
+                <% if (request.getAttribute("error") != null) { %>
+                <script>alert("<%= request.getAttribute("error") %>");</script>
+                <% } %>
         </section>
     </body>
     <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+    <script>
+        function hasDiacritics(str) {
+            return /[àáâãèéêìíòóôõùúýỳđăắằặẵ]/i.test(str);
+        }
+        let isFormValid = true;
+        //Fullname check
+        document.getElementById('fullname').addEventListener('input', function () {
+            const fullnameInput = this;
+            const fullnameError = document.getElementById('nameError');
 
+            if (hasDiacritics(fullnameInput.value)) {
+                fullnameError.style.display = 'block';
+                fullnameInput.style.borderColor = 'red';
+                isFormValid = false;
+            } else {
+                fullnameError.style.display = 'none';
+                fullnameInput.style.borderColor = 'green';
+                isFormValid = true;
+            }
+            submitButton.disabled = !isFormValid;
+        });
+        //Address check
+        document.getElementById('address').addEventListener('input', function () {
+            const addressInput = this;
+            const addressError = document.getElementById('addressError');
+
+            if (hasDiacritics(addressInput.value)) {
+                addressError.style.display = 'block';
+                addressInput.style.borderColor = 'red';
+                isFormValid = false;
+            } else {
+                addressError.style.display = 'none';
+                addressInput.style.borderColor = 'green';
+                isFormValid = true;
+            }
+            submitButton.disabled = !isFormValid;
+        });
+        //Email check
+        document.getElementById('formGmail').addEventListener('input', function () {
+            const emailInput = this;
+            const emailError = document.getElementById('emailError');
+
+            if (!emailInput.value.endsWith('@gmail.com')) {
+                emailError.style.display = 'block';
+                emailInput.style.borderColor = 'red';
+                isFormValid = false;
+            } else {
+                emailError.style.display = 'none';
+                emailInput.style.borderColor = 'green';
+                isFormValid = true;
+            }
+            submitButton.disabled = !isFormValid;
+        });
+        //Password check
+        document.getElementById('formPassword').addEventListener('input', function () {
+            const passwordInput = this;
+            const passwordError = document.getElementById('passwordError');
+            const password = passwordInput.value;
+            const isValidLength = password.length >= 8 && password.length <= 24;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasNumber = /\d/.test(password);
+
+            if (!isValidLength || !hasUpperCase || !hasNumber) {
+                passwordError.style.display = 'block';
+                passwordInput.style.borderColor = 'red';
+                isFormValid = false;
+            } else {
+                passwordError.style.display = 'none';
+                passwordInput.style.borderColor = 'green';
+                isFormValid = true;
+            }
+            submitButton.disabled = !isFormValid;
+        });
+        //Phone number check
+        document.getElementById("phone").addEventListener('input', function () {
+            const phoneInput = this;
+            const phoneError = document.getElementById('phoneError');
+            const phone = phoneInput.value;
+            const isValidLength = phone.length >= 10 && phone.length <= 11;
+            const isNumeric = /^\d+$/.test(phone);
+            if (!phoneInput.value.startsWith('0') || !isValidLength || !isNumeric) {
+                phoneError.style.display = 'block';
+                phoneInput.style.borderColor = 'red';
+                isFormValid = false;
+            } else {
+                phoneError.style.display = 'none';
+                phoneInput.style.borderColor = 'green';
+                isFormValid = true;
+            }
+            submitButton.disabled = !isFormValid;
+        });
+    </script>
 </html>

@@ -97,4 +97,14 @@
 </section>
     </body>
     <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+    <% 
+                    String activationMessage = (String) session.getAttribute("activationMessage");
+                    if (activationMessage != null) { 
+                    %>
+                    <script>
+                        alert("<%= activationMessage %>");
+                    </script>
+                    <% 
+                    } 
+                    %>
 </html>

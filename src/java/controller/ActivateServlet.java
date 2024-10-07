@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
@@ -43,18 +42,28 @@ public class ActivateServlet extends HttpServlet {
             String code = request.getParameter("code");
             HttpSession session = request.getSession();
             String expectedCode = (String) session.getAttribute("verificationCode");
-            User newUser = (User) session.getAttribute("user");
-            if (code != null && code.equals(expectedCode)) {
-                UserDAO userdao = new UserDAO();
-                userdao.addUser(newUser);
-                out.println("<h1>Account activated successfully!</h1>");
-                out.println("<a href='login.jsp'>Go to Login</a>");
-
+            if (code.equals(expectedCode)) {
+                User newUser = (User) session.getAttribute("user");
+                out.print("newUser: " + newUser);
+                if (newUser != null) {
+                    UserDAO userdao = new UserDAO();
+                    try {
+                        userdao.addUser(newUser);
+                        session.setAttribute("activationMessage", "Account activated successfully! Please log in.");
+                        response.sendRedirect("DataServlet?action=login");
+                    } catch (Exception e) {
+                        response.sendRedirect("404.html");
+                        e.printStackTrace(out);
+                    }
+                } else {
+                    response.sendRedirect("404.html");
+                }
                 session.removeAttribute("verificationCode");
                 session.removeAttribute("user");
             } else {
-                out.println("<h1>Invalid verification code!</h1>");
+                 response.sendRedirect("404.html");
             }
+
         }
     }
 
