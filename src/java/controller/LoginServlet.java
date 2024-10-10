@@ -74,12 +74,14 @@ public class LoginServlet extends HttpServlet {
                         newUser.setStatus(17);
                         userdao.addUser(newUser);
                         session.setAttribute("account", newUser);
+                        session.setAttribute("email", ggAcc.getEmail());
                         response.sendRedirect("/ChildrenCare/HomeServlet");
                     }
 
                 }
 
             } else {
+                session.setAttribute("email", ggAcc.getEmail());
                 session.setAttribute("account", userdao.getUserByEmail(ggAcc.getEmail()));
                 response.sendRedirect("/ChildrenCare/HomeServlet");
             }

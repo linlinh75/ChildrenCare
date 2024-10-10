@@ -30,7 +30,7 @@
                   </div>
                     
                         <c:if test="${erChange!=null}">
-                            <div class="container-fluid bg-danger text-center mb-3">
+                            <div class="alert alert-danger mb-3" role="alert">
                                 ${erChange}
                             </div>
                         </c:if>

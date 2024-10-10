@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class VerifyPassword {
     public static boolean verify(String password){
         // Password must be between 8-24 characters, include at least one uppercase letter and one number.
-         Pattern pattern = Pattern.compile("[0-9A-Z]");
+         Pattern pattern = Pattern.compile("^(?=.*[A-Z])(?=.*\\d).+$");
         Matcher matcher = pattern.matcher(password);
         if(password.length()>=8&&password.length()<=24&&matcher.find()){
             return true;
@@ -22,6 +22,6 @@ public class VerifyPassword {
             return false;
         }  
     } public static void main(String[] args) {
-            System.out.println(verify("Nanh2311ddd"));
+            System.out.println(verify("Nanh2311"));
     }
 }

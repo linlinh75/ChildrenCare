@@ -13,6 +13,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.EncodePassword;
 import util.VerifyPassword;
 
@@ -47,39 +50,48 @@ public class NewPassword extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		String newPassword = request.getParameter("password");
+                newPassword = EncodePassword.encodeToSHA1(newPassword);
 		String confPassword = request.getParameter("confPassword");
+                confPassword = EncodePassword.encodeToSHA1(confPassword);
 		RequestDispatcher dispatcher = null;
+                UserDAO udao = new UserDAO();
                 VerifyPassword ver = new VerifyPassword();
-		if (newPassword != null && confPassword != null && newPassword.equals(confPassword)) {
+        try {
+            if(!newPassword.equals(udao.getUserByEmail((String)session.getAttribute("email")).getPassword())){
+                if (newPassword != null && confPassword != null && newPassword.equals(confPassword)) {
                     if(ver.verify(newPassword)){
                         try {
-                                newPassword = EncodePassword.encodeToSHA1(newPassword);
-				UserDAO udao = new UserDAO();
-                                int rowCount=udao.changePassword((String)session.getAttribute("email"), newPassword);
-				if (rowCount > 0) {
-					request.setAttribute("statusSuccess", "Reset Success");
-					dispatcher = request.getRequestDispatcher("login.jsp");
-				} else {
-					request.setAttribute("statusFailed", "Reset Failed");
-					dispatcher = request.getRequestDispatcher("login.jsp");
-				}
-				dispatcher.forward(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+                            int rowCount=udao.changePassword((String)session.getAttribute("email"), newPassword);
+                            if (rowCount > 0) {
+                                request.setAttribute("statusSuccess", "Reset Success");
+                                dispatcher = request.getRequestDispatcher("login.jsp");
+                            } else {
+                                request.setAttribute("statusFailed", "Reset Failed");
+                                dispatcher = request.getRequestDispatcher("login.jsp");
+                            }
+                            dispatcher.forward(request, response);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }else{
                         String erChange = "Password must be between 8-24 characters, include at least one uppercase letter and one number";
-                request.setAttribute("erChange", erChange);
-                request.getRequestDispatcher("newPw.jsp").forward(request, response); 
+                        request.setAttribute("erChange", erChange);
+                        request.getRequestDispatcher("newPw.jsp").forward(request, response); 
                     }
-			
-		}else{
+                    
+                }else{
                     request.setAttribute("token", request.getParameter("token"));
                     String erChange = "Wrong Confirm Password";
-                request.setAttribute("erChange", erChange);
-                request.getRequestDispatcher("newPw.jsp").forward(request, response);
+                    request.setAttribute("erChange", erChange);
+                    request.getRequestDispatcher("newPw.jsp").forward(request, response);
                 }
+        }else{
+                String erChange = "New Password has to different from Old Password";
+                        request.setAttribute("erChange", erChange);
+                        request.getRequestDispatcher("newPw.jsp").forward(request, response); 
+        }} catch (SQLException ex) {
+            Logger.getLogger(NewPassword.class.getName()).log(Level.SEVERE, null, ex);
+        }}
                 
-	}
 
 }

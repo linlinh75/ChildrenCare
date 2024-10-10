@@ -26,7 +26,7 @@
                     <span class="h1 fw-bold mb-0">Enter New Password</span>
                   </div>           
                     <c:if test="${erChange!=null}">
-                            <div class="container-fluid bg-danger text-center">
+                            <div class="alert alert-danger mb-3" role="alert">
                                 ${erChange}
                             </div>
                         </c:if>
