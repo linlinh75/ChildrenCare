@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package controller;
+package util;
 
 /**
  *
  * @author Admin
  */
-class Iconstant {
+public class Iconstant {
     public static final String GOOGLE_CLIENT_ID = "482309192444-jsk60e8k958nfcgcljhjtjhd6c77huul.apps.googleusercontent.com";
 
     public static final String GOOGLE_CLIENT_SECRET = "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";

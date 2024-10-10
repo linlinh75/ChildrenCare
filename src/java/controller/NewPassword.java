@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import util.EncodePassword;
+import util.VerifyPassword;
 
 /**
  * Servlet implementation class NewPassword
@@ -48,8 +49,10 @@ public class NewPassword extends HttpServlet {
 		String newPassword = request.getParameter("password");
 		String confPassword = request.getParameter("confPassword");
 		RequestDispatcher dispatcher = null;
+                VerifyPassword ver = new VerifyPassword();
 		if (newPassword != null && confPassword != null && newPassword.equals(confPassword)) {
-			try {
+                    if(ver.verify(newPassword)){
+                        try {
                                 newPassword = EncodePassword.encodeToSHA1(newPassword);
 				UserDAO udao = new UserDAO();
                                 int rowCount=udao.changePassword((String)session.getAttribute("email"), newPassword);
@@ -64,6 +67,12 @@ public class NewPassword extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+                    }else{
+                        String erChange = "Password must be between 8-24 characters, include at least one uppercase letter and one number";
+                request.setAttribute("erChange", erChange);
+                request.getRequestDispatcher("newPw.jsp").forward(request, response); 
+                    }
+			
 		}else{
                     request.setAttribute("token", request.getParameter("token"));
                     String erChange = "Wrong Confirm Password";
