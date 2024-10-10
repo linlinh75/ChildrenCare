@@ -166,7 +166,7 @@ public class PostDAO extends DBContext {
 
     public List<Post> getNewest() {
         List<Post> posts = new ArrayList<>();
-        String query = "SELECT * FROM post ORDER BY updated_date DESC LIMIT 3";
+        String query = "SELECT * FROM post where status_id=25 ORDER BY updated_date DESC LIMIT 3";
 
         try {
             PreparedStatement stm = connection.prepareStatement(query);

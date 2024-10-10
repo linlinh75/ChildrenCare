@@ -2,3 +2,6 @@
 *.class
 
 # NetBeans specific
+/build/
+/nbproject/private/
+/dist/

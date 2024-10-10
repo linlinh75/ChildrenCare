@@ -4,26 +4,18 @@
  */
 package controller;
 
-import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import model.User;
 
 /**
  *
- * @author admin
+ * @author Admin
  */
-@WebServlet(name = "ActivateServlet", urlPatterns = {"/activate"})
-public class ActivateServlet extends HttpServlet {
+public class dashboard extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,35 +27,19 @@ public class ActivateServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String code = request.getParameter("code");
-            HttpSession session = request.getSession();
-            String expectedCode = (String) session.getAttribute("verificationCode");
-            if (code.equals(expectedCode)) {
-                User newUser = (User) session.getAttribute("user");
-                out.print("newUser: " + newUser);
-                if (newUser != null) {
-                    UserDAO userdao = new UserDAO();
-                    try {
-                        userdao.addUser(newUser);
-                        session.setAttribute("activationMessage", "Account activated successfully! Please log in.");
-                        response.sendRedirect("DataServlet?action=login");
-                    } catch (Exception e) {
-                        response.sendRedirect("404.html");
-                        e.printStackTrace(out);
-                    }
-                } else {
-                    response.sendRedirect("404.html");
-                }
-                session.removeAttribute("verificationCode");
-                session.removeAttribute("user");
-            } else {
-                 response.sendRedirect("404.html");
-            }
-
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet dashboard</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet dashboard at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
     }
 
@@ -79,11 +55,7 @@ public class ActivateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(ActivateServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -97,11 +69,7 @@ public class ActivateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(ActivateServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**

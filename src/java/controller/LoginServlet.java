@@ -17,13 +17,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.GoogleAccount;
-import model.Post;
-import model.Service;
-import model.Setting;
-import model.Slider;
 import model.User;
+import util.EncodePassword;
 
 /**
  *
@@ -43,10 +43,50 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String code = request.getParameter("code");
-        String accessToken = GoogleLogin.getToken(code);
-        GoogleAccount acc = GoogleLogin.getUserInfo(accessToken);
-        System.out.println(acc);
+        try {
+            UserDAO userdao = new UserDAO();
+            HttpSession session = request.getSession(false);
+            String code = request.getParameter("code");
+            if (code != null) {
+                String accessToken = GoogleLogin.getToken(code);
+                GoogleAccount acc = GoogleLogin.getUserInfo(accessToken);
+                session.setAttribute("ggAcc", acc);
+            }
+            GoogleAccount ggAcc = (GoogleAccount) session.getAttribute("ggAcc");
+            if (userdao.getUserByEmail(ggAcc.getEmail()) == null) {
+                if (request.getParameter("ggpass") == null) {
+                    request.getRequestDispatcher("ggPw.jsp").forward(request, response);
+                } else {
+                    String password = request.getParameter("ggpass");
+                    String confPassword = request.getParameter("confPassword");
+                    if (!password.equals(confPassword)) {
+                        String erChange = "Wrong Confirm Password";
+                        request.setAttribute("erChange", erChange);
+                        request.getRequestDispatcher("ggPw.jsp").forward(request, response);
+                    } else {
+                        password = EncodePassword.encodeToSHA1(password);
+                        User newUser = new User();
+                        newUser.setEmail(ggAcc.getEmail());
+                        newUser.setPassword(password);
+                        newUser.setFullName(ggAcc.getName());
+                        newUser.setImageLink(ggAcc.getPicture());
+                        newUser.setRoleId(4);
+                        newUser.setStatus(17);
+                        userdao.addUser(newUser);
+                        session.setAttribute("account", newUser);
+                        response.sendRedirect("/ChildrenCare/HomeServlet");
+                    }
+
+                }
+
+            } else {
+                session.setAttribute("account", userdao.getUserByEmail(ggAcc.getEmail()));
+                response.sendRedirect("/ChildrenCare/HomeServlet");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -81,7 +121,8 @@ public class LoginServlet extends HttpServlet {
         if (request.getParameter("submit") != null) {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
-            System.out.println(email);
+
+            password = EncodePassword.encodeToSHA1(password);
             System.out.println(password);
             User loggedInUser = null;
             for (User u : ulist) {

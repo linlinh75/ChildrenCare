@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import util.EncodePassword;
 
 /**
  * Servlet implementation class NewPassword
@@ -24,15 +25,12 @@ public class NewPassword extends HttpServlet {
         HttpSession session = request.getSession();
         UserDAO udao = new UserDAO();
         String token=request.getParameter("token");
-        System.out.println(token);
         if(!udao.isTokenValid(token)){
-            System.out.println("false");
             udao.cleanupExpiredTokens();
         }else{
             String tokenInURL = request.getParameter("token");
             if(tokenInURL.equals(token)){
                 udao.cleanupExpiredTokens();
-                System.out.println("gan dung");
                 request.getRequestDispatcher("newPw.jsp").forward(request, response);
             }
         }
@@ -51,8 +49,8 @@ public class NewPassword extends HttpServlet {
 		String confPassword = request.getParameter("confPassword");
 		RequestDispatcher dispatcher = null;
 		if (newPassword != null && confPassword != null && newPassword.equals(confPassword)) {
-
 			try {
+                                newPassword = EncodePassword.encodeToSHA1(newPassword);
 				UserDAO udao = new UserDAO();
                                 int rowCount=udao.changePassword((String)session.getAttribute("email"), newPassword);
 				if (rowCount > 0) {
@@ -68,7 +66,9 @@ public class NewPassword extends HttpServlet {
 			}
 		}else{
                     request.setAttribute("token", request.getParameter("token"));
-                    request.getRequestDispatcher("login.jsp").forward(request, response);
+                    String erChange = "Wrong Confirm Password";
+                request.setAttribute("erChange", erChange);
+                request.getRequestDispatcher("newPw.jsp").forward(request, response);
                 }
                 
 	}
