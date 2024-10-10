@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
 import util.EncodePassword;
+import util.VerifyPassword;
 
 /**
  *
@@ -43,8 +44,10 @@ public class ChangePasswordServlet extends HttpServlet {
             HttpSession session = request.getSession(false);
             String email = (String)session.getAttribute("email");
             UserDAO udao = new UserDAO();
+            VerifyPassword ver = new VerifyPassword();
                 if(oldPass!=null&&newPass!=null&& checkPass!=null&&oldPass.equals(udao.getUserByEmail(email).getPassword())){
                     if(newPass.equals(checkPass)){
+                        if(ver.verify(newPass)){
                         newPass = EncodePassword.encodeToSHA1(newPass);
                         udao.changePassword(email, newPass);
                         String successChange = "Password Changed!";
@@ -52,7 +55,18 @@ public class ChangePasswordServlet extends HttpServlet {
                 request.setAttribute("user", udao.getUserByEmail(email));
                      request.setAttribute("successChange", successChange);
                      request.getRequestDispatcher("user/profile.jsp").forward(request, response);
-                    }else{
+                        }else{
+                            String erChange = "Password must be between 8-24 characters, include at least one uppercase letter and one number";
+                request.setAttribute("erChange", erChange);
+                request.getRequestDispatcher("changePw.jsp").forward(request, response);
+                        }
+                    }
+                    else if(newPass.equals(oldPass)){
+                        String erChange = "New Password has to different from Old Password ";
+                request.setAttribute("erChange", erChange);
+                request.getRequestDispatcher("changePw.jsp").forward(request, response);
+                    }
+                    else{
                 String erChange = "Wrong Confirm Password";
                 request.setAttribute("erChange", erChange);
                 request.getRequestDispatcher("changePw.jsp").forward(request, response);

@@ -37,9 +37,7 @@ CREATE TABLE `feedback` (
   `status_id` int DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `service_id` (`service_id`) USING BTREE,
-  KEY `feedback_status_setting_idx` (`status_id`) USING BTREE,
-  CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `feedback_status_setting` FOREIGN KEY (`status_id`) REFERENCES `setting` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -104,9 +102,7 @@ CREATE TABLE `post` (
   `title` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `author_id` (`author_id`) USING BTREE,
-  KEY `post_status_setting_fk_idx` (`status_id`) USING BTREE,
-  CONSTRAINT `post_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `post_status_setting_fk` FOREIGN KEY (`status_id`) REFERENCES `setting` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `post_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -120,36 +116,7 @@ INSERT INTO `post` VALUES (32,'<blockquote>\r\n<p>This is a quote from a famous 
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `receiver`
---
 
-DROP TABLE IF EXISTS `receiver`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `receiver` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `full_name` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `gender` tinyint(1) DEFAULT NULL,
-  `mobile` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `email` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `FK_userid_idx` (`user_id`) USING BTREE,
-  CONSTRAINT `FK_userid` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `receiver`
---
-
-LOCK TABLES `receiver` WRITE;
- /*!40000 ALTER TABLE `receiver` DISABLE KEYS */;
--- INSERT INTO `receiver` VALUES (16,1,'Giang',1,'0977659677','Vietnam','giangtthe153299@fpt.edu.vn'),(17,-1,'trang',1,'0977659677','Viet nam','tranglvqhe153785@fpt.edu.vn'),(18,-1,'Ha',1,'0977659677','Viet Nam','hattnhe153299@fpt.edu.vn'),(19,-1,'Bo Yates',0,'0977659677','Viet Nam','Fusce@loremipsum.ca'),(20,-1,'Ngoc anh',1,'0977659677','Viet Nam','anhntnhe151378@fpt.edu.vn'),(21,2,'Ha',0,NULL,'Viet Nam','hattnhe153222@fpt.edu.vn');
- /*!40000 ALTER TABLE `receiver` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `reservation`
@@ -170,7 +137,7 @@ CREATE TABLE `reservation` (
   KEY `customer_id` (`customer_id`) USING BTREE,
   KEY `staff_id` (`staff_id`) USING BTREE,
   KEY `fk_receiver` (`receiver_id`) USING BTREE,
-  CONSTRAINT `fk_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `receiver` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `reservation_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `reservation_ibfk_2` FOREIGN KEY (`staff_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
@@ -252,28 +219,22 @@ UNLOCK TABLES;
 --
 -- Table structure for table `setting`
 --
-
-DROP TABLE IF EXISTS `setting`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `setting` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `name` varchar(1024) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `value` int NOT NULL,
-  `description` varchar(2048) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `status` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
 --
 -- Dumping data for table `setting`
 --
 
 LOCK TABLES `setting` WRITE;
 /*!40000 ALTER TABLE `setting` DISABLE KEYS */;
-INSERT INTO `setting` VALUES (1,'Role','Admin',1,NULL,'1'),(2,'Role','Manager',2,NULL,'1'),(3,'Role','Staff',3,NULL,'1'),(4,'Role','Customer',4,NULL,'1'),(5,'Post category','Category_1',1,NULL,'1'),(6,'Post category','Category_2',2,NULL,'1'),(7,'Post category','Category_3',3,NULL,'1'),(8,'Post category','Category_4',4,NULL,'1'),(9,'Service Category','Pediatrics',1,NULL,'1'),(10,'Service Category','Cardiology',2,NULL,'1'),(11,'Service Category','Neurosurgery',3,NULL,'1'),(12,'Service Category','Cancer Care',4,NULL,'1'),(13,'User Status','Not verified',1,NULL,'1'),(14,'User Status','Active',2,NULL,'1'),(15,'User Status','Contact',3,NULL,'1'),(16,'User Status','Potential',4,NULL,'1'),(17,'User Status','Customer',5,NULL,'1'),(18,'User Status','Inactive',6,NULL,'1'),(19,'Reservation Status','Pending',1,NULL,'1'),(20,'Reservation Status','Submitted',2,NULL,'1'),(21,'Reservation Status','Cancel',3,NULL,'1'),(22,'Reservation Status','Approved',4,NULL,'1'),(23,'Reservation Status','Rejected',5,NULL,'1'),(24,'Post Status','Draft',0,NULL,'1'),(25,'Post Status','Published',1,NULL,'1'),(26,'Post Status','Hidden',2,NULL,'1'),(27,'Reservation Status','Success',6,NULL,'1'),(28,'Feedback Status','Processing',1,NULL,'1'),(29,'Feedback Status','Processed',2,NULL,'1');
+INSERT INTO `setting` VALUES (1,'Role','Admin',1,NULL,'1'),(2,'Role','Manager',2,NULL,'1'),(3,'Role','Staff',3,NULL,'1'),(4,'Role','Customer',4,NULL,'1'),
+(5,'Post category','Category_1',1,NULL,'1'),(6,'Post category','Category_2',2,NULL,'1'),(7,'Post category','Category_3',3,NULL,'1'),
+(8,'Post category','Category_4',4,NULL,'1'),(9,'Service Category','Pediatrics',1,NULL,'1'),(10,'Service Category','Cardiology',2,NULL,'1'),
+(11,'Service Category','Neurosurgery',3,NULL,'1'),(12,'Service Category','Cancer Care',4,NULL,'1'),
+(13,'User Status','Not verified',1,NULL,'1'),(14,'User Status','Active',2,NULL,'1'),(15,'User Status','Contact',3,NULL,'1'),
+(16,'User Status','Potential',4,NULL,'1'),(17,'User Status','Customer',5,NULL,'1'),(18,'User Status','Inactive',6,NULL,'1'),
+(19,'Reservation Status','Pending',1,NULL,'1'),(20,'Reservation Status','Submitted',2,NULL,'1'),(21,'Reservation Status','Cancel',3,NULL,'1'),
+(22,'Reservation Status','Approved',4,NULL,'1'),(23,'Reservation Status','Rejected',5,NULL,'1'),(24,'Post Status','Draft',0,NULL,'1'),
+(25,'Post Status','Published',1,NULL,'1'),(26,'Post Status','Hidden',2,NULL,'1'),(27,'Reservation Status','Success',6,NULL,'1'),
+(28,'Feedback Status','Processing',1,NULL,'1'),(29,'Feedback Status','Processed',2,NULL,'1');
 /*!40000 ALTER TABLE `setting` ENABLE KEYS */;
 UNLOCK TABLES;
 
