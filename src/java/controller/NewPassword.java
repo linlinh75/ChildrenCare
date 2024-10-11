@@ -50,23 +50,25 @@ public class NewPassword extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		String newPassword = request.getParameter("password");
-                newPassword = EncodePassword.encodeToSHA1(newPassword);
+                
 		String confPassword = request.getParameter("confPassword");
-                confPassword = EncodePassword.encodeToSHA1(confPassword);
+                
 		RequestDispatcher dispatcher = null;
                 UserDAO udao = new UserDAO();
                 VerifyPassword ver = new VerifyPassword();
         try {
+            if(VerifyPassword.verify(newPassword)){
             if(!newPassword.equals(udao.getUserByEmail((String)session.getAttribute("email")).getPassword())){
                 if (newPassword != null && confPassword != null && newPassword.equals(confPassword)) {
-                    if(ver.verify(newPassword)){
+                    newPassword = EncodePassword.encodeToSHA1(newPassword);
+                    confPassword = EncodePassword.encodeToSHA1(confPassword);
                         try {
                             int rowCount=udao.changePassword((String)session.getAttribute("email"), newPassword);
                             if (rowCount > 0) {
-                                request.setAttribute("statusSuccess", "Reset Success");
+                                request.setAttribute("statusSuccess", "Reset Password Success");
                                 dispatcher = request.getRequestDispatcher("login.jsp");
                             } else {
-                                request.setAttribute("statusFailed", "Reset Failed");
+                                request.setAttribute("statusFailed", "Reset Password Failed");
                                 dispatcher = request.getRequestDispatcher("login.jsp");
                             }
                             dispatcher.forward(request, response);

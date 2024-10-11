@@ -22,6 +22,6 @@ public class VerifyPassword {
             return false;
         }  
     } public static void main(String[] args) {
-            System.out.println(verify("Nanh2311"));
+            System.out.println(verify("Nanh@2311"));
     }
 }
