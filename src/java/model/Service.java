@@ -20,13 +20,12 @@ public class Service {
     private String details;
     private Date updatedDate;
     private boolean featured;
-    private boolean status;
-    private int quantity;
-
+    private String status;
+    private int author_id;
     public Service() {
     }
 
-    public Service(int id, String fullname, float originalPrice, float salePrice, String thumbnailLink, int categoryId, String description, String details, Date updatedDate, boolean featured, boolean status, int quantity) {
+    public Service(int id, String fullname, float originalPrice, float salePrice, String thumbnailLink, int categoryId, String description, String details, Date updatedDate, boolean featured, String status, int author_id) {
         this.id = id;
         this.fullname = fullname;
         this.originalPrice = originalPrice;
@@ -38,7 +37,7 @@ public class Service {
         this.updatedDate = updatedDate;
         this.featured = featured;
         this.status = status;
-        this.quantity = quantity;
+        this.author_id = author_id;
     }
 
     public int getId() {
@@ -113,7 +112,6 @@ public class Service {
         this.updatedDate = updatedDate;
     }
 
-
     public boolean isFeatured() {
         return featured;
     }
@@ -122,19 +120,20 @@ public class Service {
         this.featured = featured;
     }
 
-    public boolean isStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getAuthor_id() {
+        return author_id;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setAuthor_id(int author_id) {
+        this.author_id = author_id;
     }
+    
 }

@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -52,71 +53,103 @@
                                                 <div class="row mb-4">
                                                     <div class="col-md-6">
                                                         <div class="form-outline">
-                                                            <label class="form-label" for="fullname">Full Name</label>
-                                                            <input type="text" id="fullname" name="fullname" class="form-control form-control-lg" required />
-                                                            <span id="nameError" class="error">Please enter a name without special characters or accents.</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-outline">
-                                                            <label class="form-label" for="address">Address</label>
-                                                            <input type="text" id="address" name="address" class="form-control form-control-lg" required />
-                                                            <span id="addressError" class="error" >Please enter an address without special characters or accents.</span>
-                                                        </div>
+                                                            <label class="form-label" for="fullname" >Full Name</label>
+                                                            <input type="text" id="fullname" name="fullname" class="form-control form-control-lg" value="${not empty requestScope.fullname ? requestScope.fullname : ''}" required/>
+                                                        <span id="nameError" class="error">Please enter a name without special characters or accents.</span>
                                                     </div>
                                                 </div>
-
-                                                <div class="row mb-4">
-                                                    <div class="col-md-6">
-                                                        <label class="form-label">Gender</label><br>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio" name="gender" id="genderMale" value="true" required>
-                                                            <label class="form-check-label" for="genderMale">Male</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="false">
-                                                            <label class="form-check-label" for="genderFemale">Female</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-outline">
-                                                            <label class="form-label" for="phone">Phone Number</label>
-                                                            <input type="tel" id="phone" name="phone" class="form-control form-control-lg" required />
-                                                            <span id="phoneError" style="color:red; display: none; font-size: 10px; position: absolute">Phone must have between 10-11 numbers and start with '0'.</span>
-                                                        </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-outline">
+                                                        <label class="form-label" for="address">Address</label>
+                                                        <input type="text" id="address" name="address" class="form-control form-control-lg" value="${not empty requestScope.address ? requestScope.address : ''}" required />
+                                                        <span id="addressError" class="error" >Please enter an address without special characters or accents.</span>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div class="row mb-4">
-                                                    <div class="col-md-6">
-                                                        <div class="form-outline">
-                                                            <label class="form-label" for="formGmail">Email</label>
-                                                            <input type="email" id="formGmail" name="email" class="form-control form-control-lg" required />
-                                                            <span id="emailError" style="color: red; display: none; font-size: 10px; position: absolute">Please enter a gmail with domain @gmail.com .</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-outline">
-                                                            <label class="form-label" for="formPassword">Password</label>
-                                                            <input type="password" id="formPassword" name="password" class="form-control form-control-lg" required />
-                                                            <span id="passwordError" style="color: red; display: none; font-size: 10px; position: absolute">Password must be between 8-24 characters, include at least one uppercase letter and one number.</span>
-                                                        </div>
+                                            <div class="row mb-4">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Gender</label><br>
+                                                    <c:choose>
+                                                        <c:when test="${requestScope.gender != null && requestScope.gender.equals('true')}">
+                                                            <div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="gender" id="genderMale" value="true" checked required>
+                                                                    <label class="form-check-label" for="genderMale">Male</label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="false">
+                                                                    <label class="form-check-label" for="genderFemale">Female</label>
+                                                                </div>
+                                                            </div>
+                                                        </c:when>
+
+                                                        <c:when test="${requestScope.gender != null && requestScope.gender.equals('false')}">
+                                                            <div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="gender" id="genderMale1" value="true">
+                                                                    <label class="form-check-label" for="genderMale1">Male</label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="gender" id="genderFemale1" value="false" checked required>
+                                                                    <label class="form-check-label" for="genderFemale1">Female</label>
+                                                                </div>
+                                                            </div>
+                                                        </c:when>
+
+                                                        <c:otherwise>
+                                                            <div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="gender" id="genderMale2" value="true" required>
+                                                                    <label class="form-check-label" for="genderMale2">Male</label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="gender" id="genderFemale2" value="false">
+                                                                    <label class="form-check-label" for="genderFemale2">Female</label>
+                                                                </div>
+                                                            </div>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-outline">
+                                                        <label class="form-label" for="phone">Phone Number</label>
+                                                        <input type="tel" id="phone" name="phone" class="form-control form-control-lg" value="${not empty requestScope.mobile ? requestScope.mobile : ''}" required />
+                                                        <span id="phoneError" style="color:red; display: none; font-size: 10px; position: absolute">Phone must have between 10-11 numbers and start with '0'.</span>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div class="pt-1 mb-4" style="display: flex; justify-content: center; align-items: center; height: 100%;">
-                                                    <button class="btn btn-custom btn-lg" type="submit" id="submitButton" name="submit" value="submit">Register</button>
+                                            <div class="row mb-4">
+                                                <div class="col-md-6">
+                                                    <div class="form-outline">
+                                                        <label class="form-label" for="formGmail">Email</label>
+                                                        <input type="email" id="formGmail" name="email" class="form-control form-control-lg" value="${not empty requestScope.email ? requestScope.email : ''}" required />
+                                                        <span id="emailError" style="color: red; display: none; font-size: 10px; position: absolute">Please enter a gmail with domain @gmail.com .</span>
+                                                    </div>
                                                 </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-outline">
+                                                        <label class="form-label" for="formPassword">Password</label>
+                                                        <input type="password" id="formPassword" name="password" class="form-control form-control-lg" value="${not empty requestScope.password ? requestScope.password : ''}" required />
+                                                        <span id="passwordError" style="color: red; display: none; font-size: 10px; position: absolute">Password must be between 8-24 characters, include at least one uppercase letter and one number.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                <a href="#!" class="small text-muted">Terms of use.</a>
-                                                <a href="#!" class="small text-muted">Privacy policy</a>
-                                            </form>
-                                        </div>
+                                            <div class="pt-1 mb-4" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                                                <button class="btn btn-custom btn-lg" type="submit" id="submitButton" name="submit" value="submit">Register</button>
+                                            </div>
+
+                                            <a href="#!" class="small text-muted">Terms of use.</a>
+                                            <a href="#!" class="small text-muted">Privacy policy</a>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
                 <% if (request.getAttribute("error") != null) { %>
                 <script>alert("<%= request.getAttribute("error") %>");</script>
                 <% } %>
@@ -125,7 +158,7 @@
     <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
     <script>
         function hasDiacritics(str) {
-            return /[àáâãèéêìíòóôõùúýỳđăắằặẵ]/i.test(str);
+            return /[à-ỹ]/i.test(str);
         }
         let isFormValid = true;
         //Fullname check

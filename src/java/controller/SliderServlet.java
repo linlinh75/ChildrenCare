@@ -4,29 +4,20 @@
  */
 package controller;
 
-import dal.PostCategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import dal.ServiceDAO;
-import dal.PostDAO;
-import dal.ServiceCategoryDAO;
-import java.util.List;
-import model.Service;
-import model.Post;
-import dal.SliderDAO;
-import model.PostCategory;
-import model.ServiceCategory;
-import model.Slider;
 
 /**
  *
  * @author admin
  */
-public class HomeServlet extends HttpServlet {
+@WebServlet(name = "SliderServlet", urlPatterns = {"/SliderServlet"})
+public class SliderServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,37 +33,15 @@ public class HomeServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            ServiceDAO s = new ServiceDAO();
-            List<Service> list_service = s.getAllService();
-            List<Service> firstThreeServices = list_service.subList(0, Math.min(3, list_service.size()));
-            PostDAO p = new PostDAO();
-            List<Post> list_post = p.getAllPosts();
-            List<Post> new_post = p.getNewest();
-            ServiceCategoryDAO sc = new ServiceCategoryDAO();
-            List<ServiceCategory> s_category=sc.getAll();
-            PostCategoryDAO pc = new PostCategoryDAO();
-            List<PostCategory> p_category= pc.getAll();
-            SliderDAO sliderDAO = new SliderDAO();
-            List<Slider> list_sliders = sliderDAO.getAllSliders();
-            request.setAttribute("list_sliders", list_sliders);
-            if (s_category == null || s_category.isEmpty()) {
-            } else {
-                request.setAttribute("list_sc", s_category);
-            }
-            if (p_category == null || p_category.isEmpty()) {
-            } else {
-                request.setAttribute("list_pc", p_category);
-            }
-            if (list_service == null || list_service.isEmpty()) {
-            } else {
-                request.setAttribute("services", firstThreeServices);
-            }
-            if (list_post == null || list_post.isEmpty()) {
-            } else {
-                request.setAttribute("posts", list_post);
-            }
-            request.setAttribute("new_posts", new_post);
-            request.getRequestDispatcher("homepage.jsp").forward(request, response);
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet SliderServlet</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet SliderServlet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
     }
 

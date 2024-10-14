@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.*;
 import javax.mail.internet.*;
+import util.EncodePassword;
 
 /**
  *
@@ -135,11 +136,21 @@ public class RegisterServlet extends HttpServlet {
         try {
             if (userdao.getUserByEmail(email) != null) {
                 request.setAttribute("error", "Email is exist. Please enter new email.");
+                request.setAttribute("fullname", fullname);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", gender);
+                request.setAttribute("mobile", mobile);
+                request.setAttribute("password", password);
                 request.getRequestDispatcher("DataServlet?action=register").forward(request, response);
                 return;
             }
             if (userdao.getUserByPhoneNumber(mobile) != null) {
                 request.setAttribute("error", "Phone number is exist. Please enter new phone number.");
+                request.setAttribute("fullname", fullname);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", gender);
+                request.setAttribute("email", email);
+                request.setAttribute("password", password);
                 request.getRequestDispatcher("DataServlet?action=register").forward(request, response);
                 return;
             }
@@ -147,7 +158,7 @@ public class RegisterServlet extends HttpServlet {
             Logger.getLogger(RegisterServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         String verificationCode = String.format("%06d", rand.nextInt(1000000));
-
+        password=EncodePassword.encodeToSHA1(password);
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setPassword(password);
@@ -157,7 +168,7 @@ public class RegisterServlet extends HttpServlet {
         newUser.setAddress(address);
         newUser.setImageLink("assets/images/default.png");
         newUser.setRoleId(4);
-        newUser.setStatus(17);
+        newUser.setStatus("Inactive");
 
         HttpSession session = request.getSession();
         session.setAttribute("verificationCode", verificationCode);

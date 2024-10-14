@@ -48,21 +48,7 @@
     </head>
     <body>
 
-        <!-- Get Pro Button -->
-        <ul class="pro-features">
-            <a class="get-pro" href="#">Get Pro</a>
-            <li class="big-title">Pro Version Available on Themeforest</li>
-            <li class="title">Pro Version Features</li>
-            <li>2+ premade home pages</li>
-            <li>20+ html pages</li>
-            <li>Color Plate With 12+ Colors</li>
-            <li>Sticky Header / Sticky Filters</li>
-            <li>Working Contact Form With Google Map</li>
-            <div class="button">
-                <a href="http://preview.themeforest.net/item/mediplus-medical-and-doctor-html-template/full_screen_preview/26665910?_ga=2.145092285.888558928.1591971968-344530658.1588061879" target="_blank" class="btn">Pro Version Demo</a>
-                <a href="https://themeforest.net/item/mediplus-medical-and-doctor-html-template/26665910" target="_blank" class="btn">Buy Pro Version</a>
-            </div>
-        </ul>
+
 
         <!-- Header Area -->
         <jsp:include page="common/common-homepage-header.jsp"></jsp:include>
@@ -206,45 +192,6 @@
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
         <!--/ End Footer Area -->
 
-        <!-- jquery Min JS -->
-        <script src="js/jquery.min.js"></script>
-        <!-- jquery Migrate JS -->
-        <script src="js/jquery-migrate-3.0.0.js"></script>
-        <!-- jquery Ui JS -->
-        <script src="js/jquery-ui.min.js"></script>
-        <!-- Easing JS -->
-        <script src="js/easing.js"></script>
-        <!-- Color JS -->
-        <script src="js/colors.js"></script>
-        <!-- Popper JS -->
-        <script src="js/popper.min.js"></script>
-        <!-- Bootstrap Datepicker JS -->
-        <script src="js/bootstrap-datepicker.js"></script>
-        <!-- Jquery Nav JS -->
-        <script src="js/jquery.nav.js"></script>
-        <!-- Slicknav JS -->
-        <script src="js/slicknav.min.js"></script>
-        <!-- ScrollUp JS -->
-        <script src="js/jquery.scrollUp.min.js"></script>
-        <!-- Niceselect JS -->
-        <script src="js/niceselect.js"></script>
-        <!-- Tilt Jquery JS -->
-        <script src="js/tilt.jquery.min.js"></script>
-        <!-- Owl Carousel JS -->
-        <script src="js/owl-carousel.js"></script>
-        <!-- counterup JS -->
-        <script src="js/jquery.counterup.min.js"></script>
-        <!-- Steller JS -->
-        <script src="js/steller.js"></script>
-        <!-- Wow JS -->
-        <script src="js/wow.min.js"></script>
-        <!-- Magnific Popup JS -->
-        <script src="js/jquery.magnific-popup.min.js"></script>
-        <!-- Counter Up CDN JS -->
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
-        <!-- Bootstrap JS -->
-        <script src="js/bootstrap.min.js"></script>
-        <!-- Main JS -->
-        <script src="js/main.js"></script>
+       
     </body>
 </html>

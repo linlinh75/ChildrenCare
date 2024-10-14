@@ -13,7 +13,7 @@ public class ServiceDAO extends DBContext {
 
     public List<Service> getAllService() {
         List<Service> ulist = new ArrayList<>();
-        String s = "SELECT * FROM service where status = 1";
+        String s = "SELECT * FROM service where status = 'Public'";
         
         try {
             if (connection != null) { 
@@ -54,6 +54,34 @@ public class ServiceDAO extends DBContext {
         
         return service;
     }
+     public String getServiceCategoryName(int serviceId) {
+        String categoryName = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            String sql = "SELECT c.name FROM service_category c JOIN service s ON c.id = s.category_id WHERE s.id = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, serviceId);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                categoryName = resultSet.getString("name"); 
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return categoryName;
+    }
+
     
     public Service getFromResultSet(ResultSet rs) throws SQLException {
         Service service = new Service(
@@ -67,8 +95,8 @@ public class ServiceDAO extends DBContext {
                             rs.getString("details"),
                             rs.getDate("updated_date"),
                             rs.getBoolean("featured"),
-                            rs.getBoolean("status"),
-                            rs.getInt("quantity")
+                            rs.getString("status"),
+                            rs.getInt("author_id")
                     );
         return service;
     }
@@ -77,10 +105,10 @@ public class ServiceDAO extends DBContext {
         ServiceDAO sd = new ServiceDAO();
         
         // Test getAllService()
-//        List<Service> ulist = sd.getAllService();
-//        for (Service u : ulist) {
-//            System.out.println(u.getThumbnailLink());
-//        }
+        List<Service> ulist = sd.getAllService();
+        for (Service u : ulist) {
+            System.out.println(u.getThumbnailLink());
+        }
         
         // Test getServiceById()
         int testId = 1; // Replace with an actual ID from your database
@@ -90,5 +118,9 @@ public class ServiceDAO extends DBContext {
         } else {
             System.out.println("No service found with ID: " + testId);
         }
+        
+        //Test get Category Name
+        String categoryName = sd.getServiceCategoryName(1); // serviceId = 1
+        System.out.println("Category Name: " + categoryName);
     }
 }

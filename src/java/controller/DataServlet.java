@@ -6,7 +6,6 @@ package controller;
 
 import dal.PostDAO;
 import dal.ServiceDAO;
-import dal.SettingDAO;
 import dal.SliderDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,8 +18,11 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Post;
 import model.Service;
-import model.Setting;
 import model.Slider;
+import dal.ServiceCategoryDAO;
+import model.ServiceCategory;
+import model.PostCategory;
+import dal.PostCategoryDAO;
 
 /**
  *
@@ -47,9 +49,10 @@ public class DataServlet extends HttpServlet {
             PostDAO p = new PostDAO();
             List<Post> list_post = p.getAllPosts();
             List<Post> new_post = p.getNewest();
-            SettingDAO st = new SettingDAO();
-            List<Setting> s_category = st.getServiceCategory();
-            List<Setting> p_category = st.getPostCategory();
+            ServiceCategoryDAO sc = new ServiceCategoryDAO();
+            List<ServiceCategory> s_category=sc.getAll();
+            PostCategoryDAO pc = new PostCategoryDAO();
+            List<PostCategory> p_category= pc.getAll();
             SliderDAO sliderDAO = new SliderDAO();
             List<Slider> list_sliders = sliderDAO.getAllSliders();
             request.setAttribute("list_sliders", list_sliders);

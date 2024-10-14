@@ -14,12 +14,12 @@ public class User {
     private String address;
     private String imageLink;
     private int roleId;
-    private int status;
+    private String status;
 
     public User() {
     }
 
-    public User(int id, String email, String password, String fullName, boolean gender, String mobile, String address, String imageLink, int roleId, int status) {
+    public User(int id, String email, String password, String fullName, boolean gender, String mobile, String address, String imageLink, int roleId, String status) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -104,11 +104,11 @@ public class User {
         this.roleId = roleId;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

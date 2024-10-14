@@ -66,33 +66,6 @@
         </div>
         <!-- End Preloader -->
 
-        <!-- Mediplus Color Plate -->
-        <div class="color-plate">
-            <a class="color-plate-icon"><i class="fa fa-cog fa-spin"></i></a>
-            <h4>Mediplus</h4>
-            <p>Here is some awesome color's available on Mediplus Template.</p>
-            <span class="color1"></span>
-            <span class="color2"></span>
-            <span class="color3"></span>
-            <span class="color4"></span>
-            <span class="color5"></span>
-            <span class="color6"></span>
-            <span class="color7"></span>
-            <span class="color8"></span>
-            <span class="color9"></span>
-            <span class="color10"></span>
-            <span class="color11"></span>
-            <span class="color12"></span>
-            <div class="rtl-version">
-                <h4>RTL Version</h4>
-                <ul class="option-box">
-                    <li class="rtl-btn">RTL Version</li>
-                    <li class="ltr-btn active">LTR Version</li>
-                </ul>
-            </div>
-        </div>
-        <!-- /End Color Plate -->
-
         <!-- Header Area -->
         <jsp:include page="common/common-homepage-header.jsp"></jsp:include>
         <!-- End Header Area -->
@@ -212,42 +185,6 @@
        <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
         <!--/ End Footer Area -->
 
-        <!-- jquery Min JS -->
-        <script src="js/jquery.min.js"></script>
-        <!-- jquery Migrate JS -->
-        <script src="js/jquery-migrate.js"></script>
-        <!-- Easing JS -->
-        <script src="js/easing.js"></script>
-        <!-- Color JS -->
-        <script src="js/colors.js"></script>
-        <!-- Popper JS -->
-        <script src="js/popper.min.js"></script>
-        <!-- Bootstrap JS -->
-        <script src="js/bootstrap.min.js"></script>
-        <!-- Bootstrap Datepicker JS -->
-        <script src="js/bootstrap-datepicker.js"></script>
-        <!-- Jquery Nav JS -->
-        <script src="js/jquery.nav.js"></script>
-        <!-- Slicknav JS -->
-        <script src="js/slicknav.min.js"></script>
-        <!-- ScrollUp JS -->
-        <script src="js/jquery.scrollUp.min.js"></script>
-        <!-- Niceselect JS -->
-        <script src="js/niceselect.js"></script>
-        <!-- Tilt Jquery JS -->
-        <script src="js/tilt.jquery.min.js"></script>
-        <!-- Owl Carousel JS -->
-        <script src="js/owl-carousel.js"></script>
-        <!-- counterup JS -->
-        <script src="js/jquery.counterup.min.js"></script>
-        <script src="js/waypoints.min.js"></script>
-        <!-- Steller JS -->
-        <script src="js/steller.js"></script>
-        <!-- Wow JS -->
-        <script src="js/wow.min.js"></script>
-        <!-- Magnific Popup JS -->
-        <script src="js/jquery.magnific-popup.min.js"></script>
-        <!-- Main JS -->
-        <script src="js/main.js"></script>
+        
     </body>
 </html>

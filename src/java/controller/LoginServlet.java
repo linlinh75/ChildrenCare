@@ -76,7 +76,7 @@ public class LoginServlet extends HttpServlet {
                         newUser.setFullName(ggAcc.getName());
                         newUser.setImageLink(ggAcc.getPicture());
                         newUser.setRoleId(4);
-                        newUser.setStatus(17);
+                        newUser.setStatus("Active");
                         userdao.addUser(newUser);
                         session.setAttribute("account", newUser);
                         session.setAttribute("email", ggAcc.getEmail());
