@@ -301,6 +301,13 @@ INSERT INTO `slider` VALUES (1,'A  Response Plan to counter Covid-19','assets/im
 /*!40000 ALTER TABLE `slider` ENABLE KEYS */;
 UNLOCK TABLES;
 
+CREATE TABLE `role`(
+  `id` int NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+);
+INSERT INTO `role` (`id`,`role_name`) VALUES 
+(1,'Admin'), (2,'Manager'),(3,'Staff'),(4,'Customer') ;
 --
 -- Table structure for table `user`
 --
@@ -318,12 +325,11 @@ CREATE TABLE `user` (
   `address` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `image_link` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `role_id` int DEFAULT NULL,
-  `status` int DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `FK_roleid_idx` (`role_id`) USING BTREE,
   KEY `fk_status_user` (`status`) USING BTREE,
-  CONSTRAINT `FK_roleid` FOREIGN KEY (`role_id`) REFERENCES `setting` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_status_user` FOREIGN KEY (`status`) REFERENCES `setting` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `FK_roleid` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -371,3 +377,36 @@ ALTER TABLE slider
 ADD COLUMN author_id INT,                -- Thêm cột author_id kiểu INT
 ADD CONSTRAINT fk_slider_author          -- Khóa ngoại trỏ đến bảng swp.user
 FOREIGN KEY (author_id) REFERENCES user(id);
+CREATE TABLE password_reset_tokens (
+	id int  PRIMARY KEY auto_increment,
+    token VARCHAR(255),
+    email VARCHAR(255),
+    created_at TIMESTAMP,
+    expires_at TIMESTAMP,
+    user_id int, 
+    foreign key (user_id) references user(id)
+);
+UPDATE swp.service
+SET thumbnail_link = CONCAT('./img/service_', id,'.jpg')
+WHERE id BETWEEN 1 AND 12;
+UPDATE swp.post
+SET thumbnail_link = CASE id
+    WHEN 32 THEN './img/blog1.jpg'
+    WHEN 33 THEN './img/blog2.jpg'
+    WHEN 34 THEN './img/blog3.jpg'
+    WHEN 35 THEN './img/blog4.jpg'
+    WHEN 36 THEN './img/blog5.jpg'
+    WHEN 37 THEN './img/blog6.jpg'
+    WHEN 39 THEN './img/blog7.jpg'
+    WHEN 42 THEN './img/blog8.jpg'
+    WHEN 43 THEN './img/blog9.jpg'
+    WHEN 44 THEN './img/blog10.jpg'
+    WHEN 45 THEN './img/blog11.jpg'
+    END
+WHERE id IN (32, 33, 34, 35, 36, 37, 39, 42, 43, 44, 45);
+UPDATE swp.slider
+SET image_link = CASE id
+    WHEN 1 THEN './img/slider1.jpg'
+    WHEN 2 THEN './img/slider2.jpg'
+    END
+WHERE id IN (1, 2);
