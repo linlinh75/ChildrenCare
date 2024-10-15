@@ -57,6 +57,7 @@ public class LoginServlet extends HttpServlet {
                 if (request.getParameter("ggpass") == null) {
                     request.getRequestDispatcher("ggPw.jsp").forward(request, response);
                 } else {
+                    System.out.println(ggAcc.toString());
                     String password = request.getParameter("ggpass");
                     String confPassword = request.getParameter("confPassword");
                     if(!ver.verify(password)){
@@ -77,6 +78,7 @@ public class LoginServlet extends HttpServlet {
                         newUser.setImageLink(ggAcc.getPicture());
                         newUser.setRoleId(4);
                         newUser.setStatus("Active");
+                        
                         userdao.addUser(newUser);
                         session.setAttribute("account", newUser);
                         session.setAttribute("email", ggAcc.getEmail());

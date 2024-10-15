@@ -47,7 +47,7 @@ public class ForgotPassword extends HttpServlet {
             if (email != null && !email.isEmpty() && udao.getUserByEmail(email)!=null) {
                 
                 String token = udao.addToken(email);
-                String resetPasswordLink = "http://localhost:8080/ChildrenCare/newPassword?token=" + token;
+                String resetPasswordLink = "http://localhost:8080/ChildrenCare/newPassword?token=" + token+"&email="+email;
                 
                 Properties props = new Properties();
                 props.put("mail.smtp.host", "smtp.gmail.com");
@@ -56,13 +56,14 @@ public class ForgotPassword extends HttpServlet {
                 props.put("mail.smtp.auth", "true");
                 props.put("mail.smtp.port", "465");
                 Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+                    @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("nguyetanh0945@gmail.com", "nmyz rizo oqri ihat");
+                        return new PasswordAuthentication("childrencaresystemse1874@gmail.com", "cgcu vqdd whlf cdiw");
                     }
                 });
                 try {
                     MimeMessage message = new MimeMessage(session);
-                    message.setFrom(new InternetAddress("nguyetanh0945@gmail.com"));
+                    message.setFrom(new InternetAddress("childrencaresystemse1874@gmail.com"));
                     message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
                     message.setSubject("Reset Password");
                     message.setContent("<p>Click this link to reset your password: </p>" +

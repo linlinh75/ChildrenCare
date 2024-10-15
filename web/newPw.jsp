@@ -21,7 +21,7 @@
         <div class="card" style="border-radius: 1rem;">
             <div class="col-md-12 d-flex align-items-center">
               <div class="card-body p-4 p-lg-5 text-black">
-                <form action = "newPassword" method="post">
+                <form action = "newPassword?token=${token}" method="post">
                   <div class="d-flex align-items-center mb-3 pb-1">
                     <span class="h1 fw-bold mb-0">Enter New Password</span>
                   </div>           

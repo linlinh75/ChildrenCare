@@ -53,15 +53,16 @@ public class RegisterServlet extends HttpServlet {
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "465");
         Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("nguyetanh0945@gmail.com", "nmyz rizo oqri ihat");
+                return new PasswordAuthentication("childrencaresystemse1874@gmail.com", "cgcu vqdd whlf cdiw");
                 // id and
                 // password here
             }
         });
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("nguyetanh0945@gmail.com"));
+            message.setFrom(new InternetAddress("childrencaresystemse1874@gmail.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject(subject);
             message.setText(content);

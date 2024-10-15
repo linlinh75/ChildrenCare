@@ -186,7 +186,7 @@
 
                         <div class="layout-specing">
                         <c:if test="${successChange!=null}">
-                            <div class="alert alert-success">
+                            <div class="alert alert-success text-center" >
                                 ${successChange}
                             </div></c:if>
                         <div class="d-md-flex justify-content-between">

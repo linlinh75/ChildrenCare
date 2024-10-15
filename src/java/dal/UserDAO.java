@@ -140,7 +140,7 @@ public class UserDAO extends DBContext {
         }
         String token = buffer.toString();
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expiresAt = now.plusHours(1); // Token valid for 1 hour
+        LocalDateTime expiresAt = now.plusMinutes(10); // Token valid for 10 minutes
 
         try {
             stm = connection.prepareStatement("INSERT INTO password_reset_tokens (token, email, created_at, expires_at, user_id) VALUES (?, ?, ?, ?,?)");
@@ -231,7 +231,7 @@ public class UserDAO extends DBContext {
     }
 
     public String getRoleString(int role) {
-        String sql = "SELECT name FROM setting\n"
+        String sql = "SELECT role_name FROM role\n"
                 + "where id = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);

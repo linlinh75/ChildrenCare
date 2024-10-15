@@ -40,15 +40,13 @@ public class ChangePasswordServlet extends HttpServlet {
             String oldPass = request.getParameter("Old password");
             oldPass = EncodePassword.encodeToSHA1(oldPass);
             String newPass = request.getParameter("New password");
-            newPass = EncodePassword.encodeToSHA1(newPass);
             String checkPass = request.getParameter("confPassword");
-            checkPass = EncodePassword.encodeToSHA1(checkPass);
             HttpSession session = request.getSession(false);
             String email = (String) session.getAttribute("email");
             UserDAO udao = new UserDAO();
             VerifyPassword ver = new VerifyPassword();
             if (oldPass != null && newPass != null && checkPass != null && oldPass.equals(udao.getUserByEmail(email).getPassword())) {
-                if (newPass.equals(oldPass)) {
+                if (EncodePassword.encodeToSHA1(newPass).equals(oldPass)) {
                     String erChange = "New Password has to different from Old Password ";
                     request.setAttribute("erChange", erChange);
                     request.getRequestDispatcher("changePw.jsp").forward(request, response);
