@@ -38,6 +38,30 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="./css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
+        <style>
+            .see-more-button {
+                display: inline-flex;
+                background-color: white;
+                color: #ff4d4d !important;
+                border: 2px solid #ff4d4d;
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+                align-items: center;
+                gap: 5px;
+                text-decoration: none;
+                transition: background-color 0.3s, color 0.3s;
+                border-radius: 20px;
+            }
+
+            .see-more-button:hover {
+                background-color: #ff4d4d;
+                color: white !important;
+            }
+            .see-more-button i {
+                font-size: 1.5em;
+            }
+        </style>
     </head>
     <body>
         <!-- Preloader -->
@@ -316,6 +340,13 @@
                             </div>
                         </div>
                     </c:forEach>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 text-center" style="margin-top: 20px;">
+                        <a href="DataServlet?action=service" class="see-more-button">
+                            See More <i class="icofont-arrow-right"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>

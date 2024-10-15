@@ -38,22 +38,11 @@
             <section class="navbar navbar-default navbar-static-top" role="navigation">
                 <div class="container">
 
-                    <div class="navbar-header">
-                        <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="icon icon-bar"></span>
-                            <span class="icon icon-bar"></span>
-                            <span class="icon icon-bar"></span>
-                        </button>
-
-                        <!-- lOGO TEXT HERE -->
-                        <a href="../home" class="navbar-brand">Children Care</a>
-                    </div>
-
                     <!-- MENU LINKS -->
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav navbar-right" >
                             <li><a href="../home" class="smoothScroll dropdown">Home</a></li>
-                            <li><a href="../service/list" class="smoothScroll dropdown">Services</a></li>
+                            <li><a href="./service" class="smoothScroll dropdown">Services</a></li>
                             <li><a href="../blog/list" class="smoothScroll dropdown">Blog</a></li>
                                 <c:if test="${ empty sessionScope.user}">
                                 <li><a style="font-size: 25px;color: #00aeef" href="../cart/list" class="smoothScroll"><i class="fa fa-shopping-cart"></i></a></li>
@@ -133,7 +122,7 @@
                                 <td class="total-cost" rowspan="${requestScope.number}"><h3 id="total" >Total Cost: <fmt:formatNumber type = "number" 
                                                                                                       pattern = "###,###,###" value = "${requestScope.totalcost}" /></h3></td>
 
-                                <td class="total-cost" rowspan="${requestScope.number}"><button type="button" class="btn btn-primary" onclick="window.location.href='../service/list?reservation_id=${requestScope.list[0].reservation.id}'">More Service</button>
+                                <td class="total-cost" rowspan="${requestScope.number}"><button type="button" class="btn btn-primary"><a href="./service">More Service</a></button>
                                     <button type="button" class="btn btn-primary" onclick="window.location.href='../reservation/contact?reservation_id=${requestScope.list[0].reservation.id}'">Check Out</button></td>
                             </tr>
                         </thead>
@@ -161,7 +150,7 @@
             <c:if test="${empty requestScope.list}">
 
                 <h2>You have nothing in cart!</h2>
-                <button type="button" class="btn btn-primary" onclick="window.location.href='../service/list'">More Service</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='./service'">More Service</button>
                 </c:if>
 
                 <!--            <h2>Total Cost:</h2>-->

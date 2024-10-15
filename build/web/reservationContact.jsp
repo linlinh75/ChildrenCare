@@ -224,7 +224,7 @@
             <c:if test="${empty requestScope.services}">
 
                 <h1>You have nothing in cart!</h1>
-                <button type="button" class="button btn btn-outline-primary"><a href="service/list">More Service</a>
+                <button type="button" class="button btn btn-outline-primary"><a href="/service">More Service</a>
                 </c:if>
                 <button type="button" class="btn btn-primary pull-left" onclick="window.location.href = '../cart/list?rid=${requestScope.reservation.id}'">Change</button>
 
