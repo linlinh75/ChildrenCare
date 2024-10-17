@@ -48,7 +48,7 @@
                     <!-- Top Contact -->
                     <ul class="top-contact">
                         <li><i class="fa fa-phone"></i>+880 1234 56789</li>
-                        <li><i class="fa fa-envelope"></i><a href="mailto:support@yourmail.com">support@yourmail.com</a></li>
+                        <li><i class="fa fa-envelope"></i><a href="mailto:support@yourmail.com">childrencaresystemse1874@gmail.com</a></li>
                     </ul>
                     <!-- End Top Contact -->
                 </div>
@@ -64,7 +64,7 @@
                     <div class="col-lg-3 col-md-3 col-12">
                         <!-- Start Logo -->
                         <div class="logo">
-                            <a href="http://localhost:8080/ChildrenCare/HomeServlet"><img src="http://localhost:8080/ChildrenCare/img/logo.png" alt="#"></a>
+                            <a href="HomeServlet"><img src="img/logo.png" alt="#"></a>
                         </div>
                         <!-- End Logo -->
                         <!-- Mobile Nav -->
