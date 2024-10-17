@@ -11,12 +11,27 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import dal.SliderDAO;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Part;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import model.Slider;
 
 /**
  *
  * @author admin
  */
-@WebServlet(name = "SliderServlet", urlPatterns = {"/SliderServlet"})
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024, // 1 MB
+        maxFileSize = 1024 * 1024 * 5, // 5 MB
+        maxRequestSize = 1024 * 1024 * 10 // 10 MB
+)
+@WebServlet(name = "managerSliderServlet", urlPatterns = {"/managerSliderList"})
 public class SliderServlet extends HttpServlet {
 
     /**
@@ -33,15 +48,29 @@ public class SliderServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SliderServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SliderServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            SliderDAO s = new SliderDAO();
+            List<Slider> list_slider = s.getManageSliders();
+            String action = request.getParameter("action");
+            if ("detail".equals(action)) {
+                if (request.getParameter("id") != null) {
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    Slider slider_detail = s.getSliderbyId(id);
+                    request.setAttribute("slider", slider_detail);
+                }
+                request.getRequestDispatcher("manager-slider-details.jsp").forward(request, response);
+            }
+            if ("delete".equals(action)) {
+                if (request.getParameter("id") != null) {
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    s.deleteSlider(id);
+                    response.sendRedirect(request.getContextPath() + "/managerSliderList");
+                }
+            }
+            if (action == null) {
+                request.setAttribute("slider", list_slider);
+                request.getRequestDispatcher("manager-sliderlist.jsp").forward(request, response);
+            }
+
         }
     }
 
@@ -71,7 +100,58 @@ public class SliderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        SliderDAO s = new SliderDAO();
+        String submit = request.getParameter("submit");
+        int id = Integer.parseInt(request.getParameter("sliderId"));
+        System.out.println(submit);
+        if (submit != null) {
+            if ("1".equals(submit)) {
+                s.updateStatus(id, "0");
+            } else if ("0".equals(submit)) {
+                s.updateStatus(id, "1");
+            }
+            if ("edit".equals(submit)) {
+                Part filePart = request.getPart("sliderImage");
+                if (filePart != null && filePart.getSize() > 0) {
+                    String fileName = getFileName(filePart);
+                    String uploadDir = getServletContext().getRealPath("/uploads");
+
+                    File uploadDirFile = new File(uploadDir);
+                    if (!uploadDirFile.exists()) {
+                        uploadDirFile.mkdirs();
+                    }
+
+                    String filePath = uploadDir + File.separator + fileName;
+
+                    try (InputStream input = filePart.getInputStream()) {
+                        Files.copy(input, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+                    }
+
+                    String imagePath = "./uploads/" + fileName;
+                    String title = request.getParameter("sliderTitle");
+                    String backlink = request.getParameter("sliderBacklink");
+                    String status = request.getParameter("sliderStatus");
+                    String note = request.getParameter("sliderNote");
+                    System.out.println(title);
+                    System.out.println(backlink);
+                    System.out.println(imagePath);
+                    s.updateSlider(id, title, imagePath, backlink, status, note);
+                }
+            }
+            response.sendRedirect(request.getContextPath() + "/managerSliderList");
+        }
+
+    }
+
+    private String getFileName(Part part) {
+        String contentDisp = part.getHeader("content-disposition");
+        String[] tokens = contentDisp.split(";");
+        for (String token : tokens) {
+            if (token.trim().startsWith("filename")) {
+                return token.substring(token.indexOf("=") + 2, token.length() - 1);
+            }
+        }
+        return "";
     }
 
     /**

@@ -71,7 +71,7 @@
                                                 <div class="col-md-6">
                                                     <label class="form-label">Gender</label><br>
                                                     <c:choose>
-                                                        <c:when test="${requestScope.gender != null && requestScope.gender.equals('true')}">
+                                                        <c:when test="${requestScope.gender != null && requestScope.gender}">
                                                             <div>
                                                                 <div class="form-check form-check-inline">
                                                                     <input class="form-check-input" type="radio" name="gender" id="genderMale" value="true" checked required>
@@ -84,7 +84,7 @@
                                                             </div>
                                                         </c:when>
 
-                                                        <c:when test="${requestScope.gender != null && requestScope.gender.equals('false')}">
+                                                        <c:when test="${requestScope.gender != null && !requestScope.gender}">
                                                             <div>
                                                                 <div class="form-check form-check-inline">
                                                                     <input class="form-check-input" type="radio" name="gender" id="genderMale1" value="true">
