@@ -24,6 +24,8 @@
                 padding: 8px;
                 border-radius: 4px;
                 border: 1px solid #ccc;
+                width: 250px;
+
             }
 
             .search-box button {
@@ -186,7 +188,7 @@
                     <div class="table-container">
                         <div class="table-header">
                             <div class="search-box">
-                                <input type="text" placeholder="Search..." id="searchInput" onkeyup="searchSlider()">
+                                <input type="text" placeholder="Search by title" id="searchInput" onkeyup="searchSlider()">
                                 <button type="button">
                                     <i class="fa fa-search"></i>
                                 </button>
