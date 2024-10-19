@@ -11,7 +11,7 @@ public class DBContext {
         String url = "jdbc:mysql://localhost:3306/swp"; 
         String user = "root"; 
 
-        String password = "thanh1610"; 
+        String password = "1234"; 
 
         
         try {
