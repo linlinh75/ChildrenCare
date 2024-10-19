@@ -96,7 +96,7 @@
                             <!-- Top Contact -->
                             <ul class="top-contact">
                                 <li><i class="fa fa-phone"></i>+880 1234 56789</li>
-                                <li><i class="fa fa-envelope"></i><a href="mailto:support@yourmail.com">support@yourmail.com</a></li>
+                                <li><i class="fa fa-envelope"></i><a href="mailto:support@yourmail.com">childrencaresystemse1874@gmail.com</a></li>
                             </ul>
                             <!-- End Top Contact -->
                         </div>
@@ -159,7 +159,7 @@
                                                     </div>
                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                                                         <a class="dropdown-item" href="/ChildrenCare/profile">Profile</a>
-                                                        <a class="dropdown-item" href="#">Reservation</a>
+                                                        <a class="dropdown-item" href="/ChildrenCare/ReservationServlet">My Reservation</a>
                                                         <div class="dropdown-divider"></div>
                                                         <a class="dropdown-item" href="LogoutServlet">Logout</a>
                                                     </div>
