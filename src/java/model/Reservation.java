@@ -5,6 +5,7 @@
 package model;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  *
@@ -17,6 +18,8 @@ public class Reservation {
     String status;
     int staff_id;
     Timestamp checkup_time;
+    List<ReservationService> list_service;
+    String customer_name;
 
     public int getId() {
         return id;
@@ -66,14 +69,34 @@ public class Reservation {
         this.checkup_time = checkup_time;
     }
 
-    public Reservation(int id, int customer_id, Timestamp reservation_date, String status, int staff_id, Timestamp checkup_time) {
+    public Reservation(int id, int customer_id, Timestamp reservation_date, String status, int staff_id, Timestamp checkup_time, List<ReservationService> list_service, String customer_name) {
         this.id = id;
         this.customer_id = customer_id;
         this.reservation_date = reservation_date;
         this.status = status;
         this.staff_id = staff_id;
         this.checkup_time = checkup_time;
+        this.list_service = list_service;
+        this.customer_name = customer_name;
     }
+
+    public List<ReservationService> getList_service() {
+        return list_service;
+    }
+
+    public void setList_service(List<ReservationService> list_service) {
+        this.list_service = list_service;
+    }
+
+    public String getCustomer_name() {
+        return customer_name;
+    }
+
+    public void setCustomer_name(String customer_name) {
+        this.customer_name = customer_name;
+    }
+    
+    
 
     public Reservation() {
     }
