@@ -44,7 +44,6 @@ public class ReservationDAO extends DBContext {
                     }
                 }
 
-                // Nếu Reservation chưa tồn tại, tạo mới
                 if (reservation == null) {
                     List<ReservationService> serviceList = new ArrayList<>();
                     reservation = new Reservation(
@@ -108,7 +107,6 @@ public class ReservationDAO extends DBContext {
                     }
                 }
 
-                
                 if (reservation == null) {
                     List<ReservationService> serviceList = new ArrayList<>();
                     reservation = new Reservation(
@@ -121,7 +119,7 @@ public class ReservationDAO extends DBContext {
                             serviceList,
                             rs.getString("full_name")
                     );
-                    ulist.add(reservation); 
+                    ulist.add(reservation);
                 }
 
                 ReservationService reservationService = new ReservationService(
@@ -167,6 +165,60 @@ public class ReservationDAO extends DBContext {
         }
     }
 
+    public Reservation getReservationById(int id) {
+        Reservation reservation = null;
+        String s = "SELECT * \n"
+                + "FROM swp.reservation r \n"
+                + "JOIN swp.reservation_service s ON r.id = s.reservation_id \n"
+                + "JOIN swp.user u ON r.customer_id = u.id WHERE r.id = ?";
+
+        try {
+            stm = connection.prepareStatement(s);
+            stm.setInt(1, id);
+            rs = stm.executeQuery();
+
+            if (rs.next()) {
+                List<ReservationService> serviceList = new ArrayList<>();
+                reservation = new Reservation(
+                        rs.getInt("reservation_id"),
+                        rs.getInt("customer_id"),
+                        rs.getTimestamp("reservation_date"),
+                        rs.getString("status"),
+                        rs.getInt("staff_id"),
+                        rs.getTimestamp("checkup_time"),
+                        serviceList,
+                        rs.getString("full_name")
+                );
+
+                do {
+                    ReservationService reservationService = new ReservationService(
+                            reservation.getId(), // reservation_id
+                            rs.getInt("service_id"),
+                            rs.getInt("quantity"),
+                            rs.getFloat("unit_price"),
+                            service.getServiceById(rs.getInt("service_id")).getFullname()
+                    );
+
+                    reservation.getList_service().add(reservationService);
+                } while (rs.next()); 
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return reservation;
+    }
+    
     public static void main(String[] args) {
         ReservationDAO userdao = new ReservationDAO();
         List<Reservation> ulist = userdao.getAllReservation();
