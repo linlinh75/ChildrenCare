@@ -394,3 +394,17 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2024-10-15 14:22:47
+-- Thêm cột reservation_id
+ALTER TABLE swp.feedback
+ADD COLUMN reservation_id INT;
+
+-- Thêm cột thời gian feedback_time
+ALTER TABLE swp.feedback
+ADD COLUMN feedback_time DATETIME DEFAULT CURRENT_TIMESTAMP;
+
+-- Thêm ràng buộc khóa ngoại cho reservation_id
+ALTER TABLE swp.feedback
+ADD CONSTRAINT fk_feedback_reservation
+FOREIGN KEY (reservation_id) REFERENCES swp.reservation(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
