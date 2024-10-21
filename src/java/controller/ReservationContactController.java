@@ -5,13 +5,11 @@
  */
 package controller;
 
-import bean.Receiver;
-import bean.Reservation;
-import bean.ReservationService;
-import bean.User;
+import model.Reservation;
+import model.ReservationService;
+import model.User;
 import com.google.gson.Gson;
-import dao.ReceiverDAO;
-import dao.ReservationDAO;
+import dal.ReservationDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
@@ -20,11 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.mail.Session;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -119,7 +116,7 @@ public class ReservationContactController extends HttpServlet {
         ArrayList<ReservationService> reservationServices  = reservationDB.getReservationServices(reservation);
         double totalCost = 0;
         for(ReservationService rs: reservationServices){
-            totalCost += rs.getQuantity()*rs.getUnitPrice();
+            totalCost += rs.getQuantity()*rs.getUnit_price();
         }
         User u = (User) request.getSession().getAttribute("user");
         request.setAttribute("reservation", reservation);

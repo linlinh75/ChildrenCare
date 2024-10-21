@@ -443,7 +443,7 @@ public class ReservationDAO extends DBContext {
 //        } catch (SQLException ex) {
 //            Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-        System.out.println(userdao.getReservationbyCustomerId(-1).get(0).getId());
+        System.out.println(userdao.getPendingReservation(131));
 //        System.out.println(userdao.getPendingReservation(1));
 //        for (Reservation u : ulist) {
 //            System.out.println(u.getId());
