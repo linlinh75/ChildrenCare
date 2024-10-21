@@ -7,20 +7,28 @@ package controller;
 import dal.PostCategoryDAO;
 import dal.PostDAO;
 import dal.ServiceCategoryDAO;
+import dal.PostCommentDAO;
+import dal.PostDAO;
 import dal.ServiceDAO;
 import dal.SliderDAO;
+import dal.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
-import model.Post;
 import model.PostCategory;
-import model.Service;
 import model.ServiceCategory;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Post;
+import model.PostComment;
+import model.Service;
 import model.Slider;
+import model.User;
 
 public class PostServlet extends HttpServlet {
 
@@ -65,10 +73,41 @@ public class PostServlet extends HttpServlet {
             Post post = postDAO.getPostById(postId);
             List<Post> recentPosts = postDAO.getNewest();
             String authorName = postDAO.getAuthorNameByPostId(postId);
+
+            //lấy danh sách bình luận
+            List<PostComment> comments = new PostCommentDAO().findByPostId(postId);
+
+            request.setAttribute("postServlet", this);
+            request.setAttribute("comments", comments);
             request.setAttribute("post", post);
             request.setAttribute("authorName", authorName);
             request.setAttribute("recentPosts", recentPosts);
             request.getRequestDispatcher("blog-single.jsp").forward(request, response);
+        } else if ("search".equals(action)) {
+            String query = request.getParameter("query");
+            int pageNumber = 1; // Mặc định là trang đầu tiên
+            int pageSize = 10; // Số bài viết trên mỗi trang
+
+            try {
+                pageNumber = Integer.parseInt(request.getParameter("page"));
+            } catch (NumberFormatException e) {
+                // Giữ nguyên giá trị mặc định nếu không có tham số page hợp lệ
+            }
+
+            List<Post> searchResults = postDAO.searchPosts(query, pageSize, pageNumber);
+            List<Post> recentPosts = postDAO.getNewest();
+
+            request.setAttribute("listPost", searchResults);
+            request.setAttribute("recentPosts", recentPosts);
+            request.setAttribute("searchQuery", query);
+            request.setAttribute("currentPage", pageNumber);
+
+            // Tính toán số trang
+            int totalPosts = postDAO.countSearchResults(query);
+            int totalPages = (int) Math.ceil((double) totalPosts / pageSize);
+            request.setAttribute("totalPages", totalPages);
+
+            request.getRequestDispatcher("blog-grid.jsp").forward(request, response);
         } else {
             // Existing code for listing all posts
             List<Post> listPost = postDAO.getAllPosts();
@@ -99,6 +138,16 @@ public class PostServlet extends HttpServlet {
             out.println("<h1>Servlet PostServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
+        }
+    }
+
+    public String getUserName(int userId) {
+        try {
+            User user = new UserDAO().getProfileById(userId);
+            return user != null ? user.getFullName() : "Unknown User";
+        } catch (SQLException ex) {
+            Logger.getLogger(PostServlet.class.getName()).log(Level.SEVERE, null, ex);
+            return "Unknown User";
         }
     }
 

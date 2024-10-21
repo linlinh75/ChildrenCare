@@ -120,19 +120,14 @@ public class PostDAO extends DBContext {
         List<Post> posts = new ArrayList<>();
         try (
                 PreparedStatement statement = connection.prepareStatement(
-                        "SELECT * FROM posts WHERE title LIKE ? OR content LIKE ? ORDER BY updatedDate DESC LIMIT ?, ?")) {
+                        "SELECT * FROM post WHERE title LIKE ? OR content LIKE ? ORDER BY updated_date DESC LIMIT ?, ?")) {
             statement.setString(1, "%" + query + "%");
             statement.setString(2, "%" + query + "%");
             statement.setInt(3, (pageNumber - 1) * pageSize);
             statement.setInt(4, pageSize);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    Post post = new Post();
-                    post.setId(resultSet.getInt("id"));
-                    post.setTitle(resultSet.getString("title"));
-                    post.setDescription(resultSet.getString("description"));
-                    post.setThumbnailLink(resultSet.getString("thumbnailLink"));
-                    post.setUpdatedDate(resultSet.getDate("updatedDate"));
+                    Post post = getFromResultSet(resultSet);
                     posts.add(post);
                 }
             }
@@ -166,7 +161,7 @@ public class PostDAO extends DBContext {
 
     public List<Post> getNewest() {
         List<Post> posts = new ArrayList<>();
-        String query = "SELECT * FROM post where status='Published' ORDER BY updated_date DESC LIMIT 3";
+        String query = "SELECT * FROM post ORDER BY updated_date DESC LIMIT 3";
 
         try {
             PreparedStatement stm = connection.prepareStatement(query);
@@ -182,6 +177,57 @@ public class PostDAO extends DBContext {
         return posts;
     }
 
+    public int countSearchResults(String query) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM post WHERE title LIKE ? OR content LIKE ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + query + "%");
+            stmt.setString(2, "%" + query + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public List<Post> getPostsWithPagination(int page, int postsPerPage) {
+        List<Post> posts = new ArrayList<>();
+        String query = "SELECT * FROM post ORDER BY updated_date DESC LIMIT ? OFFSET ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, postsPerPage);
+            stmt.setInt(2, (page - 1) * postsPerPage);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Post post = getFromResultSet(rs);
+                    posts.add(post);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return posts;
+    }
+
+    public int getTotalPosts() {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM post";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+
     public Post getFromResultSet(ResultSet resultSet) throws SQLException {
         Post post = new Post();
         post.setId(resultSet.getInt("id"));
@@ -193,16 +239,14 @@ public class PostDAO extends DBContext {
         post.setThumbnailLink(resultSet.getString("thumbnail_link"));
         post.setAuthorId(resultSet.getInt("author_id"));
         post.setCategoryId(resultSet.getInt("category_id"));
-        post.setStatus(resultSet.getString("status"));
+        post.setStatusId(resultSet.getString("status"));
         return post;
     }
 
     public static void main(String[] args) {
         PostDAO postDAO = new PostDAO();
-        postDAO.getNewest().stream().forEach(item -> {
-
-            System.out.println(item.getThumbnailLink());
+        postDAO.getAllPosts().stream().forEach(item -> {
+            System.out.println(item);
         });
-
     }
 }

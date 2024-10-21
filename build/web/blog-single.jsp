@@ -49,7 +49,7 @@
     <body>
 
         <!-- Get Pro Button -->
-        <ul class="pro-features">
+<!--        <ul class="pro-features">
             <a class="get-pro" href="#">Get Pro</a>
             <li class="big-title">Pro Version Available on Themeforest</li>
             <li class="title">Pro Version Features</li>
@@ -62,7 +62,7 @@
                 <a href="http://preview.themeforest.net/item/mediplus-medical-and-doctor-html-template/full_screen_preview/26665910?_ga=2.145092285.888558928.1591971968-344530658.1588061879" target="_blank" class="btn">Pro Version Demo</a>
                 <a href="https://themeforest.net/item/mediplus-medical-and-doctor-html-template/26665910" target="_blank" class="btn">Buy Pro Version</a>
             </div>
-        </ul>
+        </ul>-->
 
         <!-- Header Area -->
         <jsp:include page="common/common-homepage-header.jsp"></jsp:include>
@@ -97,7 +97,7 @@
                                 <div class="single-main">
                                     <!-- News Head -->
                                     <div class="news-head">
-                                        <img src="https://mediplus-html.vercel.app/img/blog2.jpg" alt="#">
+                                        <img src="${pageContext.request.contextPath}/${post.thumbnailLink}" alt="#">
                                     </div>
                                     <!-- News Title -->
                                     <h1 class="news-title"><a href="news-single.html">${post.title}</a></h1>
@@ -107,17 +107,17 @@
                                             <span class="author"><a href="#"><img src="img/author1.jpg" alt="#">${authorName}</a></span>
                                             <span class="date"><i class="fa fa-clock-o"></i>${post.updatedDate}</span>
                                         </div>
-                                        <div class="meta-right">
+<!--                                        <div class="meta-right">
                                             <span class="comments"><a href="#"><i class="fa fa-comments"></i>05 Comments</a></span>
                                             <span class="views"><i class="fa fa-eye"></i>33K Views</span>
-                                        </div>
+                                        </div>-->
                                     </div>
                                     <!-- News Text -->
                                     <div class="news-text">
                                         <p>${post.content}</p>
                                     </div>
-                                    <div class="blog-bottom">
-                                        <!-- Social Share -->
+<!--                                    <div class="blog-bottom">
+                                         Social Share 
                                         <ul class="social-share">
                                             <li class="facebook"><a href="#"><i class="fa fa-facebook"></i><span>Facebook</span></a></li>
                                             <li class="twitter"><a href="#"><i class="fa fa-twitter"></i><span>Twitter</span></a></li>
@@ -125,13 +125,13 @@
                                             <li class="linkedin"><a href="#"><i class="fa fa-linkedin"></i></a></li>
                                             <li class="pinterest"><a href="#"><i class="fa fa-pinterest"></i></a></li>
                                         </ul>
-                                        <!-- Next Prev -->
+                                         Next Prev 
                                         <ul class="prev-next">
                                             <li class="prev"><a href="#"><i class="fa fa-angle-double-left"></i></a></li>
                                             <li class="next"><a href="#"><i class="fa fa-angle-double-right"></i></a></li>
                                         </ul>
-                                        <!--/ End Next Prev -->
-                                    </div>
+                                        / End Next Prev 
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -140,14 +140,15 @@
                         <div class="main-sidebar">
                             <!-- Single Widget -->
                             <div class="single-widget search">
-                                <div class="form">
-                                    <input type="email" placeholder="Search Here...">
-                                    <a class="button" href="#"><i class="fa fa-search"></i></a>
-                                </div>
+                                <form action="post" method="get">
+                                    <input type="hidden" name="action" value="search">
+                                    <input type="text" name="query" placeholder="Search Here..." value="${searchQuery}">
+                                    <button type="submit" class="button"><i class="fa fa-search"></i></button>
+                                </form>
                             </div>
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
-                            <div class="single-widget category">
+<!--                            <div class="single-widget category">
                                 <h3 class="title">Blog Categories</h3>
                                 <ul class="categor-list">
                                     <li><a href="#">Men's Apparel</a></li>
@@ -156,7 +157,7 @@
                                     <li><a href="#">Accessories</a></li>
                                     <li><a href="#">Sun Glasses</a></li>
                                 </ul>
-                            </div>
+                            </div>-->
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
                             <div class="single-widget recent-post">
@@ -165,13 +166,13 @@
                                     <!-- Single Post -->
                                     <div class="single-post">
                                         <div class="image">
-                                            <img src="https://mediplus-html.vercel.app/img/blog-sidebar1.jpg" alt="${recentPost.title}">
+                                            <img src="${pageContext.request.contextPath}/${recentPost.thumbnailLink}" alt="${recentPost.title}">
                                         </div>
                                         <div class="content">
                                             <h5><a href="post?action=detail&id=${recentPost.id}">${recentPost.title}</a></h5>
                                             <ul class="comment">
                                                 <li><i class="fa fa-calendar" aria-hidden="true"></i>${recentPost.updatedDate}</li>
-                                                <li><i class="fa fa-user" aria-hidden="true"></i>${recentPost.authorId}</li>
+                                                <!--<li><i class="fa fa-user" aria-hidden="true"></i>${recentPost.authorId}</li>-->
                                             </ul>
                                         </div>
                                     </div>
@@ -182,7 +183,7 @@
                             <!-- Single Widget -->
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
-                            <div class="single-widget side-tags">
+<!--                            <div class="single-widget side-tags">
                                 <h3 class="title">Tags</h3>
                                 <ul class="tag">
                                     <li><a href="#">business</a></li>
@@ -193,10 +194,37 @@
                                     <li><a href="#">template</a></li>
                                     <li><a href="#">Ecommerce</a></li>
                                 </ul>
-                            </div>
+                            </div>-->
                             <!--/ End Single Widget -->
                         </div>
                     </div>
+                                    <div class="col-12">
+    <div class="blog-comments">
+        <h2>All Comments</h2>
+        <div class="comments-body">
+            <c:forEach var="comment" items="${comments}">
+                <!-- Single Comments -->
+                <div class="single-comments">
+                    <div class="main">
+                        <div class="head">
+                            <img src="img/author1.jpg" alt="#"/>
+                        </div>
+                        <div class="body">
+                            <h4>${postServlet.getUserName(comment.userId)}</h4>
+                            <div class="comment-meta">
+                                <span class="meta"><i class="fa fa-calendar"></i>${comment.createdAt}</span>
+                            </div>
+                            <p>${comment.content}</p>
+                            <a href="#"><i class="fa fa-reply"></i>reply</a>
+                        </div>
+                    </div>
+                </div>
+                <!--/ End Single Comments -->
+            </c:forEach>
+        </div>
+    </div>
+</div>
+							
                 </div>
             </div>
         </section>

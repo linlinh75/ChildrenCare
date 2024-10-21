@@ -1,23 +1,39 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dal;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import model.Feedback;
 
-/**
- *
- * @author admin
- */
 public class FeedbackDAO extends DBContext {
+
+    //get list feedback by service id
+    public List<Feedback> getFeedbackByServiceId(int serviceId) {
+        List<Feedback> listFeedbacks = new ArrayList<>();
+        
+        String sql = "SELECT * FROM feedback WHERE service_id = ?";
+        try {
+            if (connection != null) {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setObject(1, serviceId);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    Feedback feedback = getFromResultSet(rs);
+                    listFeedbacks.add(feedback);
+                }
+            } else {
+                System.out.println("Connection is null, cannot execute query.");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return listFeedbacks;
+    }
 
     public List<Feedback> getAllFeedback() {
         List<Feedback> ulist = new ArrayList<>();
@@ -35,25 +51,25 @@ public class FeedbackDAO extends DBContext {
                 System.out.println("Connection is null, cannot execute query.");
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ServiceDAO.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         return ulist;
     }
 
-    public Feedback getFromResultSet(ResultSet rs) throws SQLException {
-        Feedback feedback = new Feedback(
-                rs.getInt("id"),
-                rs.getInt("user_id"),
-                rs.getInt("reservation_id"),
-                rs.getInt("service_id"),
-                rs.getInt("rated_star"),
-                rs.getString("content"),
-                rs.getString("image_link"),
-                rs.getString("status"),
-                rs.getTimestamp("feedback_time")
-        );
-        return feedback;
-    }
+     public Feedback getFromResultSet(ResultSet rs) throws SQLException {
+         Feedback feedback = new Feedback(
+                 rs.getInt("id"),
+                 rs.getInt("user_id"),
+                 rs.getInt("reservation_id"),
+                 rs.getInt("service_id"),
+                 rs.getInt("rated_star"),
+                 rs.getString("content"),
+                 rs.getString("image_link"),
+                 rs.getString("status"),
+                 rs.getTimestamp("feedback_time")
+         );
+         return feedback;
+     }
 
     public boolean isFeedback(int reservation_id) {
         FeedbackDAO f = new FeedbackDAO();

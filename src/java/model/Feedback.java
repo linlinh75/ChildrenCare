@@ -12,15 +12,15 @@ import java.sql.Timestamp;
  */
 public class Feedback {
 
-    int id;
-    int user_id;
-    int reservation_id;
-    int service_id;
-    int rated_star;
-    String content;
-    String image_link;
-    String status;
-    Timestamp feedback_time;
+    private int id;
+    private int user_id;
+    private int reservation_id;
+    private int service_id;
+    private int rated_star;
+    private String content;
+    private String image_link;
+    private String status;
+    private Timestamp feedback_time;
 
     public Feedback() {
     }
