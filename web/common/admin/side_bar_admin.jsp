@@ -54,7 +54,7 @@
                     <a href="javascript:void(0)"><i class="uil uil-flip-h me-2 d-inline-block"></i>Blogs</a>
                     <div class="sidebar-submenu">
                         <ul>
-                            <li><a href="blogs.html">Blogs</a></li>
+                            <li><a href="post-list-admin">Blogs</a></li>
                             <li><a href="blog-detail.html">Blog Detail</a></li>
                         </ul>
                     </div>
