@@ -242,6 +242,28 @@ public class PostDAO extends DBContext {
         post.setStatusId(resultSet.getString("status"));
         return post;
     }
+    
+    public boolean addPost(Post post) {
+        String query = "INSERT INTO post (title, content, description, updated_date, featured, thumbnail_link, author_id, category_id, status) "
+                     + "VALUES (?, ?, ?, NOW(), ?, ?, ?, ?, ?)";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, post.getTitle());
+            stmt.setString(2, post.getContent());
+            stmt.setString(3, post.getDescription());
+            stmt.setBoolean(4, post.isFeatured());
+            stmt.setString(5, post.getThumbnailLink());
+            stmt.setInt(6, post.getAuthorId());
+            stmt.setInt(7, post.getCategoryId());
+            stmt.setString(8, post.getStatusId());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error adding new post", ex);
+            return false;
+        }
+    }
 
     public static void main(String[] args) {
         PostDAO postDAO = new PostDAO();

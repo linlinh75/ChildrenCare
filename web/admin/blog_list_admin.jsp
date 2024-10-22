@@ -237,14 +237,14 @@
 
                                     <nav aria-label="breadcrumb" class="d-inline-block mt-1">
                                         <ul class="breadcrumb breadcrumb-muted bg-transparent rounded mb-0 p-0">
-                                            <li class="breadcrumb-item"><a href="index.html">Doctris</a></li>
+                                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/HomeServlet">ChildrenCare</a></li>
                                             <li class="breadcrumb-item active" aria-current="page">Blogs</li>
                                         </ul>
                                     </nav>
                                 </div>
 
                                 <div class="mt-4 mt-sm-0">
-                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newblogadd">Add Blog</a>
+                                    <a href="post-list-admin?action=add" class="btn btn-primary" >Add Blog</a>
                                 </div>
                             </div>
 
