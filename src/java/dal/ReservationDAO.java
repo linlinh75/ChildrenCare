@@ -218,7 +218,30 @@ public class ReservationDAO extends DBContext {
         }
         return reservation;
     }
-    
+    public void changeStaffReservation(int reservation_id, int staff_id) {
+        try {
+            String sql = "update reservation set reservation.staff_id = ?\n"
+                    + "where reservation.id = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, staff_id);
+            stm.setInt(2, reservation_id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void submitReservation(int reservation_id) {
+        try {
+            String sql = "update reservation set reservation.status = ?\n"
+                    + "where reservation.id = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, "Submitted");
+            stm.setInt(2, reservation_id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public static void main(String[] args) {
         ReservationDAO userdao = new ReservationDAO();
         List<Reservation> ulist = userdao.getAllReservation();
