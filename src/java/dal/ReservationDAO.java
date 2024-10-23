@@ -4,6 +4,7 @@
  */
 package dal;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -449,5 +450,9 @@ public class ReservationDAO extends DBContext {
 //            System.out.println(u.getId());
 //            //System.out.println(u.getId());
 //        }
+    }
+
+    public void editCheckupTime(int rid, Date sqlDate) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

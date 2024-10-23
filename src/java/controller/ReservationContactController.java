@@ -129,31 +129,15 @@ public class ReservationContactController extends HttpServlet {
     private void addReceiverInfo(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException{
         User u = (User) request.getSession().getAttribute("user");
-        Receiver r = new Receiver();
         int rid = Integer.parseInt(request.getParameter("rid"));
         ReservationDAO reservationDB = new ReservationDAO();
-        ReceiverDAO receiverDB = new ReceiverDAO();
         String email = request.getParameter("email");
-        r.setEmail(email);
-        r.setFullName(request.getParameter("name"));
         if (u!=null){
-            r.setUser(u);
         } else {
             u = new User();
             u.setId(-1);
-            r.setUser(u);
         }
         
-        r.setGender(request.getParameter("gender").equals("male"));
-        r.setMobile(request.getParameter("mobile"));
-        r.setAddress(request.getParameter("address"));
-        if (!receiverDB.checkExistingReceiver(email)){
-            receiverDB.addReceiver(r);
-            Receiver newReceiver = receiverDB.getReceiverByEmail(email);
-            reservationDB.editReceiver(rid, newReceiver.getId());
-        } else{
-            reservationDB.editReceiver(rid, receiverDB.getReceiverByEmail(email).getId());
-        }
         
         String checkupTime = request.getParameter("checkup-time");
         try {
