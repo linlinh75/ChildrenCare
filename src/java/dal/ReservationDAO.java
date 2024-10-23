@@ -22,7 +22,7 @@ import model.ReservationService;
 public class ReservationDAO extends DBContext {
 
     ServiceDAO service = new ServiceDAO();
-    PreparedStatement stm;
+    static PreparedStatement stm;
     ResultSet rs;
 
     public List<Reservation> getAllReservation() {
