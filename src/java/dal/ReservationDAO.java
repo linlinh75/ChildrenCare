@@ -232,12 +232,34 @@ public class ReservationDAO extends DBContext {
         }
     }
 
-    public void submitReservation(int reservation_id) {
+    public int getTotal(int rid) {
+        try {
+            String sql = "SELECT SUM(unit_price) as total\n"
+                    + "FROM reservation_service\n"
+                    + "WHERE reservation_id=?";
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, rid);
+            rs=stm.executeQuery();
+            int total =0;
+            while(rs.next()){
+                total = rs.getInt("total");
+            }
+            return total;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+   public  void statusReservation(int reservation_id, String status) {
         try {
             String sql = "update reservation set reservation.status = ?\n"
                     + "where reservation.id = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, "Submitted");
+            stm = connection.prepareStatement(sql);
+            stm.setString(1, status);
             stm.setInt(2, reservation_id);
             stm.executeUpdate();
         } catch (SQLException ex) {
@@ -298,13 +320,14 @@ public class ReservationDAO extends DBContext {
     public static void main(String[] args) {
         ReservationDAO userdao = new ReservationDAO();
         List<Reservation> ulist = userdao.getAllReservation();
-        System.out.println(ulist.get(0).getCustomer_id());
-        System.out.println(ulist.get(0).getCheckup_time());
-        System.out.println(ulist.get(0).getList_service().get(0));
+//        System.out.println(ulist.get(0).getCustomer_id());
+//        System.out.println(ulist.get(0).getCheckup_time());
+//        System.out.println(ulist.get(0).getList_service().get(0));
 
 //        for (Reservation u : ulist) {
 //            System.out.println(u.getId());
 //            //System.out.println(u.getId());
 //        }
+            System.out.println(userdao.getTotal(1));
     }
 }

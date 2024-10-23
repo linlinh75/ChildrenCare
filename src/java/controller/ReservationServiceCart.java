@@ -21,7 +21,7 @@ import model.Reservation;
 public class ReservationServiceCart extends HttpServlet {
 
     private static final String CART_PAGE = "reservationServiceCart.jsp";
-    private static final String LOGIN_PAGE = "login";
+    private static final String LOGIN_PAGE = "login.jsp";
     private static final String SERVICE_PAGE = "service";
 
     @Override
@@ -201,10 +201,11 @@ public class ReservationServiceCart extends HttpServlet {
             reservation.setStatus("PENDING");
             reservation.setCheckup_time(checkupTime);
             reservation.setList_service(cart.getReservation().getList_service());
-
+            reservation.setPay_option(paymentMethod);
             // Save reservation to database
             ReservationDAO reservationDAO = new ReservationDAO();
             int reservationId = reservationDAO.insertReservation(reservation);
+            request.setAttribute("reservation", reservation);
 
             if (reservationId > 0) {
                 // Clear the cart after successful booking
@@ -214,7 +215,7 @@ public class ReservationServiceCart extends HttpServlet {
                 session.setAttribute("success", "Appointment booked successfully! Your reservation ID is: " + reservationId);
 
                 // Redirect to appropriate page
-                response.sendRedirect("reservation-service-cart");
+               request.getRequestDispatcher("reservecompletion").forward(request, response);
             } else {
                 throw new Exception("Failed to create reservation");
             }

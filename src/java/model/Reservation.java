@@ -20,7 +20,28 @@ public class Reservation {
     Timestamp checkup_time;
     List<ReservationService> list_service;
     String customer_name;
+    String pay_option;
 
+    public Reservation(int id, int customer_id, Timestamp reservation_date, String status, int staff_id, Timestamp checkup_time, List<ReservationService> list_service, String customer_name, String pay_option) {
+        this.id = id;
+        this.customer_id = customer_id;
+        this.reservation_date = reservation_date;
+        this.status = status;
+        this.staff_id = staff_id;
+        this.checkup_time = checkup_time;
+        this.list_service = list_service;
+        this.customer_name = customer_name;
+        this.pay_option = pay_option;
+    }
+
+    public String getPay_option() {
+        return pay_option;
+    }
+
+    public void setPay_option(String pay_option) {
+        this.pay_option = pay_option;
+    }
+    
     public int getId() {
         return id;
     }
