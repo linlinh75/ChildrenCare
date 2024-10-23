@@ -120,7 +120,7 @@ public class PostDAO extends DBContext {
         List<Post> posts = new ArrayList<>();
         try (
                 PreparedStatement statement = connection.prepareStatement(
-                        "SELECT * FROM post WHERE title LIKE ? OR content LIKE ? ORDER BY updated_date DESC LIMIT ?, ?")) {
+                        "SELECT * FROM post WHERE (title LIKE ? OR content LIKE ?) AND status = 'Published' ORDER BY updated_date DESC LIMIT ?, ?")) {
             statement.setString(1, "%" + query + "%");
             statement.setString(2, "%" + query + "%");
             statement.setInt(3, (pageNumber - 1) * pageSize);
@@ -242,11 +242,11 @@ public class PostDAO extends DBContext {
         post.setStatusId(resultSet.getString("status"));
         return post;
     }
-    
+
     public boolean addPost(Post post) {
         String query = "INSERT INTO post (title, content, description, updated_date, featured, thumbnail_link, author_id, category_id, status) "
-                     + "VALUES (?, ?, ?, NOW(), ?, ?, ?, ?, ?)";
-        
+                + "VALUES (?, ?, ?, NOW(), ?, ?, ?, ?, ?)";
+
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, post.getTitle());
             stmt.setString(2, post.getContent());
@@ -263,6 +263,74 @@ public class PostDAO extends DBContext {
             Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error adding new post", ex);
             return false;
         }
+    }
+
+    public boolean updatePost(Post post, String newImagePath) {
+        String query = "UPDATE post SET title=?, content=?, description=?, updated_date=NOW(), "
+                + (newImagePath != null ? "thumbnail_link=?, " : "")
+                + "category_id=?, status=? WHERE id=?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            int paramIndex = 1;
+            stmt.setString(paramIndex++, post.getTitle());
+            stmt.setString(paramIndex++, post.getContent());
+            stmt.setString(paramIndex++, post.getDescription());
+            if (newImagePath != null) {
+                stmt.setString(paramIndex++, newImagePath);
+            }
+            stmt.setInt(paramIndex++, post.getCategoryId());
+            stmt.setString(paramIndex++, post.getStatusId());
+            stmt.setInt(paramIndex++, post.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error updating post", ex);
+            return false;
+        }
+    }
+
+    public boolean hidePost(int postId) {
+        String query = "UPDATE post SET status = 'Hidden' WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, postId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error hiding post with ID: " + postId, ex);
+            return false;
+        }
+    }
+
+    public List<Post> getPostsWithPaginationAndStatus(int page, int postsPerPage, String status) {
+        List<Post> posts = new ArrayList<>();
+        String query = "SELECT * FROM post";
+
+        if (status != null && !status.equals("all")) {
+            query += " WHERE status = ?";
+        }
+
+        query += " ORDER BY updated_date DESC LIMIT ? OFFSET ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            int paramIndex = 1;
+            if (status != null && !status.equals("all")) {
+                stmt.setString(paramIndex++, status);
+            }
+            stmt.setInt(paramIndex++, postsPerPage);
+            stmt.setInt(paramIndex++, (page - 1) * postsPerPage);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Post post = getFromResultSet(rs);
+                    posts.add(post);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return posts;
     }
 
     public static void main(String[] args) {

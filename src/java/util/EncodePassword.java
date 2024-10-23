@@ -26,6 +26,6 @@ public class EncodePassword {
         return rs;
     }
     public static void main(String[] args) {
-        System.out.println(encodeToSHA1("123456"));
+        System.out.println(encodeToSHA1("Group3swp"));
     }
 }

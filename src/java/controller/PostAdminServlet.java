@@ -50,6 +50,12 @@ public class PostAdminServlet extends HttpServlet {
             case "add":
                 showAddForm(request, response);
                 break;
+            case "edit":
+                showEditForm(request, response);
+                break;
+            case "remove":
+                hidePost(request, response);
+                break;
             default:
                 listPosts(request, response);
                 break;
@@ -59,26 +65,68 @@ public class PostAdminServlet extends HttpServlet {
     private void listPosts(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int page = 1;
-        int postsPerPage = 8; // You can adjust this number
+        int postsPerPage = 8;
+        String status = request.getParameter("status");
 
         String pageParam = request.getParameter("page");
         if (pageParam != null && !pageParam.isEmpty()) {
             page = Integer.parseInt(pageParam);
         }
 
-        List<Post> posts = postDAO.getPostsWithPagination(page, postsPerPage);
-        int totalPosts = postDAO.getTotalPosts();
+        List<Post> posts;
+        if (status != null && !status.isEmpty()) {
+            posts = postDAO.getPostsWithPaginationAndStatus(page, postsPerPage, status);
+        } else {
+            posts = postDAO.getPostsWithPagination(page, postsPerPage);
+        }
+
+        int totalPosts = posts.size();
         int totalPages = (int) Math.ceil((double) totalPosts / postsPerPage);
 
         request.setAttribute("posts", posts);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("selectedStatus", status);
         request.getRequestDispatcher("admin/blog_list_admin.jsp").forward(request, response);
     }
 
     private void showAddForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.getRequestDispatcher("admin/add_post_admin.jsp").forward(request, response);
+    }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int postId = Integer.parseInt(request.getParameter("id"));
+        Post post = postDAO.getPostById(postId);
+
+        if (post != null) {
+            request.setAttribute("post", post);
+            request.getRequestDispatcher("admin/edit_post_admin.jsp").forward(request, response);
+        } else {
+            response.sendRedirect(request.getContextPath() + "/post-list-admin?action=list");
+        }
+    }
+
+    private void hidePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            int postId = Integer.parseInt(request.getParameter("id"));
+            boolean success = postDAO.hidePost(postId);
+
+            if (success) {
+                // Optionally add a success message
+                request.getSession().setAttribute("successMessage", "Post has been hidden successfully.");
+            } else {
+                // Optionally add an error message
+                request.getSession().setAttribute("errorMessage", "Failed to hide the post. Please try again.");
+            }
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid post ID.");
+        }
+
+        // Redirect back to the post list
+        response.sendRedirect(request.getContextPath() + "/post-list-admin?action=list");
     }
 
     @Override
@@ -92,6 +140,9 @@ public class PostAdminServlet extends HttpServlet {
         switch (action) {
             case "add":
                 addPost(request, response);
+                break;
+            case "update":
+                updatePost(request, response);
                 break;
             default:
                 listPosts(request, response);
@@ -139,6 +190,47 @@ public class PostAdminServlet extends HttpServlet {
         } else {
             request.setAttribute("error", "Failed to add the post. Please try again.");
             request.getRequestDispatcher("admin/add_post_admin.jsp").forward(request, response);
+        }
+    }
+
+    private void updatePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String title = request.getParameter("title");
+        String description = request.getParameter("description");
+        String content = request.getParameter("content");
+        int categoryId = Integer.parseInt(request.getParameter("category"));
+        String status = request.getParameter("status");
+
+        Post post = postDAO.getPostById(id);
+        post.setTitle(title);
+        post.setDescription(description);
+        post.setContent(content);
+        post.setCategoryId(categoryId);
+        post.setStatusId(status);
+
+        String newImagePath = null;
+        Part filePart = request.getPart("image");
+        if (filePart != null && filePart.getSize() > 0) {
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            String uploadPath = getServletContext().getRealPath("/uploads");
+            Files.createDirectories(Paths.get(uploadPath));
+
+            try (InputStream fileContent = filePart.getInputStream()) {
+                Files.copy(fileContent, Paths.get(uploadPath).resolve(fileName),
+                        StandardCopyOption.REPLACE_EXISTING);
+            }
+            newImagePath = request.getContextPath() + "/uploads/" + fileName;
+        }
+
+        boolean success = postDAO.updatePost(post, newImagePath);
+
+        if (success) {
+            response.sendRedirect(request.getContextPath() + "/post-list-admin?action=list");
+        } else {
+            request.setAttribute("error", "Failed to update the post. Please try again.");
+            request.setAttribute("post", post);
+            request.getRequestDispatcher("admin/edit_post_admin.jsp").forward(request, response);
         }
     }
 }

@@ -105,7 +105,7 @@ public class PostServlet extends HttpServlet {
         List<Post> searchResults = postDAO.searchPosts(query, POSTS_PER_PAGE, pageNumber);
         List<Post> recentPosts = postDAO.getNewest();
 
-        int totalPosts = postDAO.countSearchResults(query);
+        int totalPosts = searchResults.size();
         int totalPages = (int) Math.ceil((double) totalPosts / POSTS_PER_PAGE);
 
         request.setAttribute("listPost", searchResults);
@@ -121,11 +121,11 @@ public class PostServlet extends HttpServlet {
     private void handleListPosts(HttpServletRequest request, HttpServletResponse response, int pageNumber)
             throws ServletException, IOException {
         // Get paginated posts
-        List<Post> listPost = postDAO.getPostsWithPagination(pageNumber, POSTS_PER_PAGE);
+        List<Post> listPost = postDAO.getPostsWithPaginationAndStatus(pageNumber, POSTS_PER_PAGE, "Published");
         List<Post> recentPosts = postDAO.getNewest();
 
         // Calculate total pages
-        int totalPosts = postDAO.getTotalPosts();
+        int totalPosts = listPost.size();
         int totalPages = (int) Math.ceil((double) totalPosts / POSTS_PER_PAGE);
 
         request.setAttribute("listPost", listPost);

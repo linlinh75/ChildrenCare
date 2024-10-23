@@ -34,18 +34,18 @@
                 display: flex;
                 flex-wrap: wrap;
             }
-            
+
             .post-card {
                 display: flex;
                 flex-direction: column;
             }
-            
+
             .post-image {
                 width: 100%;
                 height: 200px; /* Adjust as needed */
                 object-fit: cover;
             }
-            
+
             .post-title {
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
@@ -53,13 +53,13 @@
                 overflow: hidden;
                 margin-bottom: 10px;
             }
-            
+
             .card-body {
                 display: flex;
                 flex-direction: column;
                 flex-grow: 1;
             }
-            
+
             .post-meta {
                 margin-top: auto;
             }
@@ -232,64 +232,85 @@
                     <jsp:include page="../common/common-homepage-header.jsp"></jsp:include>
                         <div class="layout-specing">
                             <div class="d-md-flex justify-content-between">
-                                <div>
-                                    <h5 class="mb-0">Blogs</h5>
-
-                                    <nav aria-label="breadcrumb" class="d-inline-block mt-1">
-                                        <ul class="breadcrumb breadcrumb-muted bg-transparent rounded mb-0 p-0">
-                                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/HomeServlet">ChildrenCare</a></li>
-                                            <li class="breadcrumb-item active" aria-current="page">Blogs</li>
-                                        </ul>
-                                    </nav>
-                                </div>
-
-                                <div class="mt-4 mt-sm-0">
-                                    <a href="post-list-admin?action=add" class="btn btn-primary" >Add Blog</a>
+                            <div class="mt-4 mt-sm-0">
+                                <a href="post-list-admin?action=add" class="btn btn-primary" >Add Blog</a>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">Filter by status:</span>
+                                    <div class="btn-group" role="group">
+                                        <a href="post-list-admin?status=all" class="btn btn-sm ${param.status == null || param.status == 'all' ? 'btn-primary' : 'btn-outline-primary'}">
+                                            All
+                                        </a>
+                                        <a href="post-list-admin?status=Published" class="btn btn-sm ${param.status == 'published' ? 'btn-primary' : 'btn-outline-success'}">
+                                            Published
+                                        </a>
+                                        <a href="post-list-admin?status=Hidden" class="btn btn-sm ${param.status == 'hidden' ? 'btn-primary' : 'btn-outline-secondary'}">
+                                            Hidden
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="row post-container">
-                                <c:forEach items="${posts}" var="post">
-                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12 mt-4">
-                                        <div class="card blog blog-primary border-0 shadow rounded overflow-hidden post-card h-100">
-                                            <img src="${post.thumbnailLink}" class="post-image" alt="">
-                                            <div class="card-body p-4 d-flex flex-column">
-                                                <ul class="list-unstyled mb-2">
-                                                    <li class="list-inline-item text-muted small me-3">
-                                                        <i class="uil uil-calendar-alt text-dark h6 me-1"></i>${post.updatedDate}
-                                                    </li>
-                                                </ul>
-                                                <a href="blog-detail.html" class="text-dark title h5 post-title">${post.title}</a>
-                                                <div class="post-meta mt-auto">
-                                                    <a href="blog-detail.html" class="link">Read More <i class="mdi mdi-chevron-right align-middle"></i></a>
-                                                </div>
+                        </div>
+                        <div class="row post-container">
+                            <c:forEach items="${posts}" var="post">
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-12 mt-4">
+                                    <div class="card blog blog-primary border-0 shadow rounded overflow-hidden post-card h-100">
+                                        <img src="${post.thumbnailLink}" class="post-image" alt="">
+                                        <div class="card-body p-4 d-flex flex-column">
+                                            <div class="mb-2">
+                                                <c:choose>
+                                                    <c:when test="${post.statusId == 'Published'}">
+                                                        <span class="badge bg-soft-success rounded-pill">Published</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-soft-danger rounded-pill">Hidden</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <ul class="list-unstyled mb-2">
+                                                <li class="list-inline-item text-muted small me-3">
+                                                    <i class="uil uil-calendar-alt text-dark h6 me-1"></i>${post.updatedDate}
+                                                </li>
+                                            </ul>
+                                            <a href="#" class="text-dark title h5 post-title">${post.title}</a>
+                                            <div class="post-meta mt-auto d-flex justify-content-between align-items-center">
+                                                <a href="post-list-admin?action=remove&id=${post.id}" class="btn btn-sm btn-soft-danger">
+                                                    <i class="uil uil-trash"></i> Remove
+                                                </a>
+                                                <a href="post-list-admin?action=edit&id=${post.id}" class="btn btn-sm btn-soft-warning">
+                                                    <i class="uil uil-edit"></i> Edit
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
-                                </c:forEach>
-                            </div><!--end row-->
-
-                            <div class="row">
-                                <div class="col-12 mt-4">
-                                    <nav aria-label="Page navigation">
-                                        <ul class="pagination justify-content-end mb-0">
-                                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                                <a class="page-link" href="?page=${currentPage - 1}" aria-label="Previous">Prev</a>
-                                            </li>
-                                            
-                                            <c:forEach begin="1" end="${totalPages}" var="i">
-                                                <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                                    <a class="page-link" href="?page=${i}">${i}</a>
-                                                </li>
-                                            </c:forEach>
-                                            
-                                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                                <a class="page-link" href="?page=${currentPage + 1}" aria-label="Next">Next</a>
-                                            </li>
-                                        </ul>
-                                    </nav>
                                 </div>
+                            </c:forEach>
+                        </div><!--end row-->
+
+                        <div class="row">
+                            <div class="col-12 mt-4">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-end mb-0">
+                                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                            <a class="page-link" href="?page=${currentPage - 1}" aria-label="Previous">Prev</a>
+                                        </li>
+
+                                        <c:forEach begin="1" end="${totalPages}" var="i">
+                                            <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                                <a class="page-link" href="?page=${i}">${i}</a>
+                                            </li>
+                                        </c:forEach>
+
+                                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                            <a class="page-link" href="?page=${currentPage + 1}" aria-label="Next">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
+                        </div>
                     </div>
 
                     <!--Footer-->

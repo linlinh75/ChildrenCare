@@ -363,19 +363,19 @@
                                             </thead>
                                             <tbody>
                                                 <c:set var="totalPrice" value="0" />
-                                                <c:forEach var="service" items="${unrate.getListService()}">
+                                                <c:forEach var="service" items="${unrate.getList_service()}">
                                                     <tr>
-                                                        <td>${service.getServiceName()}</td>
+                                                        <td>${service.getService_name()}</td>
                                                         <td>${service.getQuantity()}</td>
-                                                        <td>${service.getUnitPrice()}</td>
-                                                        <td>${service.getQuantity() * service.getUnitPrice()}</td>
-                                                        <c:set var="totalPrice" value="${totalPrice + service.getQuantity() * service.getUnitPrice()}" />
+                                                        <td>${service.getUnit_price()}</td>
+                                                        <td>${service.getQuantity() * service.getUnit_price()}</td>
+                                                        <c:set var="totalPrice" value="${totalPrice + service.getQuantity() * service.getUnit_price()}" />
                                                     </tr>
                                                 </c:forEach>
                                             </tbody>
                                         </table>
                                         <h5>Total Price: ${totalPrice}</h5>
-                                        <a href="feedback-form.jsp?reservationId=${unrate.getId()}" class="btn btn-primary">Give Feedback</a>
+                                        <a href="customer-feedback?reservationId=${unrate.getId()}&&action=provide" class="btn btn-primary">Give Feedback</a>
                                     </div>
                                 </div>
                             </c:forEach>
