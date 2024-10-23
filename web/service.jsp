@@ -44,7 +44,7 @@
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-        
+
         <style>
             .star-rating {
                 color: #ffc107; /* Màu vàng cho sao */
@@ -112,28 +112,28 @@
                                                 <div class="star-rating">
                                                     <c:set var="averageRating" value="${serviceservlet.getAverageRating(service.id)}" />
                                                     <c:choose>
-        <c:when test="${averageRating > 0}">
-            <c:forEach begin="1" end="5" var="i">
-                <c:choose>
-                    <c:when test="${i <= averageRating}">
-                        <i class="fas fa-star"></i>
-                    </c:when>
-                    <c:when test="${i > averageRating && i - 1 < averageRating}">
-                        <i class="fas fa-star-half-alt"></i>
-                    </c:when>
-                    <c:otherwise>
-                        <i class="far fa-star"></i>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-            <span><fmt:formatNumber value="${averageRating}" maxFractionDigits="1" /></span>
-        </c:when>
-        <c:otherwise>
-    <c:forEach begin="1" end="5">
-        <i class="far fa-star"></i>
-    </c:forEach>
-</c:otherwise>
-    </c:choose>
+                                                        <c:when test="${averageRating > 0}">
+                                                            <c:forEach begin="1" end="5" var="i">
+                                                                <c:choose>
+                                                                    <c:when test="${i <= averageRating}">
+                                                                        <i class="fas fa-star"></i>
+                                                                    </c:when>
+                                                                    <c:when test="${i > averageRating && i - 1 < averageRating}">
+                                                                        <i class="fas fa-star-half-alt"></i>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <i class="far fa-star"></i>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </c:forEach>
+                                                            <span><fmt:formatNumber value="${averageRating}" maxFractionDigits="1" /></span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:forEach begin="1" end="5">
+                                                                <i class="far fa-star"></i>
+                                                            </c:forEach>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </div>
                                             </div>
                                         </div>
@@ -182,7 +182,7 @@
 
         <!-- Footer Area -->
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
-        <!-- End Footer Area -->
+            <!-- End Footer Area -->
 
         <!-- jquery Min JS -->
         <script src="js/jquery.min.js"></script>

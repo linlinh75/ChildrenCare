@@ -120,7 +120,7 @@ public class PostDAO extends DBContext {
         List<Post> posts = new ArrayList<>();
         try (
                 PreparedStatement statement = connection.prepareStatement(
-                        "SELECT * FROM post WHERE (title LIKE ? OR content LIKE ?) AND status = 'Published' ORDER BY updated_date DESC LIMIT ?, ?")) {
+                        "SELECT * FROM post WHERE title LIKE ? OR content LIKE ? ORDER BY updated_date DESC LIMIT ?, ?")) {
             statement.setString(1, "%" + query + "%");
             statement.setString(2, "%" + query + "%");
             statement.setInt(3, (pageNumber - 1) * pageSize);

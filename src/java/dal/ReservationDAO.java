@@ -22,7 +22,7 @@ import model.ReservationService;
 public class ReservationDAO extends DBContext {
 
     ServiceDAO service = new ServiceDAO();
-    static PreparedStatement stm;
+    PreparedStatement stm;
     ResultSet rs;
 
     public List<Reservation> getAllReservation() {
@@ -200,7 +200,7 @@ public class ReservationDAO extends DBContext {
                     );
 
                     reservation.getList_service().add(reservationService);
-                } while (rs.next()); 
+                } while (rs.next());
             }
         } catch (SQLException ex) {
             Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -218,6 +218,7 @@ public class ReservationDAO extends DBContext {
         }
         return reservation;
     }
+
     public void changeStaffReservation(int reservation_id, int staff_id) {
         try {
             String sql = "update reservation set reservation.staff_id = ?\n"
@@ -230,6 +231,7 @@ public class ReservationDAO extends DBContext {
             Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public void submitReservation(int reservation_id) {
         try {
             String sql = "update reservation set reservation.status = ?\n"
@@ -242,6 +244,57 @@ public class ReservationDAO extends DBContext {
             Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public int insertReservation(Reservation reservation) throws SQLException {
+        connection.setAutoCommit(false);
+        int reservationId = 0;
+
+        try {
+            // Insert into reservation table
+            String sql = "INSERT INTO reservation (customer_id, reservation_date, status, checkup_time) "
+                    + "VALUES (?, ?, ?, ?)";
+
+            PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            stmt.setInt(1, reservation.getCustomer_id());
+            stmt.setTimestamp(2, reservation.getReservation_date());
+            stmt.setString(3, reservation.getStatus());
+            stmt.setTimestamp(4, reservation.getCheckup_time());
+
+            stmt.executeUpdate();
+
+            // Get the generated reservation ID
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                reservationId = rs.getInt(1);
+            }
+
+            // Insert reservation services
+            sql = "INSERT INTO reservation_service (reservation_id, service_id, quantity, unit_price) "
+                    + "VALUES (?, ?, ?, ?)";
+            stmt = connection.prepareStatement(sql);
+
+            for (ReservationService service : reservation.getList_service()) {
+                stmt.setInt(1, reservationId);
+                stmt.setInt(2, service.getService_id());
+                stmt.setInt(3, 1); // Quantity is always 1
+                stmt.setFloat(4, service.getUnit_price());
+                stmt.executeUpdate();
+            }
+
+            // Commit the transaction
+            connection.commit();
+            return reservationId;
+
+        } catch (SQLException e) {
+            // Rollback in case of error
+            connection.rollback();
+            throw e;
+        } finally {
+            // Reset auto-commit to true
+            connection.setAutoCommit(true);
+        }
+    }
+
     public static void main(String[] args) {
         ReservationDAO userdao = new ReservationDAO();
         List<Reservation> ulist = userdao.getAllReservation();

@@ -30,7 +30,7 @@
                   </div>
                     
                         <c:if test="${erChange!=null}">
-                            <div class="container-fluid bg-danger text-center">
+                            <div class="alert alert-danger mb-3" role="alert">
                                 ${erChange}
                             </div>
                         </c:if>
@@ -52,7 +52,7 @@
                   </div>
                     <div class="pt-1 mb-4 col-md-6">
                         <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="button" name="undo" value="undo">
-                            <a href="http://localhost:8080/ChildrenCare/user/profile.jsp">Un-do Change Password</a>
+                            <a href="profile">Un-do Change Password</a>
                         </button>
                   </div>
                     </div>
