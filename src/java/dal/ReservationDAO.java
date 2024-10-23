@@ -22,7 +22,7 @@ import model.ReservationService;
 public class ReservationDAO extends DBContext {
 
     ServiceDAO service = new ServiceDAO();
-    PreparedStatement stm;
+    static PreparedStatement stm;
     ResultSet rs;
 
     public List<Reservation> getAllReservation() {
@@ -230,12 +230,12 @@ public class ReservationDAO extends DBContext {
             Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void submitReservation(int reservation_id) {
+    public  void statusReservation(int reservation_id, String status) {
         try {
             String sql = "update reservation set reservation.status = ?\n"
                     + "where reservation.id = ?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, "Submitted");
+            stm = connection.prepareStatement(sql);
+            stm.setString(1, status);
             stm.setInt(2, reservation_id);
             stm.executeUpdate();
         } catch (SQLException ex) {
