@@ -44,7 +44,7 @@
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-        
+
         <style>
             .star-rating {
                 color: #ffc107; /* Màu vàng cho sao */
@@ -53,25 +53,6 @@
         <!-- Color CSS -->
         <link rel="stylesheet" href="css/color/color1.css">
         <link rel="stylesheet" id="colors">
-        <style>
-            .sticky-cart-button {
-                position: fixed;
-                bottom: 100px;
-                right: 20px;
-                z-index: 1000;
-            }
-
-            .sticky-cart-button .btn {
-                padding: 10px 20px;
-                font-size: 16px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                transition: all 0.3s ease-in-out;
-            }
-
-            .sticky-cart-button .btn:hover {
-                transform: scale(1.05);
-            }
-        </style>
     </head>
     <body>
         <!-- Preloader -->
@@ -131,28 +112,28 @@
                                                 <div class="star-rating">
                                                     <c:set var="averageRating" value="${serviceservlet.getAverageRating(service.id)}" />
                                                     <c:choose>
-        <c:when test="${averageRating > 0}">
-            <c:forEach begin="1" end="5" var="i">
-                <c:choose>
-                    <c:when test="${i <= averageRating}">
-                        <i class="fas fa-star"></i>
-                    </c:when>
-                    <c:when test="${i > averageRating && i - 1 < averageRating}">
-                        <i class="fas fa-star-half-alt"></i>
-                    </c:when>
-                    <c:otherwise>
-                        <i class="far fa-star"></i>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-            <span><fmt:formatNumber value="${averageRating}" maxFractionDigits="1" /></span>
-        </c:when>
-        <c:otherwise>
-    <c:forEach begin="1" end="5">
-        <i class="far fa-star"></i>
-    </c:forEach>
-</c:otherwise>
-    </c:choose>
+                                                        <c:when test="${averageRating > 0}">
+                                                            <c:forEach begin="1" end="5" var="i">
+                                                                <c:choose>
+                                                                    <c:when test="${i <= averageRating}">
+                                                                        <i class="fas fa-star"></i>
+                                                                    </c:when>
+                                                                    <c:when test="${i > averageRating && i - 1 < averageRating}">
+                                                                        <i class="fas fa-star-half-alt"></i>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <i class="far fa-star"></i>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </c:forEach>
+                                                            <span><fmt:formatNumber value="${averageRating}" maxFractionDigits="1" /></span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:forEach begin="1" end="5">
+                                                                <i class="far fa-star"></i>
+                                                            </c:forEach>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </div>
                                             </div>
                                         </div>
@@ -193,50 +174,6 @@
                             </div>
                         </div>
                     </div>
-<<<<<<< HEAD
-                </section>
-                /End Appointment 
-        
-                 Start Newsletter Area 
-                <section class="newsletter section">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-lg-6 col-12">
-                                 Start Newsletter Form 
-                                <div class="subscribe-text">
-                                    <h6>Sign up for newsletter</h6>
-                                    <p class="">
-                                        Cu qui soleat partiendo urbanitas. Eum aperiri indoctum eu,<br>
-                                        homero alterum.
-                                    </p>
-                                </div>
-                                 End Newsletter Form 
-                            </div>
-                            <div class="col-lg-6 col-12">
-                                 Start Newsletter Form 
-                                <div class="subscribe-form">
-                                    <form action="mail/mail.php" method="get" class="newsletter-inner">
-                                        <input name="EMAIL" placeholder="Your email address" class="common-input" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your email address'" required="" type="email">
-                                        <button class="btn">Subscribe</button>
-                                    </form>
-                                </div>
-                                 End Newsletter Form 
-                            </div>
-                        </div>
-                    </div>
-                </section>-->
-        <!-- /End Newsletter Area -->
-        <div class="sticky-cart-button">
-            <a href="./customer-cart" class="btn btn-primary">
-                <i class="fa fa-shopping-cart"></i> View Cart
-            </a>
-        </div>
-        <!-- Footer Area -->
-        <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
-        <!--/ End Footer Area -->
-        <script src="js/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-=======
                 </c:if>
                 <!-- End Pagination -->
             </div>
@@ -245,7 +182,7 @@
 
         <!-- Footer Area -->
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
-        <!-- End Footer Area -->
+            <!-- End Footer Area -->
 
         <!-- jquery Min JS -->
         <script src="js/jquery.min.js"></script>
@@ -288,6 +225,5 @@
         <script src="js/bootstrap.min.js"></script>
         <!-- Main JS -->
         <script src="js/main.js"></script>
->>>>>>> fb60e0629eb478e95712b4076716d6079506691c
     </body>
 </html>

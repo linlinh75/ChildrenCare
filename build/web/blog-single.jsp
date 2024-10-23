@@ -48,9 +48,6 @@
     </head>
     <body>
 
-<<<<<<< HEAD
-
-=======
         <!-- Get Pro Button -->
 <!--        <ul class="pro-features">
             <a class="get-pro" href="#">Get Pro</a>
@@ -66,7 +63,6 @@
                 <a href="https://themeforest.net/item/mediplus-medical-and-doctor-html-template/26665910" target="_blank" class="btn">Buy Pro Version</a>
             </div>
         </ul>-->
->>>>>>> fb60e0629eb478e95712b4076716d6079506691c
 
         <!-- Header Area -->
         <jsp:include page="common/common-homepage-header.jsp"></jsp:include>
@@ -143,14 +139,6 @@
                     <div class="col-lg-4 col-12">
                         <div class="main-sidebar">
                             <!-- Single Widget -->
-<<<<<<< HEAD
-<!--                            <div class="single-widget search">
-                                <div class="form">
-                                    <input type="email" placeholder="Search Here...">
-                                    <a class="button" href="#"><i class="fa fa-search"></i></a>
-                                </div>
-                            </div>-->
-=======
                             <div class="single-widget search">
                                 <form action="post" method="get">
                                     <input type="hidden" name="action" value="search">
@@ -158,7 +146,6 @@
                                     <button type="submit" class="button"><i class="fa fa-search"></i></button>
                                 </form>
                             </div>
->>>>>>> fb60e0629eb478e95712b4076716d6079506691c
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
 <!--                            <div class="single-widget category">
@@ -247,6 +234,45 @@
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
         <!--/ End Footer Area -->
 
-       
+        <!-- jquery Min JS -->
+        <script src="js/jquery.min.js"></script>
+        <!-- jquery Migrate JS -->
+        <script src="js/jquery-migrate-3.0.0.js"></script>
+        <!-- jquery Ui JS -->
+        <script src="js/jquery-ui.min.js"></script>
+        <!-- Easing JS -->
+        <script src="js/easing.js"></script>
+        <!-- Color JS -->
+        <script src="js/colors.js"></script>
+        <!-- Popper JS -->
+        <script src="js/popper.min.js"></script>
+        <!-- Bootstrap Datepicker JS -->
+        <script src="js/bootstrap-datepicker.js"></script>
+        <!-- Jquery Nav JS -->
+        <script src="js/jquery.nav.js"></script>
+        <!-- Slicknav JS -->
+        <script src="js/slicknav.min.js"></script>
+        <!-- ScrollUp JS -->
+        <script src="js/jquery.scrollUp.min.js"></script>
+        <!-- Niceselect JS -->
+        <script src="js/niceselect.js"></script>
+        <!-- Tilt Jquery JS -->
+        <script src="js/tilt.jquery.min.js"></script>
+        <!-- Owl Carousel JS -->
+        <script src="js/owl-carousel.js"></script>
+        <!-- counterup JS -->
+        <script src="js/jquery.counterup.min.js"></script>
+        <!-- Steller JS -->
+        <script src="js/steller.js"></script>
+        <!-- Wow JS -->
+        <script src="js/wow.min.js"></script>
+        <!-- Magnific Popup JS -->
+        <script src="js/jquery.magnific-popup.min.js"></script>
+        <!-- Counter Up CDN JS -->
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="js/bootstrap.min.js"></script>
+        <!-- Main JS -->
+        <script src="js/main.js"></script>
     </body>
 </html>

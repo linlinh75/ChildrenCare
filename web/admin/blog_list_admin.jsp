@@ -275,7 +275,7 @@
                                                     <i class="uil uil-calendar-alt text-dark h6 me-1"></i>${post.updatedDate}
                                                 </li>
                                             </ul>
-                                            <a href="#" class="text-dark title h5 post-title">${post.title}</a>
+                                            <a href="blog-detail.html" class="text-dark title h5 post-title">${post.title}</a>
                                             <div class="post-meta mt-auto d-flex justify-content-between align-items-center">
                                                 <a href="post-list-admin?action=remove&id=${post.id}" class="btn btn-sm btn-soft-danger">
                                                     <i class="uil uil-trash"></i> Remove

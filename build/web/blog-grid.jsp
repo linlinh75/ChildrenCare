@@ -43,25 +43,6 @@
         <link rel="stylesheet" href="css/responsive.css">
     </head>
     <body>
-<<<<<<< HEAD
-        <!-- Preloader -->
-        <div class="preloader">
-            <div class="loader">
-                <div class="loader-outter"></div>
-                <div class="loader-inner"></div>
-
-                <div class="indicator">
-                    <svg width="16px" height="12px">
-                    <polyline id="back" points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
-                    <polyline id="front" points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
-                    </svg>
-                </div>
-            </div>
-        </div>
-        <!-- End Preloader -->
-
-=======
->>>>>>> fb60e0629eb478e95712b4076716d6079506691c
         <!-- Header Area -->
         <jsp:include page="common/common-homepage-header.jsp"></jsp:include>
             <!-- End Header Area -->
@@ -143,14 +124,6 @@
                     <div class="col-lg-4 col-12">
                         <div class="main-sidebar">
                             <!-- Single Widget -->
-<<<<<<< HEAD
-<!--                            <div class="single-widget search">
-                                <div class="form">
-                                    <input type="email" placeholder="Search Here...">
-                                    <a class="button" href="#"><i class="fa fa-search"></i></a>
-                                </div>
-                            </div>-->
-=======
                             <div class="single-widget search">
                                 <form action="post" method="get">
                                     <input type="hidden" name="action" value="search">
@@ -158,7 +131,6 @@
                                     <button type="submit" class="button"><i class="fa fa-search"></i></button>
                                 </form>
                             </div>
->>>>>>> fb60e0629eb478e95712b4076716d6079506691c
                             <!--/ End Single Widget -->
 
                             <!-- Single Widget -->
@@ -174,12 +146,7 @@
 
                             <!-- Single Widget -->
                             <div class="single-widget recent-post">
-<<<<<<< HEAD
-                                <h3 class="title">Recent post</h3>
-                                <!-- Single Post -->
-=======
                                 <h3 class="title">Recent Posts</h3>
->>>>>>> fb60e0629eb478e95712b4076716d6079506691c
                                 <c:forEach var="recentPost" items="${recentPosts}">
                                     <!-- Single Post -->
                                     <div class="single-post">
@@ -190,35 +157,12 @@
                                             <h5><a href="post?action=detail&id=${recentPost.id}">${recentPost.title}</a></h5>
                                             <ul class="comment">
                                                 <li><i class="fa fa-calendar" aria-hidden="true"></i>${recentPost.updatedDate}</li>
-<<<<<<< HEAD
-                                                <!--<li><i class="fa fa-user" aria-hidden="true"></i>${recentPost.authorId}</li>-->
-=======
->>>>>>> fb60e0629eb478e95712b4076716d6079506691c
                                             </ul>
                                         </div>
                                     </div>
                                     <!-- End Single Post -->
                                 </c:forEach>
-<<<<<<< HEAD
-                                <!-- End Single Post -->
                             </div>
-                            <!--/ End Single Widget -->
-                            <!-- Single Widget -->
-<!--                            <div class="single-widget side-tags">
-                                <h3 class="title">Tags</h3>
-                                <ul class="tag">
-                                    <li><a href="#">business</a></li>
-                                    <li><a href="#">wordpress</a></li>
-                                    <li><a href="#">html</a></li>
-                                    <li><a href="#">multipurpose</a></li>
-                                    <li><a href="#">education</a></li>
-                                    <li><a href="#">template</a></li>
-                                    <li><a href="#">Ecommerce</a></li>
-                                </ul>
-                            </div>-->
-=======
-                            </div>
->>>>>>> fb60e0629eb478e95712b4076716d6079506691c
                             <!--/ End Single Widget -->
                         </div>
                     </div>
@@ -231,9 +175,6 @@
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
         <!--/ End Footer Area -->
 
-<<<<<<< HEAD
-        
-=======
         <!-- jquery Min JS -->
         <script src="js/jquery.min.js"></script>
         <!-- jquery Migrate JS -->
@@ -275,6 +216,5 @@
         <script src="js/bootstrap.min.js"></script>
         <!-- Main JS -->
         <script src="js/main.js"></script>
->>>>>>> fb60e0629eb478e95712b4076716d6079506691c
     </body>
 </html>

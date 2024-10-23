@@ -116,30 +116,8 @@
         <servlet-name>dashboard</servlet-name>
         <url-pattern>/admin-dashboard</url-pattern>
     </servlet-mapping>
-<<<<<<< HEAD
-    <servlet>
-        <servlet-name>CartController</servlet-name>
-        <servlet-class>controller.CartController</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>CartController</servlet-name>
-        <url-pattern>/customer-addcart</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CartController</servlet-name>
-        <url-pattern>/customer-editcart</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CartController</servlet-name>
-        <url-pattern>/customer-deletecart</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CartController</servlet-name>
-        <url-pattern>/customer-cart</url-pattern>
-=======
     <servlet-mapping>
         <servlet-name>ReservationCompletionServlet</servlet-name>
         <url-pattern>/reservecompletion</url-pattern>
->>>>>>> fb60e0629eb478e95712b4076716d6079506691c
     </servlet-mapping>
 </web-app>

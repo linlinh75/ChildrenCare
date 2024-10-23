@@ -74,7 +74,7 @@ public class ReservationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-    }
+        }
 
     /**
      * Returns a short description of the servlet.
@@ -86,4 +86,4 @@ public class ReservationServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-}
+        }
