@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import static java.time.LocalDateTime.now;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -61,12 +62,12 @@ public class UserDAO extends DBContext {
                             rs.getInt("id"),
                             rs.getString("email"),
                             rs.getString("password"),
-                            rs.getString("fullName"),
+                            rs.getString("full_name"),
                             rs.getBoolean("gender"),
                             rs.getString("mobile"),
                             rs.getString("address"),
-                            rs.getString("imageLink"),
-                            rs.getInt("roleId"),
+                            rs.getString("image_link"),
+                            rs.getInt("role_id"),
                             rs.getString("status")
                     );
                 }
@@ -259,40 +260,67 @@ public class UserDAO extends DBContext {
             return false;
         }
     }
-
-    public static void main(String[] args) {
-        UserDAO userdao = new UserDAO();
-        List<User> ulist = userdao.getAllUser();
-        for (User u : ulist) {
-            System.out.println(u.getId());
-            //System.out.println(u.getId());
-        }
-        User newUser = new User();
-            newUser.setEmail("thanhthanh16102004@gmail.com");
-            newUser.setPassword("Thanhcute16");
-            newUser.setFullName("Thanhne");
-            newUser.setGender(false);
-            newUser.setMobile("0902004117");
-            newUser.setAddress("123 Test Street");
-            newUser.setImageLink("assets/images/default.png");
-            newUser.setRoleId(4);
-            newUser.setStatus("Activate");
-
-            try {
-            int result = userdao.addUser(newUser);
-            if (result > 0) {
-            System.out.println("User added successfully!");
-            } else {
-            System.out.println("Failed to add user.");
-            }
-            } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public List<User> listDoctorFree(Timestamp registeredTime){
+        List<User> freeDoctors = new ArrayList<>();
         try {
-            System.out.println(userdao.getUserByEmail("thanhthanh16102004@gmail.com"));
+            String sql = "Select * from work_schedule where start_at>? or end_at<?";
+            stm = connection.prepareStatement(sql);
+            stm.setTimestamp(1, registeredTime);
+            stm.setTimestamp(2, registeredTime);
+            rs = stm.executeQuery();
+            while(rs.next()){
+                User doc = getProfileById(rs.getInt("doctor_id"));
+                freeDoctors.add(doc);
+            }
+            return freeDoctors;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
+        
+        
     }
+    public static void main(String[] args) {
+        UserDAO userdao = new UserDAO();
+//        List<User> ulist = userdao.getAllUser();
+//        for (User u : ulist) {
+//            System.out.println(u.getId());
+//            //System.out.println(u.getId());
+//        }
+//        User newUser = new User();
+//            newUser.setEmail("thanhthanh16102004@gmail.com");
+//            newUser.setPassword("Thanhcute16");
+//            newUser.setFullName("Thanhne");
+//            newUser.setGender(false);
+//            newUser.setMobile("0902004117");
+//            newUser.setAddress("123 Test Street");
+//            newUser.setImageLink("assets/images/default.png");
+//            newUser.setRoleId(4);
+//            newUser.setStatus("Activate");
+//
+//            try {
+//            int result = userdao.addUser(newUser);
+//            if (result > 0) {
+//            System.out.println("User added successfully!");
+//            } else {
+//            System.out.println("Failed to add user.");
+//            }
+//            } catch (SQLException ex) {
+//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        try {
+//            System.out.println(userdao.getUserByEmail("thanhthanh16102004@gmail.com"));
+//        } catch (SQLException ex) {
+//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            //        LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("registeredTime"), formatter);
+            LocalDateTime dateTime = LocalDateTime.parse("2024-10-20 08:19:10", formatter);
+            Timestamp registeredTime = Timestamp.valueOf(dateTime);
+             for(User d: userdao.listDoctorFree(registeredTime))   {
+                 System.out.println(d.toString());
+             }
+   }
+            
 
 }

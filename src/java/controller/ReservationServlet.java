@@ -42,7 +42,6 @@ public class ReservationServlet extends HttpServlet {
             HttpSession session = request.getSession();
             User loggedInUser = (User) session.getAttribute("account");
             List<Reservation> list_reservation = res.getReservationbyCustomerId(loggedInUser.getId());
-            list_reservation.get(0).getList_service().get(0).getService_name();
             request.setAttribute("reservation", list_reservation);
             request.getRequestDispatcher("customer-reservation.jsp").forward(request, response);
         }

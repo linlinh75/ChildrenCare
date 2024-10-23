@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="css/responsive.css">
 </head>
-<footer id="footer" class="footer ">
+<footer id="footer" class="footer " style="margin-top:50px">
     <!-- Footer Top -->
     <div class="footer-top">
         <div class="container">

@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -42,10 +43,15 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
-
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        
+        <style>
+            .star-rating {
+                color: #ffc107; /* Màu vàng cho sao */
+            }
+        </style>
         <!-- Color CSS -->
         <link rel="stylesheet" href="css/color/color1.css">
-
         <link rel="stylesheet" id="colors">
         <style>
             .sticky-cart-button {
@@ -73,8 +79,12 @@
             <div class="loader">
                 <div class="loader-outter"></div>
                 <div class="loader-inner"></div>
+<<<<<<< HEAD
 
                 <div class="indicator">
+=======
+                <div class="indicator"> 
+>>>>>>> fb60e0629eb478e95712b4076716d6079506691c
                     <svg width="16px" height="12px">
                     <polyline id="back" points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
                     <polyline id="front" points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
@@ -106,6 +116,7 @@
             </div>
             <!-- End Breadcrumbs -->
 
+<<<<<<< HEAD
             <!-- Start service -->
             <section class="services section">
                 <div class="container">
@@ -119,12 +130,95 @@
                                 <p>Price: ${service.originalPrice} $</p>
                                 <p>Sale price: ${service.salePrice} $</p>
                                 <p>${service.description}</p>
+=======
+            <!-- Start Service -->
+            <section class="blog section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-12">
+                            <div class="row">
+                            <c:forEach var="service" items="${serviceList}">
+                                <div class="col-lg-4 col-md-6 col-12">
+                                    <div class="single-news">
+                                        <div class="news-head">
+                                            <img src="${pageContext.request.contextPath}/${service.thumbnailLink}" alt="#">
+                                        </div>
+                                        <div class="news-body">
+                                            <div class="news-content">
+                                                <div class="date">${service.updatedDate}</div>
+                                                <h2><a href="service?action=details&id=${service.id}&page=${currentPage}">${service.fullname}</a></h2>
+                                                <p>${service.description}</p>
+                                                <div class="star-rating">
+                                                    <c:set var="averageRating" value="${serviceservlet.getAverageRating(service.id)}" />
+                                                    <c:choose>
+        <c:when test="${averageRating > 0}">
+            <c:forEach begin="1" end="5" var="i">
+                <c:choose>
+                    <c:when test="${i <= averageRating}">
+                        <i class="fas fa-star"></i>
+                    </c:when>
+                    <c:when test="${i > averageRating && i - 1 < averageRating}">
+                        <i class="fas fa-star-half-alt"></i>
+                    </c:when>
+                    <c:otherwise>
+                        <i class="far fa-star"></i>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+            <span><fmt:formatNumber value="${averageRating}" maxFractionDigits="1" /></span>
+        </c:when>
+        <c:otherwise>
+    <c:forEach begin="1" end="5">
+        <i class="far fa-star"></i>
+    </c:forEach>
+</c:otherwise>
+    </c:choose>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-12">
+                        <div class="main-sidebar">
+                            <!-- Single Widget -->
+                            <div class="single-widget search">
+                                <form action="service" method="get">
+                                    <input type="hidden" name="action" value="search">
+                                    <input type="text" name="query" placeholder="Search Services..." value="${searchQuery}">
+                                    <button type="submit" class="button"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div>
+                            <!--/ End Single Widget -->
+
+                            <!-- You can add more widgets here, such as recent services or categories -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <c:if test="${noOfPages > 1}">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="pagination">
+                                <ul class="pagination-list">
+                                    <c:forEach begin="1" end="${noOfPages}" var="i">
+                                        <li class="${currentPage eq i ? 'active' : ''}">
+                                            <a href="service?page=${i}">${i}</a>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+>>>>>>> fb60e0629eb478e95712b4076716d6079506691c
                             </div>
                         </div>
-                    </c:forEach>
-                </div>
+                    </div>
+                </c:if>
+                <!-- End Pagination -->
             </div>
         </section>
+<<<<<<< HEAD
         <!--/ End service -->
 
         <!-- clients -->
@@ -308,5 +402,54 @@
         <!--/ End Footer Area -->
         <script src="js/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+=======
+        <!-- End Blog Posts -->
+
+        <!-- Footer Area -->
+        <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
+        <!-- End Footer Area -->
+
+        <!-- jquery Min JS -->
+        <script src="js/jquery.min.js"></script>
+        <!-- jquery Migrate JS -->
+        <script src="js/jquery-migrate.js"></script>
+        <!-- jquery Ui JS -->
+        <script src="js/jquery-ui.min.js"></script>
+        <!-- Easing JS -->
+        <script src="js/easing.js"></script>
+        <!-- Color JS -->
+        <script src="js/colors.js"></script>
+        <!-- Popper JS -->
+        <script src="js/popper.min.js"></script>
+        <!-- Bootstrap Datepicker JS -->
+        <script src="js/bootstrap-datepicker.js"></script>
+        <!-- Jquery Nav JS -->
+        <script src="js/jquery.nav.js"></script>
+        <!-- Slicknav JS -->
+        <script src="js/slicknav.min.js"></script>
+        <!-- ScrollUp JS -->
+        <script src="js/jquery.scrollUp.min.js"></script>
+        <!-- Niceselect JS -->
+        <script src="js/niceselect.js"></script>
+        <!-- Tilt Jquery JS -->
+        <script src="js/tilt.jquery.min.js"></script>
+        <!-- Owl Carousel JS -->
+        <script src="js/owl-carousel.js"></script>
+        <!-- counterup JS -->
+        <script src="js/jquery.counterup.min.js"></script>
+        <script src="js/waypoints.min.js"></script>
+        <!-- Steller JS -->
+        <script src="js/steller.js"></script>
+        <!-- Wow JS -->
+        <script src="js/wow.min.js"></script>
+        <!-- Magnific Popup JS -->
+        <script src="js/jquery.magnific-popup.min.js"></script>
+        <!-- Counter Up CDN JS -->
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="js/bootstrap.min.js"></script>
+        <!-- Main JS -->
+        <script src="js/main.js"></script>
+>>>>>>> fb60e0629eb478e95712b4076716d6079506691c
     </body>
 </html>

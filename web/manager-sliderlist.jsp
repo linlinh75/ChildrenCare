@@ -179,7 +179,6 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
                             <li class="breadcrumb-item"><a href="./profile">Profile</a></li>
-                            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Slider List</li>
                         </ol>
                     </nav>
@@ -193,15 +192,28 @@
                                     <i class="fa fa-search"></i>
                                 </button>
                             </div>
+                            <div class="status-filter" style="display: flex">
+                                <div>Filter by status:</div>
+                                <div class="status-filter">
+                                    <select id="statusFilter" onchange="filterByStatus()">
+                                        <option value="all">All</option>
+                                        <option value="1">Public</option>
+                                        <option value="0">Hidden</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <a href="manager-addslider.jsp" type="button" class="btn">Create Slider</a>
+                            </div>
                         </div>
                         <table class="slider-table">
                             <thead>
                                 <tr>
-                                    <th>Slider ID</th>
-                                    <th>Title</th>
+                                    <th onclick="sortTable(0)">Slider ID <i class="fa fa-sort"></i></th>
+                                    <th onclick="sortTable(1)">Title <i class="fa fa-sort"></i></th>
                                     <th>Image</th>
-                                    <th>Back Link</th>
-                                    <th>Status</th>
+                                    <th onclick="sortTable(3)">Back Link</th>
+                                    <th >Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -265,17 +277,11 @@
                                             <input style="width: 80%; height: 80px;" type="text" name="sliderNote" id="sliderNote" required>
                                         </div>
                                         <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                            <label for="sliderStatus" style="width: 100px; font-weight: bold">Status</label>
-                                            <select name="sliderStatus" id="sliderStatus" required>
-                                                <option value="1" <c:if test="${slider.getStatus() == 1}">selected</c:if>>Public</option>
-                                                <option value="0" <c:if test="${slider.getStatus() == 0}">selected</c:if>>Hidden</option>
-                                                </select>
-                                            </div>
                                             <button style="text-align: center !important; margin-bottom: 20px;" type="submit" name="submit" value="edit" class="btn btn-edit" onclick="return confirmEdit()">Save</button>
-                                        </form>
-                                    </div>
+                                    </form>
                                 </div>
-                                </tr>
+                            </div>
+                            </tr>
                         </c:forEach>
                         </tbody>
                     </table>
@@ -292,30 +298,16 @@
         let filteredRows = [];
 
         function searchSlider() {
-            let input, filter, table, tr, td, i, txtValue;
-            input = document.getElementById('searchInput');
-            filter = input.value.toLowerCase().trim();
-            table = document.getElementById('sliderTableBody');
-            tr = table.getElementsByTagName('tr');
+            let input = document.getElementById('searchInput').value.toLowerCase().trim();
+            let table = document.getElementById('sliderTableBody');
+            let tr = table.getElementsByTagName('tr');
 
-            if (filter === "") {
-                currentPage = 1;
-                filteredRows = Array.from(tr);
-            } else {
-                filteredRows = [];
-                for (i = 0; i < tr.length; i++) {
-                    td = tr[i].getElementsByTagName('td')[1];
-                    if (td) {
-                        txtValue = td.textContent || td.innerText;
-                        if (txtValue.toLowerCase().includes(filter)) {
-                            tr[i].style.display = "";
-                            filteredRows.push(tr[i]);
-                        } else {
-                            tr[i].style.display = "none";
-                        }
-                    }
-                }
-            }
+            filteredRows = Array.from(tr).filter(function (row) {
+                let title = row.getElementsByTagName('td')[1].innerText.toLowerCase();
+                return title.includes(input);
+            });
+
+            currentPage = 1;
             displayTable();
         }
 
@@ -323,9 +315,7 @@
             let table = document.getElementById('sliderTableBody');
             let totalRows = filteredRows.length;
 
-            for (let i = 0; i < table.children.length; i++) {
-                table.children[i].style.display = "none";
-            }
+            Array.from(table.children).forEach(row => row.style.display = "none");
 
             let startIndex = (currentPage - 1) * rowsPerPage;
             let endIndex = Math.min(startIndex + rowsPerPage, totalRows);
@@ -340,6 +330,7 @@
         }
 
         function createPagination(totalPages, currentPage) {
+            let pagination = document.getElementById('pagination');
             let str = '<ul>';
             let active;
 
@@ -382,9 +373,8 @@
             }
             str += '</ul>';
 
-            document.getElementById('pagination').innerHTML = str;
+            pagination.innerHTML = str;
         }
-
 
         function goToPage(pageNumber) {
             currentPage = pageNumber;
@@ -393,21 +383,65 @@
 
         window.onload = () => {
             const table = document.getElementById('sliderTableBody');
-            const rows = table.getElementsByTagName('tr');
-            filteredRows = Array.from(rows);
+            const rows = Array.from(table.getElementsByTagName('tr'));
+            filteredRows = rows;
             displayTable();
         };
+
+        let sortDirection = true;
+
+        function sortTable(columnIndex) {
+            let table = document.getElementById("sliderTableBody");
+            filteredRows.sort(function (a, b) {
+                let aText = a.getElementsByTagName("td")[columnIndex].innerText.toLowerCase();
+                let bText = b.getElementsByTagName("td")[columnIndex].innerText.toLowerCase();
+
+                if (columnIndex === 0 || columnIndex === 4) {
+                    aText = parseInt(aText);
+                    bText = parseInt(bText);
+                }
+
+                if (aText < bText) {
+                    return sortDirection ? -1 : 1;
+                }
+                if (aText > bText) {
+                    return sortDirection ? 1 : -1;
+                }
+                return 0;
+            });
+
+            sortDirection = !sortDirection;
+            currentPage = 1;
+            displayTable();
+        }
+
+        function filterByStatus() {
+            let statusFilter = document.getElementById("statusFilter").value;
+            let table = document.getElementById("sliderTableBody");
+            let rows = Array.from(table.getElementsByTagName("tr"));
+
+            filteredRows = rows.filter(function (row) {
+                let status = row.getElementsByTagName("td")[4].innerText.trim().toLowerCase();
+                if (statusFilter === "all")
+                    return true;
+                return statusFilter === "1" ? status === "public" : status === "hidden";
+            });
+
+            currentPage = 1;
+            displayTable();
+        }
         function openPopup(sliderJson) {
             const slider = JSON.parse(sliderJson);
+
             document.getElementById('sliderId').value = slider.id;
             document.getElementById('sliderTitle').value = slider.title;
             document.getElementById('sliderBacklink').value = slider.backlink;
             document.getElementById('sliderImagePreview').src = slider.imageLink;
-            document.getElementById('sliderStatus').value = slider.status;
             document.getElementById('sliderNote').value = slider.note;
-            console.log("Slider Status:", slider.status);
+
             document.getElementById('editPopup').style.display = 'block';
         }
+
 
         function closePopup() {
             document.getElementById('editPopup').style.display = 'none';

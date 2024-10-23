@@ -87,7 +87,7 @@ public class SliderDAO extends DBContext {
         String sql = "DELETE FROM swp.slider WHERE id = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, id);  
+            stmt.setInt(1, id);
 
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
@@ -96,7 +96,7 @@ public class SliderDAO extends DBContext {
                 System.out.println("Slider with ID: " + id + " not found.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();  
+            e.printStackTrace();
         }
     }
 
@@ -148,6 +148,28 @@ public class SliderDAO extends DBContext {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void addSlider(String title, String imagePath, String backlink, String status, String notes, int id) {
+        String sql = "INSERT INTO swp.slider (title, image_link, backlink, status, notes,author_id,update_date) VALUES (?, ?, ?, ?, ?,?, CURRENT_DATE)";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, title);
+            stmt.setString(2, imagePath);
+            stmt.setString(3, backlink);
+            stmt.setString(4, status);
+            stmt.setString(5, notes);
+            stmt.setInt(6, id);
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Slider added successfully!");
+            } else {
+                System.out.println("Failed to add the slider.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

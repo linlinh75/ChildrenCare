@@ -24,7 +24,7 @@ import model.Service;
 public class ReservationDAO extends DBContext {
 
     ServiceDAO service = new ServiceDAO();
-    PreparedStatement stm;
+    static PreparedStatement stm;
     ResultSet rs;
 
     public List<Reservation> getAllReservation() {
@@ -46,7 +46,6 @@ public class ReservationDAO extends DBContext {
                     }
                 }
 
-                // Nếu Reservation chưa tồn tại, tạo mới
                 if (reservation == null) {
                     List<ReservationService> serviceList = new ArrayList<>();
                     reservation = new Reservation(
@@ -202,6 +201,7 @@ public class ReservationDAO extends DBContext {
         }
     }
 
+<<<<<<< HEAD
     public ArrayList<ReservationService> getReservationServices(Reservation reservation) {
         ArrayList<ReservationService> services = new ArrayList<>();
 
@@ -406,6 +406,67 @@ public class ReservationDAO extends DBContext {
                 stm.setInt(2, r.getId());
                 stm.setInt(3, s.getId());
             }
+=======
+    public Reservation getReservationById(int id) {
+        Reservation reservation = null;
+        String s = "SELECT * \n"
+                + "FROM swp.reservation r \n"
+                + "JOIN swp.reservation_service s ON r.id = s.reservation_id \n"
+                + "JOIN swp.user u ON r.customer_id = u.id WHERE r.id = ?";
+
+        try {
+            stm = connection.prepareStatement(s);
+            stm.setInt(1, id);
+            rs = stm.executeQuery();
+
+            if (rs.next()) {
+                List<ReservationService> serviceList = new ArrayList<>();
+                reservation = new Reservation(
+                        rs.getInt("reservation_id"),
+                        rs.getInt("customer_id"),
+                        rs.getTimestamp("reservation_date"),
+                        rs.getString("status"),
+                        rs.getInt("staff_id"),
+                        rs.getTimestamp("checkup_time"),
+                        serviceList,
+                        rs.getString("full_name")
+                );
+
+                do {
+                    ReservationService reservationService = new ReservationService(
+                            reservation.getId(), // reservation_id
+                            rs.getInt("service_id"),
+                            rs.getInt("quantity"),
+                            rs.getFloat("unit_price"),
+                            service.getServiceById(rs.getInt("service_id")).getFullname()
+                    );
+
+                    reservation.getList_service().add(reservationService);
+                } while (rs.next()); 
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return reservation;
+    }
+    public void changeStaffReservation(int reservation_id, int staff_id) {
+        try {
+            String sql = "update reservation set reservation.staff_id = ?\n"
+                    + "where reservation.id = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, staff_id);
+            stm.setInt(2, reservation_id);
             stm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -429,6 +490,19 @@ public class ReservationDAO extends DBContext {
         return quantity;
     }
 
+    public void submitReservation(int reservation_id) {
+        try {
+            String sql = "update reservation set reservation.status = ?\n"
+                    + "where reservation.id = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, "Submitted");
+            stm.setInt(2, reservation_id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public static void main(String[] args) {
         ReservationDAO userdao = new ReservationDAO();
         List<Reservation> ulist = userdao.getReservation(5);

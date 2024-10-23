@@ -48,7 +48,25 @@
     </head>
     <body>
 
+<<<<<<< HEAD
 
+=======
+        <!-- Get Pro Button -->
+<!--        <ul class="pro-features">
+            <a class="get-pro" href="#">Get Pro</a>
+            <li class="big-title">Pro Version Available on Themeforest</li>
+            <li class="title">Pro Version Features</li>
+            <li>2+ premade home pages</li>
+            <li>20+ html pages</li>
+            <li>Color Plate With 12+ Colors</li>
+            <li>Sticky Header / Sticky Filters</li>
+            <li>Working Contact Form With Google Map</li>
+            <div class="button">
+                <a href="http://preview.themeforest.net/item/mediplus-medical-and-doctor-html-template/full_screen_preview/26665910?_ga=2.145092285.888558928.1591971968-344530658.1588061879" target="_blank" class="btn">Pro Version Demo</a>
+                <a href="https://themeforest.net/item/mediplus-medical-and-doctor-html-template/26665910" target="_blank" class="btn">Buy Pro Version</a>
+            </div>
+        </ul>-->
+>>>>>>> fb60e0629eb478e95712b4076716d6079506691c
 
         <!-- Header Area -->
         <jsp:include page="common/common-homepage-header.jsp"></jsp:include>
@@ -125,12 +143,22 @@
                     <div class="col-lg-4 col-12">
                         <div class="main-sidebar">
                             <!-- Single Widget -->
+<<<<<<< HEAD
 <!--                            <div class="single-widget search">
                                 <div class="form">
                                     <input type="email" placeholder="Search Here...">
                                     <a class="button" href="#"><i class="fa fa-search"></i></a>
                                 </div>
                             </div>-->
+=======
+                            <div class="single-widget search">
+                                <form action="post" method="get">
+                                    <input type="hidden" name="action" value="search">
+                                    <input type="text" name="query" placeholder="Search Here..." value="${searchQuery}">
+                                    <button type="submit" class="button"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div>
+>>>>>>> fb60e0629eb478e95712b4076716d6079506691c
                             <!--/ End Single Widget -->
                             <!-- Single Widget -->
 <!--                            <div class="single-widget category">
@@ -183,6 +211,33 @@
                             <!--/ End Single Widget -->
                         </div>
                     </div>
+                                    <div class="col-12">
+    <div class="blog-comments">
+        <h2>All Comments</h2>
+        <div class="comments-body">
+            <c:forEach var="comment" items="${comments}">
+                <!-- Single Comments -->
+                <div class="single-comments">
+                    <div class="main">
+                        <div class="head">
+                            <img src="img/author1.jpg" alt="#"/>
+                        </div>
+                        <div class="body">
+                            <h4>${postServlet.getUserName(comment.userId)}</h4>
+                            <div class="comment-meta">
+                                <span class="meta"><i class="fa fa-calendar"></i>${comment.createdAt}</span>
+                            </div>
+                            <p>${comment.content}</p>
+                            <a href="#"><i class="fa fa-reply"></i>reply</a>
+                        </div>
+                    </div>
+                </div>
+                <!--/ End Single Comments -->
+            </c:forEach>
+        </div>
+    </div>
+</div>
+							
                 </div>
             </div>
         </section>

@@ -176,8 +176,9 @@
                                                     </div>
                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                                                         <a class="dropdown-item" href="/ChildrenCare/profile">Profile</a>
-                                                        <a class="dropdown-item" href="/ChildrenCare/ReservationServlet">My Reservation</a>
-                                                        <div class="dropdown-divider"></div>
+                                                        <c:if test="sessionScope.account.isCustomer()">
+                                                            <a class="dropdown-item" href="/ChildrenCare/ReservationServlet">My Reservation</a>
+                                                        </c:if>                                                        <div class="dropdown-divider"></div>
                                                         <a class="dropdown-item" href="LogoutServlet">Logout</a>
                                                     </div>
                                                 </div>

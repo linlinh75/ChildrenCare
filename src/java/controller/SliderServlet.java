@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dal.SliderDAO;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import model.Slider;
+import model.User;
 
 /**
  *
@@ -102,15 +104,8 @@ public class SliderServlet extends HttpServlet {
             throws ServletException, IOException {
         SliderDAO s = new SliderDAO();
         String submit = request.getParameter("submit");
-        int id = Integer.parseInt(request.getParameter("sliderId"));
-        System.out.println(submit);
         if (submit != null) {
-            if ("1".equals(submit)) {
-                s.updateStatus(id, "0");
-            } else if ("0".equals(submit)) {
-                s.updateStatus(id, "1");
-            }
-            if ("edit".equals(submit)) {
+            if ("add".equals(submit)) {
                 Part filePart = request.getPart("sliderImage");
                 if (filePart != null && filePart.getSize() > 0) {
                     String fileName = getFileName(filePart);
@@ -132,17 +127,52 @@ public class SliderServlet extends HttpServlet {
                     String backlink = request.getParameter("sliderBacklink");
                     String status = request.getParameter("sliderStatus");
                     String note = request.getParameter("sliderNote");
-                    System.out.println(title);
-                    System.out.println(backlink);
-                    System.out.println(imagePath);
-                    s.updateSlider(id, title, imagePath, backlink, status, note);
+
+                    HttpSession session = request.getSession();
+                    User loggedInUser = (User) session.getAttribute("account");
+                    int author_id = loggedInUser.getId();
+
+                    s.addSlider(title, imagePath, backlink, status, note, author_id);
+                }
+            } else {
+                int id = Integer.parseInt(request.getParameter("sliderId"));
+
+                if ("1".equals(submit)) {
+                    s.updateStatus(id, "0");
+                } else if ("0".equals(submit)) {
+                    s.updateStatus(id, "1");
+                }
+
+                if ("edit".equals(submit)) {
+                    Part filePart = request.getPart("sliderImage");
+                    if (filePart != null && filePart.getSize() > 0) {
+                        String fileName = getFileName(filePart);
+                        String uploadDir = getServletContext().getRealPath("/uploads");
+
+                        File uploadDirFile = new File(uploadDir);
+                        if (!uploadDirFile.exists()) {
+                            uploadDirFile.mkdirs();
+                        }
+
+                        String filePath = uploadDir + File.separator + fileName;
+
+                        try (InputStream input = filePart.getInputStream()) {
+                            Files.copy(input, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+                        }
+
+                        String imagePath = "./uploads/" + fileName;
+                        String title = request.getParameter("sliderTitle");
+                        String backlink = request.getParameter("sliderBacklink");
+                        String status = request.getParameter("sliderStatus");
+                        String note = request.getParameter("sliderNote");
+
+                        s.updateSlider(id, title, imagePath, backlink, status, note);
+                    }
                 }
             }
             response.sendRedirect(request.getContextPath() + "/managerSliderList");
         }
-
     }
-
     private String getFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         String[] tokens = contentDisp.split(";");

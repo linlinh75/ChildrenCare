@@ -7,76 +7,134 @@ package controller;
 import dal.PostCategoryDAO;
 import dal.PostDAO;
 import dal.ServiceCategoryDAO;
+import dal.PostCommentDAO;
+import dal.PostDAO;
 import dal.ServiceDAO;
 import dal.SliderDAO;
+import dal.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
-import model.Post;
 import model.PostCategory;
-import model.Service;
 import model.ServiceCategory;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Post;
+import model.PostComment;
+import model.Service;
 import model.Slider;
+import model.User;
 
 public class PostServlet extends HttpServlet {
 
     private final PostDAO postDAO = new PostDAO();
+    private final int POSTS_PER_PAGE = 6; 
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
+
+        // Common data for all actions
         ServiceDAO s = new ServiceDAO();
         List<Service> list_service = s.getAllService();
-        PostDAO p = new PostDAO();
-        List<Post> list_post = p.getAllPosts();
-        List<Post> new_post = p.getNewest();
+        List<Post> new_post = postDAO.getNewest();
         ServiceCategoryDAO sc = new ServiceCategoryDAO();
         List<ServiceCategory> s_category = sc.getAll();
         PostCategoryDAO pc = new PostCategoryDAO();
         List<PostCategory> p_category = pc.getAll();
         SliderDAO sliderDAO = new SliderDAO();
         List<Slider> list_sliders = sliderDAO.getAllSliders();
+
+        // Set common attributes
         request.setAttribute("list_sliders", list_sliders);
-        if (s_category == null || s_category.isEmpty()) {
-        } else {
-            request.setAttribute("list_sc", s_category);
-        }
-        if (p_category == null || p_category.isEmpty()) {
-        } else {
-            request.setAttribute("list_pc", p_category);
-        }
-        if (list_service == null || list_service.isEmpty()) {
-        } else {
-            request.setAttribute("services", list_service);
-        }
-        if (list_post == null || list_post.isEmpty()) {
-        } else {
-            request.setAttribute("posts", list_post);
-        }
+        request.setAttribute("list_sc", s_category);
+        request.setAttribute("list_pc", p_category);
+        request.setAttribute("services", list_service);
         request.setAttribute("new_posts", new_post);
         request.setAttribute("active", "post");
-        if ("detail".equals(action)) {
-            int postId = Integer.parseInt(request.getParameter("id"));
-            Post post = postDAO.getPostById(postId);
-            List<Post> recentPosts = postDAO.getNewest();
-            String authorName = postDAO.getAuthorNameByPostId(postId);
-            request.setAttribute("post", post);
-            request.setAttribute("authorName", authorName);
-            request.setAttribute("recentPosts", recentPosts);
-            request.getRequestDispatcher("blog-single.jsp").forward(request, response);
-        } else {
-            // Existing code for listing all posts
-            List<Post> listPost = postDAO.getAllPosts();
-            List<Post> recentPosts = postDAO.getNewest();
-            request.setAttribute("listPost", listPost);
-            request.setAttribute("recentPosts", recentPosts);
-            request.getRequestDispatcher("blog-grid.jsp").forward(request, response);
+
+        // Get current page number
+        int pageNumber = 1;
+        try {
+            String pageParam = request.getParameter("page");
+            if (pageParam != null && !pageParam.isEmpty()) {
+                pageNumber = Integer.parseInt(pageParam);
+                if (pageNumber < 1) {
+                    pageNumber = 1;
+                }
+            }
+        } catch (NumberFormatException e) {
+            pageNumber = 1;
         }
+
+        if ("detail".equals(action)) {
+            handlePostDetail(request, response);
+        } else if ("search".equals(action)) {
+            handleSearch(request, response, pageNumber);
+        } else {
+            handleListPosts(request, response, pageNumber);
+        }
+    }
+
+    private void handlePostDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int postId = Integer.parseInt(request.getParameter("id"));
+        Post post = postDAO.getPostById(postId);
+        List<Post> recentPosts = postDAO.getNewest();
+        String authorName = postDAO.getAuthorNameByPostId(postId);
+        List<PostComment> comments = new PostCommentDAO().findByPostId(postId);
+
+        request.setAttribute("postServlet", this);
+        request.setAttribute("comments", comments);
+        request.setAttribute("post", post);
+        request.setAttribute("authorName", authorName);
+        request.setAttribute("recentPosts", recentPosts);
+        request.getRequestDispatcher("blog-single.jsp").forward(request, response);
+    }
+
+    private void handleSearch(HttpServletRequest request, HttpServletResponse response, int pageNumber)
+            throws ServletException, IOException {
+        String query = request.getParameter("query");
+
+        List<Post> searchResults = postDAO.searchPosts(query, POSTS_PER_PAGE, pageNumber);
+        List<Post> recentPosts = postDAO.getNewest();
+
+        int totalPosts = searchResults.size();
+        int totalPages = (int) Math.ceil((double) totalPosts / POSTS_PER_PAGE);
+
+        request.setAttribute("listPost", searchResults);
+        request.setAttribute("recentPosts", recentPosts);
+        request.setAttribute("searchQuery", query);
+        request.setAttribute("currentPage", pageNumber);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("pageType", "search"); // To differentiate between search and list in JSP
+
+        request.getRequestDispatcher("blog-grid.jsp").forward(request, response);
+    }
+
+    private void handleListPosts(HttpServletRequest request, HttpServletResponse response, int pageNumber)
+            throws ServletException, IOException {
+        // Get paginated posts
+        List<Post> listPost = postDAO.getPostsWithPaginationAndStatus(pageNumber, POSTS_PER_PAGE, "Published");
+        List<Post> recentPosts = postDAO.getNewest();
+
+        // Calculate total pages
+        int totalPosts = listPost.size();
+        int totalPages = (int) Math.ceil((double) totalPosts / POSTS_PER_PAGE);
+
+        request.setAttribute("listPost", listPost);
+        request.setAttribute("recentPosts", recentPosts);
+        request.setAttribute("currentPage", pageNumber);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("pageType", "list"); // To differentiate between search and list in JSP
+
+        request.getRequestDispatcher("blog-grid.jsp").forward(request, response);
     }
 
     @Override
@@ -99,6 +157,16 @@ public class PostServlet extends HttpServlet {
             out.println("<h1>Servlet PostServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
+        }
+    }
+
+    public String getUserName(int userId) {
+        try {
+            User user = new UserDAO().getProfileById(userId);
+            return user != null ? user.getFullName() : "Unknown User";
+        } catch (SQLException ex) {
+            Logger.getLogger(PostServlet.class.getName()).log(Level.SEVERE, null, ex);
+            return "Unknown User";
         }
     }
 
