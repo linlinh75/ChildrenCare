@@ -174,9 +174,11 @@
                                         <form action="customer-reservation-service-cart" method="POST">
                                             <input type="hidden" name="action" value="add">
                                             <input type="hidden" name="serviceId" value="${service.id}">
+                                            <c:if test="${sessionScope.user.roleId==4}">
                                             <button type="submit" class="btn btn-primary btn-lg btn-block">
                                                 <i class="fa fa-calendar-plus"></i> Book Appointment
                                             </button>
+                                            </c:if>
                                         </form>
                                     </div>
                                 </div>
