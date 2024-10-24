@@ -405,13 +405,11 @@
         </section>
         <!-- End Blog Area -->
         <!--Button Cart -->
-        <c:if test="${sessionScope.user.roleId==4}">
             <div class="sticky-cart-button">
                 <a href="./customer-reservation-service-cart" class="btn btn-primary">
                     <i class="fa fa-shopping-cart"></i> View Cart
                 </a>
             </div>
-        </c:if>
         <!-- Footer Area -->
         <footer id="footer" class="footer ">
             <!-- Footer Top -->

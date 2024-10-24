@@ -195,14 +195,15 @@
         </section>
         <!-- End Blog Posts -->
         <!--Button Cart -->
-         <div class="sticky-cart-button">
-            <a href="./customer-reservation-service-cart" class="btn btn-primary">
-                <i class="fa fa-shopping-cart"></i> View Cart
-            </a>
-        </div>
+            <div class="sticky-cart-button">
+                <a href="./customer-reservation-service-cart" class="btn btn-primary">
+                    <i class="fa fa-shopping-cart"></i> View Cart
+                </a>
+            </div>
+
         <!-- Footer Area -->
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
-            <!-- End Footer Area -->
+        <!-- End Footer Area -->
 
         <!-- jquery Min JS -->
         <script src="js/jquery.min.js"></script>
