@@ -56,6 +56,25 @@
                                         </c:forEach>
                                     </tbody>
                                 </table>
+                           <section id="home" class="slider" data-stellar-background-ratio="0.5">
+            <div class="container">
+                <div class="row">
+                    <div class="tab-content ml-1" id="myTabContent" style="">
+                        <div class="row" style="text-align: center; margin-bottom: 1%">
+                            <h2 style="margin-top:5%; font-size: 30px">Reservation Details</h2>
+                            <h2 style="margin-top:2%; font-size: 20px">Your reservation has been submitted</h2>
+                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 20%">Reservation ID: ${requestScope.reservation.getId()}</div>
+                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 20%">Reserved Date: ${requestScope.reservation.getReservationDate()}</div>
+                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 20%">Assigned Staff: ${requestScope.staff.getFullName()}</div>
+                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 20%">Staff Contact Email: ${requestScope.staff.getEmail()}</div>
+                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 20%">Staff Contact Number: ${requestScope.staff.getMobile()}</div>
+                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 20%">An email has been sent to your email with the details of your reservation, as well as the payment methods.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+                           
                     </div>
             </div>
           </div>

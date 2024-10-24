@@ -30,11 +30,6 @@
             <div class="col-md-6 col-lg-7 d-flex align-items-center">
               <div class="card-body p-3 text-black">
                 <form action = "login" method="post">
-                    <c:if test="${ms!=null}">
-            <div class="alert alert-danger" role="alert">
-                Invalid email or password!
-            </div>
-                     </c:if>
                   <div class="d-flex align-items-center mb-3 pb-1">
                     <span class="h1 fw-bold mb-0">Login</span>
                   </div>

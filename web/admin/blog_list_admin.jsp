@@ -5,7 +5,7 @@
 
     <head>
         <meta charset="utf-8" />
-        <title>Doctris - Doctor Appointment Booking System</title>
+        <title>Blogs list</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Premium Bootstrap 4 Landing Page Template" />
         <meta name="keywords" content="Appointment, Booking, System, Dashboard, Health" />
@@ -106,7 +106,7 @@
                                 </div>
                             </div>
 
-                            <ul class="list-unstyled mb-0">
+<!--                            <ul class="list-unstyled mb-0">
                                 <li class="list-inline-item mb-0">
                                     <div class="dropdown dropdown-primary">
                                         <button type="button" class="btn btn-pills btn-soft-primary dropdown-toggle p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../assets/images/language/american.png" class="avatar avatar-ex-small rounded-circle p-2" alt=""></button>
@@ -224,7 +224,7 @@
                                         </div>
                                     </div>
                                 </li>
-                            </ul>
+                            </ul>-->
                         </div>
                     </div>
 
