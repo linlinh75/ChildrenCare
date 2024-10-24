@@ -171,7 +171,7 @@
                                                 <i class="fa fa-calendar-plus"></i> Book Appointment
                                             </button>
                                         </form>-->
-                                        <form action="reservation-service-cart" method="POST">
+                                        <form action="customer-reservation-service-cart" method="POST">
                                             <input type="hidden" name="action" value="add">
                                             <input type="hidden" name="serviceId" value="${service.id}">
                                             <button type="submit" class="btn btn-primary btn-lg btn-block">

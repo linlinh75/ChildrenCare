@@ -61,6 +61,21 @@
             .see-more-button i {
                 font-size: 1.5em;
             }
+            .sticky-cart-button {
+                position: fixed;
+                bottom: 100px;
+                right: 20px;
+                z-index: 1000;
+            }
+            .sticky-cart-button .btn {
+                padding: 10px 20px;
+                font-size: 16px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease-in-out;
+            }
+            .sticky-cart-button .btn:hover {
+                transform: scale(1.05);
+            }
         </style>
     </head>
     <body>
@@ -389,7 +404,12 @@
             </div>
         </section>
         <!-- End Blog Area -->
-
+        <!--Button Cart -->
+         <div class="sticky-cart-button">
+            <a href="./customer-reservation-service-cart" class="btn btn-primary">
+                <i class="fa fa-shopping-cart"></i> View Cart
+            </a>
+        </div>
 
         <!-- Footer Area -->
         <footer id="footer" class="footer ">
