@@ -202,7 +202,7 @@
                             <c:when test="${empty sessionScope.account}">
                                 <!-- Show login message if user is not logged in -->
                                 <div class="alert alert-warning" role="alert">
-                                    Please <a href="login" class="alert-link">login</a> to book an appointment.
+                                    Please <a href="login.jsp" class="alert-link">login</a> to book an appointment.
                                 </div>
                             </c:when>
                             <c:otherwise>
