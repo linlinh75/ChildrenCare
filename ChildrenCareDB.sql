@@ -393,11 +393,13 @@ DROP TABLE IF EXISTS `work_schedule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `work_schedule` (
+`reservation_id` int ,
   `doctor_id` int NOT NULL,
   `start_at` timestamp NULL DEFAULT NULL,
   `end_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`doctor_id`) USING BTREE,
-  CONSTRAINT `work_schedule_ibfk_1` FOREIGN KEY (`doctor_id`) REFERENCES `user` (`id`)
+  PRIMARY KEY (`reservation_id`) USING BTREE,
+   FOREIGN KEY (`doctor_id`) REFERENCES `user` (`id`),
+   FOREIGN KEY (`reservation_id`) REFERENCES `reservation` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -407,7 +409,7 @@ CREATE TABLE `work_schedule` (
 
 LOCK TABLES `work_schedule` WRITE;
 /*!40000 ALTER TABLE `work_schedule` DISABLE KEYS */;
-INSERT INTO `work_schedule` VALUES (3,'2024-10-20 02:19:10','2024-10-20 04:19:10'),(4,'2024-10-20 02:19:10','2024-10-20 04:19:10'),(6,'2024-10-20 02:19:10','2024-10-20 04:19:10');
+INSERT INTO `work_schedule` VALUES (31,3,'2024-10-20 02:19:10','2024-10-20 04:19:10');
 /*!40000 ALTER TABLE `work_schedule` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

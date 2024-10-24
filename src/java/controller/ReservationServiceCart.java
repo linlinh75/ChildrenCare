@@ -206,7 +206,7 @@ public class ReservationServiceCart extends HttpServlet {
             ReservationDAO reservationDAO = new ReservationDAO();
             int reservationId = reservationDAO.insertReservation(reservation);
             request.setAttribute("reservation", reservation);
-
+request.setAttribute("reservationId", reservationId);
             if (reservationId > 0) {
                 // Clear the cart after successful booking
                 clearCart(cart);

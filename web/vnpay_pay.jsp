@@ -45,7 +45,7 @@
                          <label for="language">English</label><br>
                          
                     </div>
-                    <button type="submit" class="btn btn-default" href>Pay</button>
+                    <button type="submit" class="btn btn-primary" href>Pay</button>
                 </form>
             </div>
             <p>

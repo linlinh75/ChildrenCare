@@ -86,12 +86,15 @@ public class ReservationCompletionServlet extends HttpServlet {
         try {
             Reservation res = (Reservation) request.getAttribute("reservation");
             String optionPayment = res.getPay_option();
+            System.out.println(optionPayment);
             HttpSession session = request.getSession(false);
             ReservationDAO reservationDao = new ReservationDAO();
             UserDAO userDao = new UserDAO();
             EmailSender e = new EmailSender();
             Timestamp registeredTime = res.getCheckup_time();
-            int rid = res.getId();
+            int rid = (int) request.getAttribute("reservationId");
+            session.setAttribute("rid", rid);
+            System.out.println(rid);
             int amount = reservationDao.getTotal(rid);
             Random rand = new Random();
             // Obtain a number between [0 - max id].
@@ -105,7 +108,7 @@ public class ReservationCompletionServlet extends HttpServlet {
             }
             User assignDoctor = userDao.listDoctorFree(registeredTime).get(n);
             reservationDao.changeStaffReservation(rid, assignDoctor.getId());
-            
+            reservationDao.assignWorkSchedule(rid,assignDoctor.getId() , registeredTime);
             reservationDao.statusReservation(rid,"Submitted");
             User user = userDao.getProfileById(res.getCustomer_id());
             try {
@@ -116,6 +119,8 @@ public class ReservationCompletionServlet extends HttpServlet {
                         + "<a href='http://localhost:8080/ChildrenCare/vnpay_pay.jsp?amount=" + amount + "'>Click this link to pay fees</a>";
                 String subject = "Reservation Completion and Payment Guide";
                 EmailSender.sendHtml(user.getEmail(), content, subject);
+                request.setAttribute("message", "Email sent");
+        request.getRequestDispatcher("/emailNotification.jsp").forward(request, response);
             } catch (MessagingException ex) {
                 Logger.getLogger(ReservationCompletionServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
