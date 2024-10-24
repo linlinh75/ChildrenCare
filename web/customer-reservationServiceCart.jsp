@@ -114,10 +114,10 @@
                                                 </td>
                                                 <td>$${service.unit_price}</td>
                                                 <td>
-                                                    <form action="customer-reservation-service-cart" method="post" style="display: inline;">
+                                                    <form action="customer-reservation-service-cart" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to remove this service?');">
                                                         <input type="hidden" name="action" value="remove">
                                                         <input type="hidden" name="serviceId" value="${service.service_id}">
-                                                        <button type="submit" class="btn btn-danger btn-sm">
+                                                        <button type="submit" class="btn btn-danger btn-sm" style="background-color: #dc3545">
                                                             <i class="fa fa-trash"></i> Remove
                                                         </button>
                                                     </form>
@@ -150,9 +150,9 @@
                                                                 <p><strong>Total:</strong> $${sessionScope.cart.totalPrice}</p>
                                                             </div>
                                                             <div class="button row">
-                                                                <form class="col-md-6" action="customer-reservation-service-cart" method="post" style="display: inline;">
+                                                                <form class="col-md-6" action="customer-reservation-service-cart" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to clear all services?');">
                                                                     <input type="hidden" name="action" value="clear">
-                                                                    <button type="submit" class="btn btn-warning">
+                                                                    <button type="submit" class="btn btn-warning" style="background-color: #ffc107">
                                                                         <i class="fa fa-trash"></i> Clear Cart
                                                                     </button>
                                                                 </form>
@@ -263,8 +263,8 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="phone">Phone Number</label>
-                                                <input type="tel" class="form-control" id="phone" name="phone" 
-                                                       value="${sessionScope.account.mobile}" required>
+                                                <input type="tel" class="form-control" id="phone" name="phone" value="${sessionScope.account.mobile}" required>
+                                                <span id="phoneError" style="color:red; display: none; font-size: 10px; position: absolute">Phone must have between 10-11 numbers and start with '0'.</span>
                                             </div>
                                         </div>
                                     </div>
@@ -355,22 +355,41 @@
             
         </script>
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+                                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                                        // Set minimum date to tomorrow for checkup time
+                                                                        var checkupTimeInput = document.getElementById('checkupTime');
+                                                                        if (checkupTimeInput) {
+                                                                            var tomorrow = new Date();
+                                                                            tomorrow.setDate(tomorrow.getDate() + 1);
+                                                                            tomorrow.setHours(0, 0, 0, 0);
+                                                                            checkupTimeInput.min = tomorrow.toISOString().slice(0, 16);
 
-                // Set minimum date to tomorrow for checkup time
-                var checkupTimeInput = document.getElementById('checkupTime');
-                if (checkupTimeInput) {
-                    var tomorrow = new Date();
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    tomorrow.setHours(0, 0, 0, 0);
-                    checkupTimeInput.min = tomorrow.toISOString().slice(0, 16);
-
-                    // Set maximum date to 3 months from now
-                    var maxDate = new Date();
-                    maxDate.setMonth(maxDate.getMonth() + 3);
-                    checkupTimeInput.max = maxDate.toISOString().slice(0, 16);
-                }
-            });
+                                                                            // Set maximum date to 3 months from now
+                                                                            var maxDate = new Date();
+                                                                            maxDate.setMonth(maxDate.getMonth() + 3);
+                                                                            checkupTimeInput.max = maxDate.toISOString().slice(0, 16);
+                                                                        }
+                                                                    });
+        </script>
+        <!--phone number check-->
+        <script>
+            document.getElementById("phone").addEventListener('input', function () {
+            const phoneInput = this;
+            const phoneError = document.getElementById('phoneError');
+            const phone = phoneInput.value;
+            const isValidLength = phone.length >= 10 && phone.length <= 11;
+            const isNumeric = /^\d+$/.test(phone);
+            if (!phoneInput.value.startsWith('0') || !isValidLength || !isNumeric) {
+                phoneError.style.display = 'block';
+                phoneInput.style.borderColor = 'red';
+                isFormValid = false;
+            } else {
+                phoneError.style.display = 'none';
+                phoneInput.style.borderColor = 'green';
+                isFormValid = true;
+            }
+            submitButton.disabled = !isFormValid;
+        });
         </script>
     </body>
 </html>

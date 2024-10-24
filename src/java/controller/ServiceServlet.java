@@ -17,6 +17,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -38,6 +39,8 @@ public class ServiceServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        
         ServiceDAO s = new ServiceDAO();
         List<Service> list_service = s.getAllService();
         PostDAO p = new PostDAO();
