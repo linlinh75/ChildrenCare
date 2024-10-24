@@ -199,7 +199,7 @@ public class ReservationServiceCart extends HttpServlet {
             reservation.setCustomer_id(cart.getReservation().getCustomer_id());
             reservation.setCustomer_name(fullName);
             reservation.setReservation_date(new Timestamp(System.currentTimeMillis()));
-            reservation.setStatus("PENDING");
+            reservation.setStatus("Pending");
             reservation.setCheckup_time(checkupTime);
             reservation.setList_service(cart.getReservation().getList_service());
             reservation.setPay_option(paymentMethod);
