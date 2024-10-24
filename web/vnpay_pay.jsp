@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -18,17 +19,6 @@
     </head>
 
     <body>
-<%
-String amountParam = request.getParameter("formattedAmount");
-double amount = 0.0;
-if (amountParam != null) {
-    try {
-        amount = Double.parseDouble(amountParam); // Parsing the amount correctly
-    } catch (NumberFormatException e) {
-        out.println("Invalid amount.");
-    }
-}
-%>
          <div class="container">
            <div class="header clearfix">
 
@@ -39,13 +29,13 @@ if (amountParam != null) {
                 <form action="vnpayajax" id="frmCreateOrder" method="post">        
                     <div class="form-group">
                         <label for="amount">Amount</label>
-                        <input class="form-control" data-val="true" data-val-number="The field Amount must be a number." data-val-required="The Amount field is required." id="amount" max="100000000" min="1" name="amount" type="number" value="<%=amount%>" />
+                        <input class="form-control" data-val="true" data-val-number="The field Amount must be a number." data-val-required="The Amount field is required." id="amount" max="100000000" min="1" name="amount" type="number" value="${param.amount}" readonly />
                     </div>
                      <h4>Choose payment method</h4>
                     <div class="form-group">                 
                        <h5>Separate method at the site of the connecting entity</h5>                   
-                       <input type="radio" id="bankCode" name="bankCode" value="NCB">
-                       <label for="bankCode">Thanh toán qua thẻ ATM/Tài khoản nội địa</label><br>      
+                       <input type="radio" id="bankCode" name="bankCode" value="NCB" checked readonly>
+                       <label for="bankCode">Payment via ATM card/domestic account</label><br>      
                     </div>
                     <div class="form-group">
                         <h5>Choose payment interface language: </h5>
@@ -55,7 +45,7 @@ if (amountParam != null) {
                          <label for="language">English</label><br>
                          
                     </div>
-                    <button type="submit" class="btn btn-default" href>Pay</button>
+                    <button type="submit" class="btn btn-primary" href>Pay</button>
                 </form>
             </div>
             <p>

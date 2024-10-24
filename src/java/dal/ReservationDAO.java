@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -232,13 +233,48 @@ public class ReservationDAO extends DBContext {
             Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void assignWorkSchedule(int rid, int staff_id, Timestamp start_at) {
+        try {
+            String sql = "insert into work_schedule values(?,?,?,?)";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            Timestamp end_at = new Timestamp(start_at.getTime() + 2 * 60 * 60 * 1000);
+            stm.setInt(1, rid);
+            stm.setInt(2, staff_id);
+            stm.setTimestamp(3, start_at);
+            stm.setTimestamp(4, end_at);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public int getTotal(int rid) {
+        try {
+            String sql = "SELECT SUM(unit_price) as total\n"
+                    + "FROM reservation_service\n"
+                    + "WHERE reservation_id=?";
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, rid);
+            rs=stm.executeQuery();
+            int total =0;
+            while(rs.next()){
+                total = rs.getInt("total");
+            }
+            return total;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
 
-    public void submitReservation(int reservation_id) {
+   public  void statusReservation(int reservation_id, String status) {
         try {
             String sql = "update reservation set reservation.status = ?\n"
                     + "where reservation.id = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, "Submitted");
+            stm = connection.prepareStatement(sql);
+            stm.setString(1, status);
             stm.setInt(2, reservation_id);
             stm.executeUpdate();
         } catch (SQLException ex) {
@@ -313,13 +349,27 @@ public class ReservationDAO extends DBContext {
     public static void main(String[] args) {
         ReservationDAO userdao = new ReservationDAO();
         List<Reservation> ulist = userdao.getAllReservation();
-        System.out.println(ulist.get(0).getCustomer_id());
-        System.out.println(ulist.get(0).getCheckup_time());
-        System.out.println(ulist.get(0).getList_service().get(0));
+//        System.out.println(ulist.get(0).getCustomer_id());
+//        System.out.println(ulist.get(0).getCheckup_time());
+//        System.out.println(ulist.get(0).getList_service().get(0));
 
 //        for (Reservation u : ulist) {
 //            System.out.println(u.getId());
 //            //System.out.println(u.getId());
 //        }
+            System.out.println(userdao.getTotal(1));
+            String dateString = "2024-10-24 08:00:00";
+
+        try {
+            // Chuyển đổi chuỗi thành đối tượng Timestamp
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            java.util.Date parsedDate = dateFormat.parse(dateString);
+            Timestamp timestamp = new Timestamp(parsedDate.getTime());
+
+            // Gọi phương thức assignWorkSchedule với tham số thứ 2 là Timestamp
+            userdao.assignWorkSchedule(28,3, timestamp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

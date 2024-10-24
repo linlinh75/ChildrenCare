@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.SQLException;
@@ -83,23 +84,18 @@ public class ReservationCompletionServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            //        String optionPayment = request.getParameter("optionPayment");
-            String optionPayment = "atHospital";
+            Reservation res = (Reservation) request.getAttribute("reservation");
+            String optionPayment = res.getPay_option();
+            System.out.println(optionPayment);
+            HttpSession session = request.getSession(false);
             ReservationDAO reservationDao = new ReservationDAO();
             UserDAO userDao = new UserDAO();
             EmailSender e = new EmailSender();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            //        LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("registeredTime"), formatter);
-            LocalDateTime dateTime = LocalDateTime.parse("2024-10-20 08:19:10", formatter);
-            Timestamp registeredTime = Timestamp.valueOf(dateTime);
-            //        int rid = Integer.parseInt(request.getParameter("rid"));
-            int rid = 102;
-            //        double amount = Double.parseDouble("amount");
-            double amount = 100000.00;
-            String formattedAmount = String.format("%.2f", amount);
-            Reservation reservation = reservationDao.getReservationById(rid);
-            int staff_id = reservation.getStaff_id();
-            if( staff_id == 0){
+            Timestamp registeredTime = res.getCheckup_time();
+            int rid = (int) request.getAttribute("reservationId");
+            session.setAttribute("rid", rid);
+            System.out.println(rid);
+            int amount = reservationDao.getTotal(rid);
             Random rand = new Random();
             // Obtain a number between [0 - max id].
             int countFreeDoctors = userDao.listDoctorFree(registeredTime).size();
@@ -112,22 +108,23 @@ public class ReservationCompletionServlet extends HttpServlet {
             }
             User assignDoctor = userDao.listDoctorFree(registeredTime).get(n);
             reservationDao.changeStaffReservation(rid, assignDoctor.getId());
-            
-            reservationDao.submitReservation(rid);
-            User user = userDao.getProfileById(reservation.getCustomer_id());
+            reservationDao.assignWorkSchedule(rid,assignDoctor.getId() , registeredTime);
+            reservationDao.statusReservation(rid,"Submitted");
+            User user = userDao.getProfileById(res.getCustomer_id());
             try {
                 String content = "<p>Your reservation has been submitted. Your doctor is Dr. "
                         + assignDoctor.getFullName() + ". Email: " + assignDoctor.getEmail()
                         + ". Mobile: " + assignDoctor.getMobile()
                         + ". Please complete the transaction by transfering the fees by VNPAY: </p>"
-                        + "<a href='http://localhost:8080/ChildrenCare/vnpay_pay.jsp?amount=" + formattedAmount + "'>Click this link to pay fees</a>";
+                        + "<a href='http://localhost:8080/ChildrenCare/vnpay_pay.jsp?amount=" + amount + "'>Click this link to pay fees</a>";
                 String subject = "Reservation Completion and Payment Guide";
                 EmailSender.sendHtml(user.getEmail(), content, subject);
-                System.out.println("2");
+                request.setAttribute("message", "Email sent");
+        request.getRequestDispatcher("/emailNotification.jsp").forward(request, response);
             } catch (MessagingException ex) {
                 Logger.getLogger(ReservationCompletionServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
-       } } catch (SQLException ex) {
+        } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(ReservationCompletionServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //   }

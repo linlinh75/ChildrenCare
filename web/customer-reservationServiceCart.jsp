@@ -281,8 +281,7 @@
                                             <select class="form-control" name="paymentMethod" required>
                                                 <option value="" selected disabled>Select payment method</option>
                                                 <option value="cash">Cash</option>
-                                                <option value="bankTransfer">Bank Transfer</option>
-                                                <option value="creditCard">Credit Card</option>
+                                                <option value="vnpay">VNPAY</option>
                                             </select>
                                         </div>
                                     </div>
