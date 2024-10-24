@@ -114,7 +114,7 @@
                                                 </td>
                                                 <td>$${service.unit_price}</td>
                                                 <td>
-                                                    <form action="reservation-service-cart" method="post" style="display: inline;">
+                                                    <form action="customer-reservation-service-cart" method="post" style="display: inline;">
                                                         <input type="hidden" name="action" value="remove">
                                                         <input type="hidden" name="serviceId" value="${service.service_id}">
                                                         <button type="submit" class="btn btn-danger btn-sm">
@@ -127,7 +127,9 @@
                                     </tbody>
                                 </table>
                             </div>
-
+                            <center style="margin: 10px">
+                                <a href="service" class="btn btn-primary">Browse More Services</a>
+                            </center>
                             <!-- Cart Summary -->
                             <div class="cart-summary">
                                 <div class="row">
@@ -148,7 +150,7 @@
                                                                 <p><strong>Total:</strong> $${sessionScope.cart.totalPrice}</p>
                                                             </div>
                                                             <div class="button row">
-                                                                <form class="col-md-6" action="reservation-service-cart" method="post" style="display: inline;">
+                                                                <form class="col-md-6" action="customer-reservation-service-cart" method="post" style="display: inline;">
                                                                     <input type="hidden" name="action" value="clear">
                                                                     <button type="submit" class="btn btn-warning">
                                                                         <i class="fa fa-trash"></i> Clear Cart
@@ -193,7 +195,7 @@
                             </c:when>
                             <c:otherwise>
                                 <!-- Show form with pre-filled data if user is logged in -->
-                                <form id="appointmentForm" action="reservation-service-cart?action=book-appointment" method="POST">
+                                <form id="appointmentForm" action="customer-reservation-service-cart?action=book-appointment" method="POST">
                                     <input type="hidden" name="userId" value="${sessionScope.account.id}">
 
                                     <!-- Service Summary Section -->

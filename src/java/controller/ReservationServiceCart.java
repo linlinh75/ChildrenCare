@@ -17,11 +17,12 @@ import model.User;
 import java.sql.Timestamp;
 import model.Reservation;
 
-@WebServlet(name = "ReservationServiceCart", urlPatterns = {"/reservation-service-cart"})
+@WebServlet(name = "ReservationServiceCart", urlPatterns = {"/customer-reservation-service-cart"})
 public class ReservationServiceCart extends HttpServlet {
 
-    private static final String CART_PAGE = "reservationServiceCart.jsp";
     private static final String LOGIN_PAGE = "login.jsp";
+    private static final String CART_PAGE = "customer-reservationServiceCart.jsp";
+
     private static final String SERVICE_PAGE = "service";
 
     @Override
@@ -30,12 +31,12 @@ public class ReservationServiceCart extends HttpServlet {
         HttpSession session = request.getSession();
         User account = (User) session.getAttribute("account");
 
-        // Check if user is logged in
-        if (account == null) {
-            session.setAttribute("message", "Please log in to view your cart");
-            response.sendRedirect(LOGIN_PAGE);
-            return;
-        }
+//        // Check if user is logged in
+//        if (account == null) {
+//            session.setAttribute("message", "Please log in to view your cart");
+//            response.sendRedirect(LOGIN_PAGE);
+//            return;
+//        }
 
         // Initialize cart if needed
         ReservationCart cart = getOrCreateCart(session);
@@ -62,12 +63,12 @@ public class ReservationServiceCart extends HttpServlet {
         HttpSession session = request.getSession();
         User account = (User) session.getAttribute("account");
 
-        // Check if user is logged in
-        if (account == null) {
-            session.setAttribute("message", "Please log in to modify your cart");
-            response.sendRedirect(LOGIN_PAGE);
-            return;
-        }
+//        // Check if user is logged in
+//        if (account == null) {
+//            session.setAttribute("message", "Please log in to modify your cart");
+//            response.sendRedirect(LOGIN_PAGE);
+//            return;
+//        }
 
         String action = request.getParameter("action");
         ReservationCart cart = getOrCreateCart(session);

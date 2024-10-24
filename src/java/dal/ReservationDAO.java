@@ -5,6 +5,7 @@
 package dal;
 
 import java.sql.Timestamp;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -328,6 +329,20 @@ public class ReservationDAO extends DBContext {
         } finally {
             // Reset auto-commit to true
             connection.setAutoCommit(true);
+        }
+    }
+
+    public boolean updateReservationStatus(int reservationId, String newStatus) {
+        String sql = "UPDATE reservation SET status = ? WHERE id = ?";
+        try (Connection conn = new DBContext().connection;
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newStatus);
+            ps.setInt(2, reservationId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
