@@ -120,7 +120,7 @@ public class ReservationCompletionServlet extends HttpServlet {
                 String subject = "Reservation Completion and Payment Guide";
                 EmailSender.sendHtml(user.getEmail(), content, subject);
                 request.setAttribute("message", "Email sent");
-        request.getRequestDispatcher("/emailNotification.jsp").forward(request, response);
+        request.getRequestDispatcher("/customer-reservationServiceCart.jsp").forward(request, response);
             } catch (MessagingException ex) {
                 Logger.getLogger(ReservationCompletionServlet.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -82,7 +82,7 @@
                                     <!-- Single Blog -->
                                     <div class="single-news">
                                         <div class="news-head">
-                                            <img src="${pageContext.request.contextPath}/${post.thumbnailLink}" alt="#">
+                                            <img src="${post.thumbnailLink}" alt="#">
                                         </div>
                                         <div class="news-body">
                                             <div class="news-content">
@@ -151,7 +151,7 @@
                                     <!-- Single Post -->
                                     <div class="single-post">
                                         <div class="image">
-                                            <img src="${pageContext.request.contextPath}/${recentPost.thumbnailLink}" alt="${recentPost.title}">
+                                            <img src="${recentPost.thumbnailLink}" alt="${recentPost.title}">
                                         </div>
                                         <div class="content">
                                             <h5><a href="post?action=detail&id=${recentPost.id}">${recentPost.title}</a></h5>

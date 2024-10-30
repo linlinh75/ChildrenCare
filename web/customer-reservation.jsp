@@ -234,10 +234,10 @@
                             <a class="nav-link" id="tab-approved" href="javascript:void(0)" onclick="filterReservations('Approved')">Approved</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="tab-success" href="javascript:void(0)" onclick="filterReservations('Success')">Success</a>
+                            <a class="nav-link" id="tab-success" href="javascript:void(0)" onclick="filterReservations('Successful')">Successful</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="tab-cancel" href="javascript:void(0)" onclick="filterReservations('Cancel')">Cancel</a>
+                            <a class="nav-link" id="tab-cancel" href="javascript:void(0)" onclick="filterReservations('Cancelled')">Cancelled</a>
                         </li>
                     </ul>
 
@@ -323,9 +323,9 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
-                <div class="modal-footer">
+<!--                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>

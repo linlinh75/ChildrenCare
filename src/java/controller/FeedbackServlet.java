@@ -74,7 +74,7 @@ public class FeedbackServlet extends HttpServlet {
                     }
                 }
 
-                if (!"Success".equals(res.getStatus())) {
+                if (!"Successful".equals(res.getStatus())) {
                     if (feedback != null && check) {
                         System.out.println("Removing reservation ID: " + res.getId());
                         iterator.remove();

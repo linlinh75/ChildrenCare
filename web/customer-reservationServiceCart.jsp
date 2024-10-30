@@ -348,6 +348,13 @@
         <!-- Main JS -->
         <script src="js/main.js"></script>
         <script>
+            // Hiển thị thông báo
+            if(<%= request.getAttribute("message")!=null %>){
+                alert("<%= request.getAttribute("message") %>");
+            }
+            
+        </script>
+        <script>
                                                                     document.addEventListener('DOMContentLoaded', function () {
                                                                         // Set minimum date to tomorrow for checkup time
                                                                         var checkupTimeInput = document.getElementById('checkupTime');

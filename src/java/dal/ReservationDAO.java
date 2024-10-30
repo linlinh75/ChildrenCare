@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Reservation;
 import model.ReservationService;
+import model.User;
 
 /**
  *
@@ -266,7 +267,24 @@ public class ReservationDAO extends DBContext {
         }
         return 0;
     }
-
+    public User getStaffByReservationID(int reservation_id){
+         try {
+            String sql = "select * from user u join reservation r  on u.id=r.staff_id where r.id=?";
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, reservation_id);
+            rs=stm.executeQuery();
+            while(rs.next()){
+                User u = new User();
+                u.setFullName(rs.getString("full_name"));
+                u.setEmail(rs.getString("email"));
+                u.setMobile(rs.getString("mobile"));
+                return u;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }return null;
+    }
    public  void statusReservation(int reservation_id, String status) {
         try {
             String sql = "update reservation set reservation.status = ?\n"
