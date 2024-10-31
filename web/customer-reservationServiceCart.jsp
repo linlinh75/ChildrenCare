@@ -242,12 +242,12 @@
                                         <label for="gender">Gender:</label>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="gender" id="male" 
-                                                   value="male" ${!sessionScope.account.gender ? 'checked' : ''} required>
+                                                   value="true" ${sessionScope.account.gender ? 'checked' : ''} required>
                                             <label class="form-check-label" for="male">Male</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="gender" id="female" 
-                                                   value="female" ${sessionScope.account.gender ? 'checked' : ''} required>
+                                                   value="false" ${!sessionScope.account.gender ? 'checked' : ''} required>
                                             <label class="form-check-label" for="female">Female</label>
                                         </div>
                                     </div>
