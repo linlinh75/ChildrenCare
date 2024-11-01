@@ -189,7 +189,6 @@
             const rowsPerPage = 5;
             let feedbackRows = [];
 
-            // Khởi tạo hiển thị phân trang khi trang được tải
             window.onload = () => {
                 const table = document.getElementById('feedbackTableBody');
                 const rows = table.getElementsByTagName('tr');
@@ -197,7 +196,6 @@
                 displayTable();
             };
 
-            // Hiển thị bảng với số lượng hàng đã phân trang
             function displayTable() {
                 let table = document.getElementById('feedbackTableBody');
                 let totalRows = feedbackRows.length;
@@ -216,7 +214,6 @@
                 createPagination(Math.ceil(totalRows / rowsPerPage), currentPage);
             }
 
-            // Tạo phân trang với dấu ba chấm nếu số trang lớn hơn 6
             function createPagination(totalPages, currentPage) {
                 let paginationStr = '<ul>';
                 let active;
@@ -271,7 +268,6 @@
         </script>
     </head>
 
-    <!-- Include header -->
     <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
 
         <body>

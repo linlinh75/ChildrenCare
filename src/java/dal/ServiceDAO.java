@@ -31,6 +31,26 @@ public class ServiceDAO extends DBContext {
         }
         return ulist;
     }
+    public List<Service> getAllManageService() {
+        List<Service> ulist = new ArrayList<>();
+        String s = "SELECT * FROM service";
+
+        try {
+            if (connection != null) {
+                PreparedStatement stm = connection.prepareStatement(s);
+                ResultSet rs = stm.executeQuery();
+                while (rs.next()) {
+                    Service service = getFromResultSet(rs);
+                    ulist.add(service);
+                }
+            } else {
+                System.out.println("Connection is null, cannot execute query.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ServiceDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ulist;
+    }
 
     public Service getServiceById(int id) {
         Service service = null;

@@ -50,6 +50,7 @@ public class SliderServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
+            HttpSession session = request.getSession();
             SliderDAO s = new SliderDAO();
             List<Slider> list_slider = s.getManageSliders();
             String action = request.getParameter("action");
@@ -65,6 +66,7 @@ public class SliderServlet extends HttpServlet {
                 if (request.getParameter("id") != null) {
                     int id = Integer.parseInt(request.getParameter("id"));
                     s.deleteSlider(id);
+                    session.setAttribute("message", "Slider deleted successfully!");
                     response.sendRedirect(request.getContextPath() + "/managerSliderList");
                 }
             }
@@ -102,6 +104,7 @@ public class SliderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         SliderDAO s = new SliderDAO();
         String submit = request.getParameter("submit");
         if (submit != null) {
@@ -127,12 +130,11 @@ public class SliderServlet extends HttpServlet {
                     String backlink = request.getParameter("sliderBacklink");
                     String status = request.getParameter("sliderStatus");
                     String note = request.getParameter("sliderNote");
-
-                    HttpSession session = request.getSession();
                     User loggedInUser = (User) session.getAttribute("account");
                     int author_id = loggedInUser.getId();
 
                     s.addSlider(title, imagePath, backlink, status, note, author_id);
+                    session.setAttribute("message", "Slider added successfully!");
                 }
             } else {
                 int id = Integer.parseInt(request.getParameter("sliderId"));
@@ -145,6 +147,11 @@ public class SliderServlet extends HttpServlet {
 
                 if ("edit".equals(submit)) {
                     Part filePart = request.getPart("sliderImage");
+                    String old_image = s.getSliderbyId(id).getImageLink();
+                    String title = request.getParameter("sliderTitle");
+                    String backlink = request.getParameter("sliderBacklink");
+                    String status = request.getParameter("sliderStatus");
+                    String note = request.getParameter("sliderNote");
                     if (filePart != null && filePart.getSize() > 0) {
                         String fileName = getFileName(filePart);
                         String uploadDir = getServletContext().getRealPath("/uploads");
@@ -161,18 +168,20 @@ public class SliderServlet extends HttpServlet {
                         }
 
                         String imagePath = "./uploads/" + fileName;
-                        String title = request.getParameter("sliderTitle");
-                        String backlink = request.getParameter("sliderBacklink");
-                        String status = request.getParameter("sliderStatus");
-                        String note = request.getParameter("sliderNote");
 
                         s.updateSlider(id, title, imagePath, backlink, status, note);
+                        session.setAttribute("message", "Slider update successfully!");
+
+                    } else {
+                        s.updateSlider(id, title, old_image, backlink, status, note);
+                        session.setAttribute("message", "Slider update successfully!");
                     }
                 }
             }
             response.sendRedirect(request.getContextPath() + "/managerSliderList");
         }
     }
+
     private String getFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         String[] tokens = contentDisp.split(";");

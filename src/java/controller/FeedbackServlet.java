@@ -28,70 +28,65 @@ public class FeedbackServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        
         try (PrintWriter out = response.getWriter()) {
-            FeedbackDAO f = new FeedbackDAO();
-            ReservationDAO r = new ReservationDAO();
-            ServiceDAO s = new ServiceDAO();
+            FeedbackDAO feedbackDAO = new FeedbackDAO();
+            ReservationDAO reservationDAO = new ReservationDAO();
+            ServiceDAO serviceDAO = new ServiceDAO();
             HttpSession session = request.getSession();
             User loggedInUser = (User) session.getAttribute("account");
+
+            updateOldFeedbacks(feedbackDAO, loggedInUser.getId());
+
             String action = request.getParameter("action");
-            if ("provide".equals(action)) {
-                if (request.getParameter("reservationId") != null) {
-                    int resId = Integer.parseInt(request.getParameter("reservationId"));
-                    Reservation reservation = r.getReservationById(resId);
+            if ("provide".equals(action) && request.getParameter("reservationId") != null) {
+                int resId = Integer.parseInt(request.getParameter("reservationId"));
+                Reservation reservation = reservationDAO.getReservationById(resId);
 
-                    if (reservation.getList_service() != null && !reservation.getList_service().isEmpty()) {
-                        request.setAttribute("reservation", reservation);
-                        request.getRequestDispatcher("customer-feedbackForm.jsp").forward(request, response);
-                    } else {
-                    }
-                    return;
+                if (reservation.getList_service() != null && !reservation.getList_service().isEmpty()) {
+                    request.setAttribute("reservation", reservation);
+                    request.getRequestDispatcher("customer-feedbackForm.jsp").forward(request, response);
                 }
+                return;
             }
 
-            List<Feedback> rated_feedback = f.getFeedbackByCustomerId(loggedInUser.getId());
-            List<Reservation> unrated = r.getReservationbyCustomerId(loggedInUser.getId());
-            Iterator<Reservation> iterator = unrated.iterator();
-            while (iterator.hasNext()) {
-                Reservation res = iterator.next();
-                System.out.println("Checking reservation ID: " + res.getId());
-                boolean check = false;
-                Feedback feedback = f.getFeedbackByReservationId(res.getId());
+            List<Feedback> ratedFeedback = feedbackDAO.getFeedbackByCustomerId(loggedInUser.getId());
+            List<Reservation> unratedReservations = filterUnratedReservations(feedbackDAO, reservationDAO, loggedInUser.getId());
 
-                if (feedback != null) {
-                    check = feedback.getStatus().equals("Processed");
-                    Timestamp feedbackTimestamp = feedback.getFeedback_time();
-                    long feedbackTime = feedbackTimestamp.getTime(); 
-                    long currentTime = System.currentTimeMillis();
-                    long thirtyDaysAgo = currentTime - (30L * 24 * 60 * 60 * 1000);
-                    if (feedbackTime < thirtyDaysAgo) {
-                        f.updateFeedback(feedback.getReservation_id(), feedback.getService_id(), 0, "No feedback", "Processed");
-                    }
-
-                    System.out.println("Feedback Status: " + feedback.getStatus());
-                    if (check == true) {
-                        iterator.remove();
-                    }
-                }
-
-                if (!"Successful".equals(res.getStatus())) {
-                    if (feedback != null && check) {
-                        System.out.println("Removing reservation ID: " + res.getId());
-                        iterator.remove();
-                    }
-                }
-                if (!f.isFeedback(res.getId())) {
-                    System.out.println("Removing reservation ID due to lack of feedback: " + res.getId());
-                    iterator.remove();
-                }
-            }
-            request.setAttribute("rated", rated_feedback);
-            request.setAttribute("unrated", unrated);
-            request.setAttribute("service", s);
+            request.setAttribute("rated", ratedFeedback);
+            request.setAttribute("unrated", unratedReservations);
+            request.setAttribute("service", serviceDAO);
             request.getRequestDispatcher("customer-feedback.jsp").forward(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(FeedbackServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void updateOldFeedbacks(FeedbackDAO feedbackDAO, int customerId) throws SQLException {
+        List<Feedback> feedbacks = feedbackDAO.getFeedbackByCustomerId(customerId);
+        long thirtyDaysAgo = System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000);
+
+        for (Feedback feedback : feedbacks) {
+            Timestamp feedbackTimestamp = feedback.getFeedback_time();
+            if (feedbackTimestamp.getTime() < thirtyDaysAgo && !"Processed".equals(feedback.getStatus())) {
+                feedbackDAO.updateFeedback(feedback.getReservation_id(), feedback.getService_id(), 0, "No feedback", "Processed");
+            }
+        }
+    }
+
+    private List<Reservation> filterUnratedReservations(FeedbackDAO feedbackDAO, ReservationDAO reservationDAO, int customerId) throws SQLException {
+        List<Reservation> unratedReservations = reservationDAO.getReservationbyCustomerId(customerId);
+        Iterator<Reservation> iterator = unratedReservations.iterator();
+
+        while (iterator.hasNext()) {
+            Reservation res = iterator.next();
+            Feedback feedback = feedbackDAO.getFeedbackByReservationId(res.getId());
+
+            if (feedback != null && "Processed".equals(feedback.getStatus()) || !"Successful".equals(res.getStatus()) || !feedbackDAO.isFeedback(res.getId())) {
+                iterator.remove();
+            }
+        }
+        return unratedReservations;
     }
 
     @Override
@@ -104,32 +99,28 @@ public class FeedbackServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String submit = request.getParameter("submit");
-        System.out.println("Submit: " + submit);
-        System.out.println(request.getParameter("reservation_id"));
-        System.out.println(request.getParameter("reservation_id") != null);
-        ReservationDAO r = new ReservationDAO();
-        FeedbackDAO f = new FeedbackDAO();
+        ReservationDAO reservationDAO = new ReservationDAO();
+        FeedbackDAO feedbackDAO = new FeedbackDAO();
+
         if (submit != null && request.getParameter("reservation_id") != null) {
             int id = Integer.parseInt(request.getParameter("reservation_id"));
-            Reservation reservation = r.getReservationById(id);
+            Reservation reservation = reservationDAO.getReservationById(id);
+
             if (reservation.getList_service() != null && !reservation.getList_service().isEmpty()) {
                 for (ReservationService rs : reservation.getList_service()) {
-                    String rate = "rating_" + rs.getService_id();
-                    String content = "feedbackContent_" + rs.getService_id();
-                    if (request.getParameter(rate) != null && request.getParameter(content) != null) {
-                        int rate_star = Integer.parseInt(request.getParameter(rate));
-                        String content_feedback = request.getParameter(content);
-                        System.out.println(rate_star);
-                        System.out.println(content_feedback);
+                    String rateParam = "rating_" + rs.getService_id();
+                    String contentParam = "feedbackContent_" + rs.getService_id();
+
+                    if (request.getParameter(rateParam) != null && request.getParameter(contentParam) != null) {
                         try {
-                            f.updateFeedback(id, rs.getService_id(), rate_star, content_feedback, "Processed");
+                            int rate = Integer.parseInt(request.getParameter(rateParam));
+                            String content = request.getParameter(contentParam);
+                            feedbackDAO.updateFeedback(id, rs.getService_id(), rate, content, "Processed");
                         } catch (SQLException ex) {
                             Logger.getLogger(FeedbackServlet.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }
-            } else {
-                Logger.getLogger(FeedbackServlet.class.getName()).log(Level.WARNING, "error.");
             }
             response.sendRedirect(request.getContextPath() + "/customer-feedback");
         }
@@ -137,6 +128,6 @@ public class FeedbackServlet extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "FeedbackServlet for managing customer feedback.";
     }
 }

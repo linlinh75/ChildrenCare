@@ -1,9 +1,3 @@
-<%-- 
-    Document   : manager-addslider
-    Created on : Oct 20, 2024, 9:08:12 PM
-    Author     : admin
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -27,35 +21,60 @@
                 <div class="create-form">
                     <div>
                         <h2 style="text-align: center; margin-bottom: 20px;">Create Slider</h2>
-                        <form id="addForm" method="post" action="managerSliderList" enctype="multipart/form-data" onsubmit="return confirmCreate() && validateForm()">
-                            <div style="margin-bottom: 10px;">
-                                <label for="sliderTitle" style="width: 100px; font-weight: bold">Title</label>
-                                <input style="width: 80%; height: 80px;" type="text" name="sliderTitle" id="sliderTitle" required>
-                                <small id="titleError" style="color: red; display: none;">Please enter a valid title without spaces only.</small>
-                            </div>
-                            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                <label for="sliderImage" style="width: 100px; font-weight: bold">Image</label>
-                                <input type="file" id="sliderImageInput" name="sliderImage" accept="image/*" required>
-                                <small id="imageError" style="color: red; display: none;">Please select a valid image file.</small>
-                            </div>
-                            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                <label for="sliderBacklink" style="width: 100px; font-weight: bold">Back Link</label>
-                                <input type="url" name="sliderBacklink" id="sliderBacklink" required>
-                                <small id="backlinkError" style="color: red; display: none;">Please enter a valid URL.</small>
-                            </div>
-                            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                <label for="sliderNote" style="width: 100px; font-weight: bold">Notes</label>
-                                <input style="width: 80%; height: 80px;" type="text" name="sliderNote" id="sliderNote" required>
-                                <small id="noteError" style="color: red; display: none;">Please enter valid notes without spaces only.</small>
-                            </div>
-                            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                <label for="sliderStatus" style="width: 100px; font-weight: bold">Status</label>
-                                <select name="sliderStatus" id="sliderStatus" required>
-                                    <option value="1">Public</option>
-                                    <option value="0">Hidden</option>
-                                </select>
-                            </div>
-                            <button style="text-align: center !important; margin-bottom: 20px;" type="submit" name="submit" value="add" class="btn btn-edit">Create</button>
+                        <form id="addForm" method="post" action="managerSliderList" enctype="multipart/form-data" onsubmit="return validateForm()">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr style="padding-bottom: 15px;">
+                                    <td style="width: 150px; font-weight: bold;">
+                                        <label for="sliderTitle">Title <span style="color: red;">*</span></label>
+                                        <small id="titleError" style="color: red; display: none;">Please enter a title.</small>
+                                    </td>
+                                    <td>
+                                        <input style="width: 90%; height: 50px;" type="text" name="sliderTitle" id="sliderTitle" required>
+                                    </td>
+                                </tr>
+                                <tr style="padding-bottom: 15px;">
+                                    <td style="width: 150px; font-weight: bold;">
+                                        <label for="sliderImage">Image<span style="color: red;">*</span></label>
+                                    </td>
+                                    <td>
+                                        <input type="file" id="sliderImageInput" name="sliderImage" accept="image/*" required>
+                                        <small id="imageError" style="color: red; display: none;">Please select a valid image file.</small>
+                                    </td>
+                                </tr>
+                                <tr style="padding-bottom: 15px;">
+                                    <td style="width: 150px; font-weight: bold;">
+                                        <label for="sliderBacklink">Back Link<span style="color: red;">*</span></label>
+                                    </td>
+                                    <td>
+                                        <input style="width: 90%;" type="url" name="sliderBacklink" id="sliderBacklink" required>
+                                        <small id="backlinkError" style="color: red; display: none;">Please enter a valid URL.</small>
+                                    </td>
+                                </tr>
+                                <tr style="padding-bottom: 15px;">
+                                    <td style="width: 150px;height: 50px; font-weight: bold;">
+                                        <label for="sliderNote">Notes</label>
+                                    </td>
+                                    <td>
+                                        <input style="width: 90%; height: 30px;" type="text" name="sliderNote" id="sliderNote">
+                                    </td>
+                                </tr>
+                                <tr style="padding-bottom: 15px;">
+                                    <td style="width: 150px; font-weight: bold;">
+                                        <label for="sliderStatus">Status</label>
+                                    </td>
+                                    <td>
+                                        <select name="sliderStatus" id="sliderStatus" required>
+                                            <option value="1">Public</option>
+                                            <option value="0">Hidden</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: center; padding-top: 15px;">
+                                        <button type="submit" name="submit" value="add" class="btn btn-edit">Create</button>
+                                    </td>
+                                </tr>
+                            </table>
                         </form>
                     </div>
                 </div>
@@ -67,48 +86,41 @@
             let isValid = true;
 
             const title = document.getElementById("sliderTitle").value.trim();
-            const image = document.getElementById("sliderImageInput").value;
-            const backlink = document.getElementById("sliderBacklink").value.trim();
-            const note = document.getElementById("sliderNote").value.trim();
-
+            const titleError = document.getElementById("titleError");
             if (title === "") {
-                document.getElementById("titleError").style.display = "block";
+                titleError.style.display = "block";
                 isValid = false;
             } else {
-                document.getElementById("titleError").style.display = "none";
+                titleError.style.display = "none";
             }
 
+            const image = document.getElementById("sliderImageInput").value;
+            const imageError = document.getElementById("imageError");
             if (image === "") {
-                document.getElementById("imageError").style.display = "block";
+                imageError.style.display = "block";
                 isValid = false;
             } else {
-                document.getElementById("imageError").style.display = "none";
+                imageError.style.display = "none";
             }
 
-            if (!backlink || !isValidURL(backlink)) {
-                document.getElementById("backlinkError").style.display = "block";
+            const backlink = document.getElementById("sliderBacklink").value.trim();
+            const backlinkError = document.getElementById("backlinkError");
+            if (!isValidURL(backlink)) {
+                backlinkError.style.display = "block";
                 isValid = false;
             } else {
-                document.getElementById("backlinkError").style.display = "none";
+                backlinkError.style.display = "none";
             }
 
-            if (note === "") {
-                document.getElementById("noteError").style.display = "block";
-                isValid = false;
-            } else {
-                document.getElementById("noteError").style.display = "none";
+            if (!isValid) {
+                alert("Please input correct information in the form.");
             }
-
-            return isValid;
+            return isValid; 
         }
 
         function isValidURL(url) {
             const urlPattern = /^(http|https):\/\/[^\s$.?#].[^\s]*$/gm;
             return urlPattern.test(url);
-        }
-
-        function confirmCreate() {
-            return confirm("Are you sure you want to create this slider?");
         }
     </script>
 </html>

@@ -41,7 +41,7 @@ public class SliderDAO extends DBContext {
 
     public List<Slider> getManageSliders() {
         List<Slider> sliders = new ArrayList<>();
-        String query = "SELECT * FROM slider";
+        String query = "SELECT * FROM slider where status!='Deleted'";
 
         try {
             stm = connection.prepareStatement(query);
@@ -84,7 +84,7 @@ public class SliderDAO extends DBContext {
     }
 
     public void deleteSlider(int id) {
-        String sql = "DELETE FROM swp.slider WHERE id = ?";
+        String sql = "Update swp.slider set status ='Deleted' WHERE id = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, id);
@@ -101,20 +101,19 @@ public class SliderDAO extends DBContext {
     }
 
     public void updateSlider(int id, String title, String imagePath, String backlink, String status, String notes) {
-        // Câu lệnh SQL để cập nhật các trường
         String sql = "UPDATE swp.slider SET title = ?, image_link = ?, backlink = ?, status = ?, notes = ?, update_date = CURRENT_DATE WHERE id = ?";
-
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
-            // Gán giá trị cho các tham số trong câu lệnh
             stmt.setString(1, title);
             stmt.setString(2, imagePath);
             stmt.setString(3, backlink);
             stmt.setString(4, status);
             stmt.setString(5, notes);
             stmt.setInt(6, id);
+            
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
+                
                 System.out.println("Successful update ID: " + id);
             } else {
                 System.out.println("Cannot find ID: " + id);

@@ -173,51 +173,58 @@
     </head>
     <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
         <body>
-            <section class="container-fluid" style="width: 80%">
-                <div class="bread_crumb">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
-                            <li class="breadcrumb-item"><a href="./profile">Profile</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Slider List</li>
-                        </ol>
-                    </nav>
-                </div>
-                <div class="slider-list">
-                    <div class="table-container">
-                        <div class="table-header">
-                            <div class="search-box">
-                                <input type="text" placeholder="Search by title" id="searchInput" onkeyup="searchSlider()">
-                                <button type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                            <div class="status-filter" style="display: flex">
-                                <div>Filter by status:</div>
-                                <div class="status-filter">
-                                    <select id="statusFilter" onchange="filterByStatus()">
-                                        <option value="all">All</option>
-                                        <option value="1">Public</option>
-                                        <option value="0">Hidden</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <a href="manager-addslider.jsp" type="button" class="btn">Create Slider</a>
+        <% String message = (String) session.getAttribute("message"); %>
+        <% if (message != null) { %>
+        <script>
+            alert("<%= message %>");
+            <% session.removeAttribute("message"); %>
+        </script>
+        <% } %>
+        <section class="container-fluid" style="width: 80%">
+            <div class="bread_crumb">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
+                        <li class="breadcrumb-item"><a href="./profile">Profile</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Slider List</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="slider-list">
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="search-box">
+                            <input type="text" placeholder="Search by title" id="searchInput" onkeyup="searchSlider()">
+                            <button type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="status-filter" style="display: flex">
+                            <div>Filter by status:</div>
+                            <div class="status-filter">
+                                <select id="statusFilter" onchange="filterByStatus()">
+                                    <option value="all">All</option>
+                                    <option value="1">Public</option>
+                                    <option value="0">Hidden</option>
+                                </select>
                             </div>
                         </div>
-                        <table class="slider-table">
-                            <thead>
-                                <tr>
-                                    <th onclick="sortTable(0)">Slider ID <i class="fa fa-sort"></i></th>
-                                    <th onclick="sortTable(1)">Title <i class="fa fa-sort"></i></th>
-                                    <th>Image</th>
-                                    <th onclick="sortTable(3)">Back Link</th>
-                                    <th >Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sliderTableBody">
+                        <div>
+                            <a href="manager-addslider.jsp" type="button" class="btn">Create Slider</a>
+                        </div>
+                    </div>
+                    <table class="slider-table">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable(0)">Slider ID <i class="fa fa-sort"></i></th>
+                                <th onclick="sortTable(1)">Title <i class="fa fa-sort"></i></th>
+                                <th>Image</th>
+                                <th onclick="sortTable(3)">Back Link <i class="fa fa-sort"></i></th>
+                                <th >Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sliderTableBody">
                             <c:forEach var="slider" items="${slider}">
                                 <tr>
                                     <td>${slider.getId()}</td>
@@ -260,21 +267,21 @@
                                     <form id="editForm" method="post" action="managerSliderList" enctype="multipart/form-data">
                                         <input type="hidden" name="sliderId" id="sliderId">
                                         <div style="margin-bottom: 10px;">
-                                            <label for="sliderTitle" style="width: 100px; font-weight: bold">Title</label>
+                                            <label for="sliderTitle" style="width: 100px; font-weight: bold">Title<span style="color: red;">*</span></label>
                                             <input style="width: 80%; height: 80px;" type="text" name="sliderTitle" id="sliderTitle" required>
                                         </div>
                                         <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                            <label for="sliderImage" style="width: 100px; font-weight: bold">Image</label>
+                                            <label for="sliderImage" style="width: 100px; font-weight: bold">Image<span style="color: red;">*</span></label>
                                             <img id="sliderImagePreview" style="width: 200px; height: 100px; margin-right: 10px;" alt="Image Preview"/>
                                             <input type="file" id="sliderImageInput" name="sliderImage" accept="image/*" >
                                         </div>
                                         <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                            <label for="sliderBacklink" style="width: 100px; font-weight: bold">Back Link</label>
+                                            <label for="sliderBacklink" style="width: 100px; font-weight: bold">Back Link<span style="color: red;">*</span></label>
                                             <input type="text" name="sliderBacklink" id="sliderBacklink" required>
                                         </div>
                                         <div style="display: flex; align-items: center; margin-bottom: 10px;">
                                             <label for="sliderNote" style="width: 100px; font-weight: bold">Notes</label>
-                                            <input style="width: 80%; height: 80px;" type="text" name="sliderNote" id="sliderNote" required>
+                                            <input style="width: 80%; height: 80px;" type="text" name="sliderNote" id="sliderNote">
                                         </div>
                                         <div style="display: flex; align-items: center; margin-bottom: 10px;">
                                             <button style="text-align: center !important; margin-bottom: 20px;" type="submit" name="submit" value="edit" class="btn btn-edit" onclick="return confirmEdit()">Save</button>
@@ -296,7 +303,7 @@
         let currentPage = 1;
         const rowsPerPage = 5;
         let filteredRows = [];
-
+        let sortDirection = true;
         function searchSlider() {
             let input = document.getElementById('searchInput').value.toLowerCase().trim();
             let table = document.getElementById('sliderTableBody');
@@ -316,18 +323,17 @@
             let totalRows = filteredRows.length;
 
             Array.from(table.children).forEach(row => row.style.display = "none");
-
             let startIndex = (currentPage - 1) * rowsPerPage;
             let endIndex = Math.min(startIndex + rowsPerPage, totalRows);
-
             for (let i = startIndex; i < endIndex; i++) {
                 if (filteredRows[i]) {
                     filteredRows[i].style.display = "";
+                    console.log(i);
                 }
             }
-
             createPagination(Math.ceil(totalRows / rowsPerPage), currentPage);
         }
+
 
         function createPagination(totalPages, currentPage) {
             let pagination = document.getElementById('pagination');
@@ -387,31 +393,27 @@
             filteredRows = rows;
             displayTable();
         };
-
-        let sortDirection = true;
-
         function sortTable(columnIndex) {
-            let table = document.getElementById("sliderTableBody");
-            filteredRows.sort(function (a, b) {
-                let aText = a.getElementsByTagName("td")[columnIndex].innerText.toLowerCase();
-                let bText = b.getElementsByTagName("td")[columnIndex].innerText.toLowerCase();
-
-                if (columnIndex === 0 || columnIndex === 4) {
-                    aText = parseInt(aText);
-                    bText = parseInt(bText);
-                }
-
-                if (aText < bText) {
-                    return sortDirection ? -1 : 1;
-                }
-                if (aText > bText) {
-                    return sortDirection ? 1 : -1;
+            const table = document.getElementById("sliderTableBody");
+            const isAscending = table.dataset.sortOrder === "asc";
+            filteredRows.sort((a, b) => {
+                let aValue, bValue;
+                if (columnIndex === 0) {
+                    aValue = parseInt(a.cells[columnIndex].innerText);
+                    bValue = parseInt(b.cells[columnIndex].innerText);
+                    return isAscending ? aValue - bValue : bValue - aValue;
+                } else if (columnIndex === 1 || columnIndex === 3) {
+                    aValue = a.cells[columnIndex].innerText.toLowerCase();
+                    bValue = b.cells[columnIndex].innerText.toLowerCase();
+                    return isAscending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
                 }
                 return 0;
             });
-
-            sortDirection = !sortDirection;
-            currentPage = 1;
+            while (table.firstChild) {
+                table.removeChild(table.firstChild);
+            }
+            filteredRows.forEach(row => table.appendChild(row));
+            table.dataset.sortOrder = isAscending ? "desc" : "asc";
             displayTable();
         }
 
@@ -440,13 +442,74 @@
             document.getElementById('sliderNote').value = slider.note;
 
             document.getElementById('editPopup').style.display = 'block';
+
+            document.getElementById("sliderTitle").addEventListener("input", validateTitle);
+            document.getElementById("sliderImageInput").addEventListener("change", validateImage);
+            document.getElementById("sliderBacklink").addEventListener("input", validateBacklink);
         }
 
 
         function closePopup() {
             document.getElementById('editPopup').style.display = 'none';
         }
+        function validateTitle() {
+            const titleField = document.getElementById("sliderTitle");
+            const titleError = document.getElementById("titleError");
+            const titleValue = titleField.value.trim();
 
+            if (titleValue === "" || /\s/.test(titleValue)) {
+                titleError.style.display = "block";
+                titleError.innerText = "Please enter a valid title without spaces.";
+                return false;
+            } else {
+                titleError.style.display = "none";
+                return true;
+            }
+        }
+
+        function validateImage() {
+            const imageField = document.getElementById("sliderImageInput");
+            const imageError = document.getElementById("imageError");
+
+            if (imageField.value === "") {
+                imageError.style.display = "block";
+                imageError.innerText = "Please select an image file.";
+                return false;
+            } else {
+                imageError.style.display = "none";
+                return true;
+            }
+        }
+
+        function validateBacklink() {
+            const backlinkField = document.getElementById("sliderBacklink");
+            const backlinkError = document.getElementById("backlinkError");
+            const backlinkValue = backlinkField.value.trim();
+
+            const urlPattern = /^(http|https):\/\/[^\s$.?#].[^\s]*$/gm;
+
+            if (!urlPattern.test(backlinkValue)) {
+                backlinkError.style.display = "block";
+                backlinkError.innerText = "Please enter a valid URL.";
+                return false;
+            } else {
+                backlinkError.style.display = "none";
+                return true;
+            }
+        }
+
+        function confirmEdit() {
+            const isTitleValid = validateTitle();
+            const isImageValid = validateImage();
+            const isBacklinkValid = validateBacklink();
+
+            if (!isTitleValid || !isImageValid || !isBacklinkValid) {
+                alert("Please input correct information in the form.");
+                return false;
+            }
+
+            return confirm("Are you sure you want to edit this slider?");
+        }
         window.onclick = function (event) {
             const popup = document.getElementById('editPopup');
             if (event.target === popup) {

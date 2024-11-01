@@ -12,7 +12,6 @@ import model.Feedback;
 
 public class FeedbackDAO extends DBContext {
 
-    //get list feedback by service id
     public List<Feedback> getFeedbackByServiceId(int serviceId) {
         List<Feedback> listFeedbacks = new ArrayList<>();
         
