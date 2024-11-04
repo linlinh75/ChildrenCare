@@ -194,7 +194,7 @@
                 <div class="table-container">
                     <div class="table-header">
                         <div class="search-box">
-                            <input type="text" placeholder="Search by title" id="searchInput" onkeyup="searchSlider()">
+                            <input type="text" placeholder="Search by title" id="searchInput" onkeyup="filterSliders()">
                             <button type="button">
                                 <i class="fa fa-search"></i>
                             </button>
@@ -202,7 +202,7 @@
                         <div class="status-filter" style="display: flex">
                             <div>Filter by status:</div>
                             <div class="status-filter">
-                                <select id="statusFilter" onchange="filterByStatus()">
+                                <select id="statusFilter" onchange="filterSliders()">
                                     <option value="all">All</option>
                                     <option value="1">Public</option>
                                     <option value="0">Hidden</option>
@@ -417,16 +417,22 @@
             displayTable();
         }
 
-        function filterByStatus() {
-            let statusFilter = document.getElementById("statusFilter").value;
-            let table = document.getElementById("sliderTableBody");
-            let rows = Array.from(table.getElementsByTagName("tr"));
+        function filterSliders() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusFilter = document.getElementById("statusFilter").value;
+            const table = document.getElementById("sliderTableBody");
+            const rows = Array.from(table.getElementsByTagName("tr"));
 
             filteredRows = rows.filter(function (row) {
-                let status = row.getElementsByTagName("td")[4].innerText.trim().toLowerCase();
-                if (statusFilter === "all")
-                    return true;
-                return statusFilter === "1" ? status === "public" : status === "hidden";
+                const title = row.getElementsByTagName('td')[1].innerText.toLowerCase();
+                const status = row.getElementsByTagName("td")[4].innerText.trim().toLowerCase();
+
+                const matchesSearch = title.includes(searchValue);
+                const matchesStatus = (statusFilter === "all") || 
+                                      (statusFilter === "1" && status === "public") || 
+                                      (statusFilter === "0" && status === "hidden");
+
+                return matchesSearch && matchesStatus;
             });
 
             currentPage = 1;

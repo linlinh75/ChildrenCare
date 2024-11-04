@@ -100,6 +100,22 @@ public class FeedbackDAO extends DBContext {
     }
     public Feedback getFeedbackByReservationId(int id) {
         String s = "SELECT * FROM swp.feedback WHERE reservation_id = ?";
+        Feedback feedback = new Feedback();
+        try {
+            PreparedStatement stmt = connection.prepareStatement(s);
+            stmt.setInt(1, id);
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet.next()) {
+                     feedback = getFromResultSet(resultSet);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+    public Feedback getFeedbackById(int id) {
+        String s = "SELECT * FROM swp.feedback WHERE id = ?";
         Feedback feedback= null;
         try {
             PreparedStatement stmt = connection.prepareStatement(s);

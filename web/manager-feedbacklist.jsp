@@ -12,6 +12,7 @@
                 background-color: #f9f9f9;
                 padding: 20px;
                 border-radius: 8px;
+                min-height: 600px;
             }
 
             .table-header {
@@ -69,6 +70,7 @@
             }
             .btn-view {
                 background-color: #0a58ca !important;
+                color: white !important;
             }
 
             .btn-edit {
@@ -143,7 +145,7 @@
         </nav>
     </div>
     <div class="feedback-list">
-        <div class="table-container">
+        <div class="table-container" >
             <div class="table-header">
                 <div class="search-box">
                     <input type="text" placeholder="Search by customer name, content" id="searchInput" onkeyup="applyFilters()">
@@ -151,22 +153,22 @@
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
-                <div class="status-filter" style="display: flex">
-                    <div>Filter by status:</div>
+                <div class="status-filter" style="display: flex; gap: 10px">
+                    <div>Filter by status: </div>
                     <select id="statusFilter" onchange="applyFilters()">
                         <option value="all">All</option>
                         <option value="Public">Public</option>
                         <option value="Hidden">Hidden</option>
                         <option value="Processing">Processing</option>
                     </select>
-                    <div>Service Name:</div>
+                    <div>Service Name: </div>
                     <select id="serviceFilter" onchange="applyFilters()">
                         <option value="all">All Services</option>
                         <c:forEach var="service" items="${service.getAllService()}">
-                            <option value="${service.getFullname()}">${service.getFullname()}</option>
+                            <option value="${service.getFullname().trim()}">${service.getFullname()}</option>
                         </c:forEach>
                     </select>
-                    <div>Rated Star:</div>
+                    <div>Rated Star: </div>
                     <select id="starFilter" onchange="applyFilters()">
                         <option value="all">All Stars</option>
                         <c:forEach var="star" begin="0" end="5">
@@ -196,7 +198,7 @@
                         <td>${feedback.getRated_star()}</td>
                         <td>${feedback.getContent()}</td>
                         <td>${feedback.getStatus() == 'Processing' ? "Processing" : (feedback.getRated_star() <= 0 ? "Hidden" : "Public")}</td>
-                        <td><a href="#" class="btn btn-view">View</a></td>
+                        <td><a href="./managerFeedbackList?action=detail&&id=${feedback.getId()}" class="btn btn-view">View</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -222,27 +224,31 @@
     }
 
     function applyFilters() {
-        const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
-        const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
-        const serviceFilter = document.getElementById("serviceFilter").value.toLowerCase();
-        const starFilter = document.getElementById("starFilter").value;
+    const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
+    const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
+    const serviceFilter = document.getElementById("serviceFilter").value.toLowerCase();
+    const starFilter = document.getElementById("starFilter").value;
 
-        filteredRows = allRows.filter(row => {
-            const cells = row.getElementsByTagName("td");
-            const fullname = cells[1].innerText.toLowerCase();
-            const serviceName = cells[2].innerText.toLowerCase();
-            const ratedStar = cells[3].innerText;
-            const status = cells[5].innerText.toLowerCase();
+    filteredRows = allRows.filter(row => {
+        const cells = row.getElementsByTagName("td");
+        const fullname = cells[1].innerText.toLowerCase();
+        const serviceName = cells[2].innerText.toLowerCase();
+        const ratedStar = cells[3].innerText;
+        const status = cells[5].innerText.toLowerCase();
 
-            return (fullname.includes(searchValue) || cells[4].innerText.toLowerCase().includes(searchValue)) &&
-                   (statusFilter === "all" || status.includes(statusFilter)) &&
-                   (serviceFilter === "all" || serviceName.includes(serviceFilter)) &&
-                   (starFilter === "all" || ratedStar === starFilter);
-        });
+        const isStarFilterMatch = starFilter === "all" || 
+                                  (ratedStar === starFilter || ratedStar === (parseInt(starFilter) * -1).toString());
 
-        currentPage = 1;
-        displayTable();
-    }
+        return (fullname.includes(searchValue) || cells[4].innerText.toLowerCase().includes(searchValue)) &&
+               (statusFilter === "all" || status.includes(statusFilter)) &&
+               (serviceFilter === "all" || serviceName.includes(serviceFilter)) &&
+               isStarFilterMatch;
+    });
+
+    currentPage = 1;
+    displayTable();
+}
+
 
     function displayTable() {
         const table = document.getElementById('feedbackTableBody');
@@ -261,20 +267,51 @@
     }
 
     function createPagination(totalPages, currentPage) {
-        let pagination = document.getElementById('pagination');
-        let str = '<ul>';
+            let pagination = document.getElementById('pagination');
+            let str = '<ul>';
+            let active;
 
-        if (currentPage > 1) str += `<li><a onclick="goToPage(${currentPage - 1})">Previous</a></li>`;
+            if (currentPage > 1) {
+                str += '<li class="page-item previous no"><a onclick="goToPage(' + (currentPage - 1) + ')">Previous</a></li>';
+            }
 
-        for (let p = 1; p <= totalPages; p++) {
-            const active = currentPage === p ? "active" : "";
-            str += `<li class="${active}"><a onclick="goToPage(${p})">${p}</a></li>`;
+            let maxVisiblePages = 6;
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+
+            if (totalPages > maxVisiblePages) {
+                if (startPage > 1) {
+                    str += '<li class="no"><a onclick="goToPage(1)">1</a></li>';
+                    if (startPage > 2) {
+                        str += '<li class="no" style="color: black; padding: 5px 10px;border: 2px solid #ccc;">...</li>';
+                    }
+                }
+
+                for (let p = startPage; p <= endPage; p++) {
+                    active = currentPage === p ? "active" : "no";
+                    str += '<li class="' + active + '"><a onclick="goToPage(' + p + ')">' + p + '</a></li>';
+                }
+
+                if (endPage < totalPages - 1) {
+                    str += '<li class="no" style="color: black; padding: 5px 10px;border: 2px solid #ccc;">...</li>';
+                }
+                if (endPage < totalPages) {
+                    str += '<li class="no"><a onclick="goToPage(' + totalPages + ')">' + totalPages + '</a></li>';
+                }
+            } else {
+                for (let p = 1; p <= totalPages; p++) {
+                    active = currentPage === p ? "active" : "no";
+                    str += '<li class="' + active + '"><a onclick="goToPage(' + p + ')">' + p + '</a></li>';
+                }
+            }
+
+            if (currentPage < totalPages) {
+                str += '<li class="page-item next no"><a onclick="goToPage(' + (currentPage + 1) + ')">Next</a></li>';
+            }
+            str += '</ul>';
+
+            pagination.innerHTML = str;
         }
-
-        if (currentPage < totalPages) str += `<li><a onclick="goToPage(${currentPage + 1})">Next</a></li>`;
-        str += '</ul>';
-        pagination.innerHTML = str;
-    }
 
     function goToPage(pageNumber) {
         currentPage = pageNumber;
