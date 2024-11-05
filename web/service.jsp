@@ -12,7 +12,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!-- Title -->
-        <title>Mediplus - Medical and Doctor HTML Template.</title>
+        <title>Service</title>
 
         <!-- Favicon -->
         <link rel="icon" href="img/favicon.png">
@@ -117,7 +117,7 @@
                                 <div class="col-lg-4 col-md-6 col-12">
                                     <div class="single-news">
                                         <div class="news-head">
-                                            <img src="${pageContext.request.contextPath}/${service.thumbnailLink}" alt="#">
+                                            <img src="${service.thumbnailLink}" alt="#">
                                         </div>
                                         <div class="news-body">
                                             <div class="news-content">
