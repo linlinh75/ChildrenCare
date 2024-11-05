@@ -17,9 +17,9 @@
         <link href="assets/jumbotron-narrow.css" rel="stylesheet">      
         <script src="assets/jquery-1.11.3.min.js"></script>
     </head>
-
+    <jsp:include page="/common/common-homepage-header.jsp"></jsp:include>
     <body>
-         <div class="container">
+         <div class="container ">
            <div class="header clearfix">
 
                 <h3 class="text-muted">VNPAY DEMO</h3>
@@ -51,9 +51,7 @@
             <p>
                 &nbsp;
             </p>
-            <footer class="footer">
-                <p>&copy; VNPAY 2024</p>
-            </footer>
+            
         </div>
           
         <link href="https://pay.vnpay.vn/lib/vnpay/vnpay.css" rel="stylesheet" />
@@ -95,4 +93,5 @@
 
         </script>       
     </body>
+    <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
 </html>

@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -363,7 +364,22 @@ public class ReservationDAO extends DBContext {
             return false;
         }
     }
-
+    public int getReservationCount(String status, Date startDate, Date endDate) {
+        String query = "SELECT COUNT(*) FROM reservation WHERE status = ? AND reservation_date BETWEEN ? AND ?";
+        try  {
+            stm  = connection.prepareStatement(query);
+            stm.setString(1, status);
+            stm.setDate(2, (java.sql.Date) startDate);
+            stm.setDate(3, (java.sql.Date) endDate);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
     public static void main(String[] args) {
         ReservationDAO userdao = new ReservationDAO();
         List<Reservation> ulist = userdao.getAllReservation();

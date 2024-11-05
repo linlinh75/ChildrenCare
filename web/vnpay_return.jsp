@@ -11,6 +11,9 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="dal.ReservationDAO"%>
+<%@page import="util.EmailSender"%>
+<%@page import="model.User"%>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -23,6 +26,7 @@
         <!-- Bootstrap core CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     </head>
+    <jsp:include page="/common/common-homepage-header.jsp"></jsp:include>
     <body class="bg-light">
         <div class="container mt-5">
             <div class="card border-primary shadow-lg">
@@ -90,9 +94,21 @@
                                         if (signValue.equals(vnp_SecureHash)) {
                                             if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
                                                 rdao.statusReservation((int)session.getAttribute("rid"), "Successful");
+                                                String content = "<p>You have been successfully transfer, please notice your schedule and come to our hospital</p>"
+                                                + "<p>Thanks for chosing our service</p>"
+                                                + "<strong>Children Care System</strong>"
+                       ;
+                String subject = "Reservation Completion";
+                EmailSender.sendHtml(((User)session.getAttribute("account")).getEmail(), content, subject);
                                                 out.print("<span class='badge bg-success'>Successful</span>");
                                             } else {
                                                 rdao.statusReservation((int)session.getAttribute("rid"), "Unsuccessful");
+                                                String content = "<p>Your transfer have been falied, please re-order</p>"
+                                                + "<p>Thanks for chosing our service</p>"
+                                                + "<strong>Children Care System</strong>"
+                       ;
+                String subject = "Reservation Completion";
+                EmailSender.sendHtml(((User)session.getAttribute("account")).getEmail(), content, subject);
                                                 out.print("<span class='badge bg-danger'>Unsuccessful</span>");
                                             }
                                         } else {
@@ -118,4 +134,5 @@
         <!-- Bootstrap core JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-c8D5ew0qn7NfDxk1MApV7qXlZZ7d5zEBdJYQmLcf4jtDD0D3F+vi6Ff+W7ORbI+p" crossorigin="anonymous"></script>
     </body>
+    <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
 </html>
