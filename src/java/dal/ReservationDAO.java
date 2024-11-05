@@ -371,23 +371,23 @@ public class ReservationDAO extends DBContext {
 //        System.out.println(ulist.get(0).getCheckup_time());
 //        System.out.println(ulist.get(0).getList_service().get(0));
 
-//        for (Reservation u : ulist) {
-//            System.out.println(u.getId());
-//            //System.out.println(u.getId());
-//        }
-            System.out.println(userdao.getTotal(1));
-            String dateString = "2024-10-24 08:00:00";
-
-        try {
-            // Chuyển đổi chuỗi thành đối tượng Timestamp
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            java.util.Date parsedDate = dateFormat.parse(dateString);
-            Timestamp timestamp = new Timestamp(parsedDate.getTime());
-
-            // Gọi phương thức assignWorkSchedule với tham số thứ 2 là Timestamp
-            userdao.assignWorkSchedule(28,3, timestamp);
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (Reservation u : ulist) {
+            System.out.println(u.getId());
+            //System.out.println(u.getId());
         }
+//            System.out.println(userdao.getTotal(1));
+//            String dateString = "2024-10-24 08:00:00";
+//
+//        try {
+//            // Chuyển đổi chuỗi thành đối tượng Timestamp
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            java.util.Date parsedDate = dateFormat.parse(dateString);
+//            Timestamp timestamp = new Timestamp(parsedDate.getTime());
+//
+//            // Gọi phương thức assignWorkSchedule với tham số thứ 2 là Timestamp
+//            userdao.assignWorkSchedule(28,3, timestamp);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 }

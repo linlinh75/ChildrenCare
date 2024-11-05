@@ -56,17 +56,45 @@ public class ManageFeedbackServlet extends HttpServlet {
             updateOldFeedbacks(feedbackDAO, loggedInUser.getId());
 
             String action = request.getParameter("action");
-            List<Feedback> feedback = feedbackDAO.getAllFeedback();
+            if ("detail".equals(action)) {
+                String id = request.getParameter("id");
+                if (id != null && id != "") {
+                    int fid = Integer.parseInt(id);
+                    Feedback f = feedbackDAO.getFeedbackById(fid);
+                    User user = u.getProfileById(f.getUser_id());
+                    request.setAttribute("feedback", f);
+                    request.setAttribute("service", serviceDAO);
+                    request.setAttribute("user", user);
+                    request.getRequestDispatcher("manager-feedbackdetail.jsp").forward(request, response);
+                }
 
-            request.setAttribute("feedback", feedback);
-            request.setAttribute("service", serviceDAO);
-            request.setAttribute("user", u);
-            request.getRequestDispatcher("manager-feedbacklist.jsp").forward(request, response);
+            } else {
+                if ("change".equals(action)) {
+                    String id = request.getParameter("id");
+                    String status = request.getParameter("status");
+                    if (id != null && id != "") {
+                        int fid = Integer.parseInt(id);
+                        Feedback f = feedbackDAO.getFeedbackById(fid);
+                        int star = f.getRated_star()*(-1);
+                        f.setRated_star(star);
+                        feedbackDAO.updateFeedback(f.getReservation_id(), f.getService_id(), star, f.getContent(), f.getStatus());
+                        response.sendRedirect("managerFeedbackList");
+                    return;
+                    }
+                }
+                List<Feedback> feedback = feedbackDAO.getAllFeedback();
+
+                request.setAttribute("feedback", feedback);
+                request.setAttribute("service", serviceDAO);
+                request.setAttribute("user", u);
+                request.getRequestDispatcher("manager-feedbacklist.jsp").forward(request, response);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ManageFeedbackServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
+
     private void updateOldFeedbacks(FeedbackDAO feedbackDAO, int customerId) throws SQLException {
         List<Feedback> feedbacks = feedbackDAO.getFeedbackByCustomerId(customerId);
         long thirtyDaysAgo = System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000);
@@ -79,6 +107,7 @@ public class ManageFeedbackServlet extends HttpServlet {
         }
     }
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *
