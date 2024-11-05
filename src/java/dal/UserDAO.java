@@ -198,16 +198,30 @@ public class UserDAO extends DBContext {
 
     public List<User> getAllUser() {
         List<User> ulist = new ArrayList<>();
-        String s = "Select * from user";
+        String sql = "SELECT * FROM user";
         try {
-            stm = connection.prepareStatement(s);
-            rs = stm.executeQuery();
+            System.out.println("Executing getAllUser query");
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-                User u = new User(rs.getInt("id"), rs.getString("email"), rs.getString("password"), rs.getString("full_name"), rs.getBoolean("gender"), rs.getString("mobile"), rs.getString("address"), rs.getString("image_link"), rs.getInt("role_id"), rs.getString("status"));
+                User u = new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),
+                    rs.getBoolean("gender"),
+                    rs.getString("mobile"),
+                    rs.getString("address"),
+                    rs.getString("image_link"),
+                    rs.getInt("role_id"),
+                    rs.getString("status")
+                );
                 ulist.add(u);
             }
+            System.out.println("Found " + ulist.size() + " users");
         } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error in getAllUser: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return ulist;
     }
@@ -322,5 +336,425 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
              }
    }
             
+
+    public List<User> searchUsersByName(String name) {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM user WHERE full_name LIKE ?";
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, "%" + name + "%");
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                User user = new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),
+                    rs.getBoolean("gender"),
+                    rs.getString("mobile"),
+                    rs.getString("address"),
+                    rs.getString("image_link"),
+                    rs.getInt("role_id"),
+                    rs.getString("status")
+                );
+                userList.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userList;
+    }
+
+    public boolean deleteUser(int userId) {
+        String sql = "UPDATE user SET status = 'Inactive' WHERE id = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    public List<User> getUsersWithPagination(int offset, int recordsPerPage) {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM user LIMIT ? OFFSET ?";
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, recordsPerPage);
+            stmt.setInt(2, offset);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                User user = new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),
+                    rs.getBoolean("gender"),
+                    rs.getString("mobile"),
+                    rs.getString("address"),
+                    rs.getString("image_link"),
+                    rs.getInt("role_id"),
+                    rs.getString("status")
+                );
+                userList.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userList;
+    }
+
+    public List<User> getAllUsersWithPagination(int page, int recordsPerPage) {
+        List<User> userList = new ArrayList<>();
+        int start = (page - 1) * recordsPerPage;
+        
+        String sql = "SELECT u.*, r.role_name FROM user u "
+                + "LEFT JOIN role r ON u.role_id = r.id "
+                + "ORDER BY u.id "
+                + "LIMIT ? OFFSET ?";
+                
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, recordsPerPage);
+            stmt.setInt(2, start);
+            
+            System.out.println("Executing query with recordsPerPage=" + recordsPerPage + ", start=" + start); // Debug log
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setFullName(rs.getString("full_name"));
+                user.setGender(rs.getBoolean("gender"));
+                user.setMobile(rs.getString("mobile"));
+                user.setAddress(rs.getString("address"));
+                user.setImageLink(rs.getString("image_link"));
+                user.setRoleId(rs.getInt("role_id"));
+                user.setStatus(rs.getString("status"));
+                userList.add(user);
+            }
+            
+            System.out.println("Found " + userList.size() + " users"); // Debug log
+            
+        } catch (SQLException ex) {
+            System.out.println("Error in getAllUsersWithPagination: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        return userList;
+    }
+
+    public int getTotalUsers() {
+        String sql = "SELECT COUNT(*) FROM user";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public List<User> searchUsers(String keyword) {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT u.*, r.role_name FROM user u "
+                + "JOIN role r ON u.role_id = r.id "
+                + "WHERE u.full_name LIKE ? OR u.email LIKE ? OR u.mobile LIKE ?";
+                
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            String searchPattern = "%" + keyword + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            stmt.setString(3, searchPattern);
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setFullName(rs.getString("full_name"));
+                user.setGender(rs.getBoolean("gender"));
+                user.setMobile(rs.getString("mobile"));
+                user.setAddress(rs.getString("address"));
+                user.setImageLink(rs.getString("image_link"));
+                user.setRoleId(rs.getInt("role_id"));
+                user.setStatus(rs.getString("status"));
+                userList.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userList;
+    }
+
+    public boolean updateUserStatus(int userId, String status) {
+        String sql = "UPDATE user SET status = ? WHERE id = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, status);
+            stmt.setInt(2, userId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    public List<User> getFilteredUsers(String roleFilter, String statusFilter, int page, int recordsPerPage) {
+        List<User> userList = new ArrayList<>();
+        int start = (page - 1) * recordsPerPage;
+        
+        StringBuilder sql = new StringBuilder("SELECT u.*, r.role_name FROM user u "
+                + "JOIN role r ON u.role_id = r.id WHERE 1=1");
+        
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND u.role_id = ?");
+        }
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql.append(" AND u.status = ?");
+        }
+        
+        sql.append(" ORDER BY u.id LIMIT ? OFFSET ?");
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            
+            if (roleFilter != null && !roleFilter.isEmpty()) {
+                stmt.setInt(paramIndex++, Integer.parseInt(roleFilter));
+            }
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                stmt.setString(paramIndex++, statusFilter);
+            }
+            
+            stmt.setInt(paramIndex++, recordsPerPage);
+            stmt.setInt(paramIndex, start);
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setFullName(rs.getString("full_name"));
+                user.setGender(rs.getBoolean("gender"));
+                user.setMobile(rs.getString("mobile"));
+                user.setAddress(rs.getString("address"));
+                user.setImageLink(rs.getString("image_link"));
+                user.setRoleId(rs.getInt("role_id"));
+                user.setStatus(rs.getString("status"));
+                userList.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userList;
+    }
+
+    public int getTotalFilteredUsers(String roleFilter, String statusFilter) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM user WHERE 1=1");
+        
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND role_id = ?");
+        }
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql.append(" AND status = ?");
+        }
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            
+            if (roleFilter != null && !roleFilter.isEmpty()) {
+                stmt.setInt(paramIndex++, Integer.parseInt(roleFilter));
+            }
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                stmt.setString(paramIndex, statusFilter);
+            }
+            
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public boolean updateUser(User user) {
+        String sql = "UPDATE user SET email=?, full_name=?, gender=?, mobile=?, " +
+                    "address=?, role_id=?, status=? WHERE id=?";
+                    
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, user.getEmail());
+            stmt.setString(2, user.getFullName());
+            stmt.setBoolean(3, user.isGender());
+            stmt.setString(4, user.getMobile());
+            stmt.setString(5, user.getAddress());
+            stmt.setInt(6, user.getRoleId());
+            stmt.setString(7, user.getStatus());
+            stmt.setInt(8, user.getId());
+            
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    public User getUserById(int id) {
+        String sql = "SELECT * FROM user WHERE id = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),
+                    rs.getBoolean("gender"),
+                    rs.getString("mobile"),
+                    rs.getString("address"),
+                    rs.getString("image_link"),
+                    rs.getInt("role_id"),
+                    rs.getString("status")
+                );
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public List<User> getFilteredAndSortedUsers(String genderFilter, String roleFilter, String statusFilter, 
+                                          String searchKeyword, String sortBy, String sortOrder, 
+                                          int page, int recordsPerPage) {
+        List<User> userList = new ArrayList<>();
+        int start = (page - 1) * recordsPerPage;
+        
+        StringBuilder sql = new StringBuilder("SELECT * FROM user WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        
+        // Add filters
+        if (genderFilter != null && !genderFilter.isEmpty()) {
+            sql.append(" AND gender = ?");
+            params.add(Boolean.parseBoolean(genderFilter));
+        }
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND role_id = ?");
+            params.add(Integer.parseInt(roleFilter));
+        }
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql.append(" AND status = ?");
+            params.add(statusFilter);
+        }
+        
+        // Add search
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            sql.append(" AND (full_name LIKE ? OR email LIKE ? OR mobile LIKE ?)");
+            String searchPattern = "%" + searchKeyword.trim() + "%";
+            params.add(searchPattern);
+            params.add(searchPattern);
+            params.add(searchPattern);
+        }
+        
+        // Add sorting
+        if (sortBy != null && !sortBy.isEmpty()) {
+            sql.append(" ORDER BY ").append(sortBy);
+            if ("desc".equalsIgnoreCase(sortOrder)) {
+                sql.append(" DESC");
+            } else {
+                sql.append(" ASC");
+            }
+        } else {
+            sql.append(" ORDER BY id ASC");
+        }
+        
+        // Add pagination
+        sql.append(" LIMIT ? OFFSET ?");
+        params.add(recordsPerPage);
+        params.add(start);
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            // Set parameters
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                User user = new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),
+                    rs.getBoolean("gender"),
+                    rs.getString("mobile"),
+                    rs.getString("address"),
+                    rs.getString("image_link"),
+                    rs.getInt("role_id"),
+                    rs.getString("status")
+                );
+                userList.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userList;
+    }
+
+    public int getTotalFilteredUsers(String genderFilter, String roleFilter, String statusFilter, String searchKeyword) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM user WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        
+        if (genderFilter != null && !genderFilter.isEmpty()) {
+            sql.append(" AND gender = ?");
+            params.add(Boolean.parseBoolean(genderFilter));
+        }
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND role_id = ?");
+            params.add(Integer.parseInt(roleFilter));
+        }
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql.append(" AND status = ?");
+            params.add(statusFilter);
+        }
+        
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            sql.append(" AND (full_name LIKE ? OR email LIKE ? OR mobile LIKE ?)");
+            String searchPattern = "%" + searchKeyword.trim() + "%";
+            params.add(searchPattern);
+            params.add(searchPattern);
+            params.add(searchPattern);
+        }
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
 
 }

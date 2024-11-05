@@ -21,6 +21,10 @@
         <servlet-class>controller.dashboard</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>UserListServlet</servlet-name>
+        <servlet-class>controller.UserListServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ajaxServlet</servlet-name>
         <servlet-class>controller.vnpay.ajaxServlet</servlet-class>
     </servlet>
@@ -80,6 +84,10 @@
         <servlet-name>ProfileUserServlet</servlet-name>
         <url-pattern>/profile</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>dashboard</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>ChangePasswordServlet</servlet-name>
         <servlet-class>controller.ChangePasswordServlet</servlet-class>
@@ -121,12 +129,28 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <servlet-mapping>
-        <servlet-name>dashboard</servlet-name>
-        <url-pattern>/admin-dashboard</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>ReservationCompletionServlet</servlet-name>
         <url-pattern>/reservecompletion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserListServlet</servlet-name>
+        <url-pattern>/admin-manage-user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditUserServlet</servlet-name>
+        <url-pattern>/edit-user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddUserServlet</servlet-name>
+        <url-pattern>/add-user</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>DeleteUserServlet</servlet-name>
+        <servlet-class>controller.DeleteUserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteUserServlet</servlet-name>
+        <url-pattern>/delete-user</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>MedicalExaminationServlet</servlet-name>
@@ -136,4 +160,5 @@
         <servlet-name>ReservationStatsServlet</servlet-name>
         <url-pattern>/stats</url-pattern>
     </servlet-mapping>
+
 </web-app>
