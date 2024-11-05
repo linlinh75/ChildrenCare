@@ -10,6 +10,9 @@
             <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/controller/ReservationServlet.java</file>
             <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/controller/ReservationServiceCart.java</file>
         </group>
-        <group/>
+        <group>
+            <file>file:/D:/ChildrenCare/web/forgotPw.jsp</file>
+            <file>file:/D:/ChildrenCare/src/java/dal/DBContext.java</file>
+        </group>
     </open-files>
 </project-private>
