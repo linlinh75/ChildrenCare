@@ -72,7 +72,7 @@
                 transition: border-color 0.3s ease;
             }
             button {
-                background-color: #4CAF50;
+                background-color: green;
                 color: #fff;
                 padding: 12px 20px;
                 border: none;
@@ -140,48 +140,37 @@
                         <tr>
                             <td class="bold">Status:</td>
                             <td>
-                                <select id="status" onchange="checkStatusChange()">
-                                    <option value="Processing" ${feedback.getStatus() == 'Processing' ? 'selected' : ''}>Processing</option>
-                                    <option value="Public" ${feedback.getStatus() == 'Processed'&&feedback.getRated_star() > 0 ? 'selected' : ''}>Public</option>
-                                    <option value="Hidden" ${feedback.getStatus() == 'Processed'&&feedback.getRated_star() <= 0 ? 'selected' : ''}>Hidden</option>
-                                </select>
+                                ${feedback.getStatus()}
                             </td>
                             <td class="bold">Content Feedback:</td>
                             <td>${feedback.getContent()}</td>
                         </tr>
+                        <tr>
+                            <td class="bold">Display Status:</td>
+                            <td>
+                                ${feedback.isIsPublic() ? 'Public' : 'Hidden'}
+                            </td>
+
+                            <td class="bold">Reservation ID:</td>
+                            <td>
+                                ${feedback.getReservation_id()}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
-                <button id="editStatusButton" onclick="editStatus()" disabled>Edit Status</button>
+                <button id="editStatusButton" onclick="editStatus()" ${feedback.getRated_star()==0 ? 'disabled' : ''}>Edit Status</button>
+                <p style="font-style: italic">${feedback.getRated_star()==0 ? 'Feedback with 0 star cannot be public' : ''}</p>
             </div>
         </section>
 
         <script>
-            function checkStatusChange() {
-                const ratedStar = ${feedback.getRated_star()};
-                const currentStatus = "${feedback.getStatus()}";
-                const selectedStatus = document.getElementById('status').value;
-                const button = document.getElementById('editStatusButton');
-
-                const isPublic = ratedStar > 0;
-                const isHidden = ratedStar <= 0;
-
-                if (currentStatus === 'Processed') {
-                    button.disabled = (selectedStatus === 'Public' && isPublic) || (selectedStatus === 'Hidden' && isHidden)||selectedStatus === 'Processing';
-                } else {
-                    button.disabled = true; 
-                }
-                console.log("checkstatus" + selectedStatus);
-            }
-
             function editStatus() {
                 const feedbackId = ${feedback.getId()};
-                const status = document.getElementById('status').value;
-
-                window.location.href = "managerFeedbackList?action=change&status=" + encodeURIComponent(status) + "&id=" + feedbackId;
+                window.location.href = "managerFeedbackList?action=change&id=" + feedbackId;
             }
 
-            document.addEventListener('DOMContentLoaded', checkStatusChange);
         </script>
+
 
 
     </body>

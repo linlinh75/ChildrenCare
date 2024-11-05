@@ -71,13 +71,14 @@ public class ManageFeedbackServlet extends HttpServlet {
             } else {
                 if ("change".equals(action)) {
                     String id = request.getParameter("id");
-                    String status = request.getParameter("status");
                     if (id != null && id != "") {
                         int fid = Integer.parseInt(id);
                         Feedback f = feedbackDAO.getFeedbackById(fid);
-                        int star = f.getRated_star()*(-1);
-                        f.setRated_star(star);
-                        feedbackDAO.updateFeedback(f.getReservation_id(), f.getService_id(), star, f.getContent(), f.getStatus());
+                        boolean newstatus= true;
+                        if (f.isIsPublic()){
+                            newstatus=false;
+                        }
+                        feedbackDAO.updateDisplayStatus(fid, newstatus);
                         response.sendRedirect("managerFeedbackList");
                     return;
                     }
@@ -96,13 +97,16 @@ public class ManageFeedbackServlet extends HttpServlet {
     }
 
     private void updateOldFeedbacks(FeedbackDAO feedbackDAO, int customerId) throws SQLException {
-        List<Feedback> feedbacks = feedbackDAO.getFeedbackByCustomerId(customerId);
+        List<Feedback> feedbacks = feedbackDAO.getAllFeedback();
         long thirtyDaysAgo = System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000);
 
         for (Feedback feedback : feedbacks) {
             Timestamp feedbackTimestamp = feedback.getFeedback_time();
             if (feedbackTimestamp.getTime() < thirtyDaysAgo && !"Processed".equals(feedback.getStatus())) {
                 feedbackDAO.updateFeedback(feedback.getReservation_id(), feedback.getService_id(), 0, "No feedback", "Processed");
+            }
+            if (feedback.getRated_star()==0&&feedback.isIsPublic()){
+                feedbackDAO.updateDisplayStatus(feedback.getId(), false);
             }
         }
     }

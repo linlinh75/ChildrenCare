@@ -2,11 +2,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Feedback List</title>
-    <style>
-        .table-container {
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Feedback List</title>
+        <style>
+            .table-container {
                 width: 100%;
                 margin: auto;
                 background-color: #f9f9f9;
@@ -129,144 +129,156 @@
             .page-item a {
                 text-decoration: none;
             }
-           
-    </style>
-</head>
-<jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
-<body>
-<section class="container-fluid" style="width: 80%">
-    <div class="bread_crumb">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
-                <li class="breadcrumb-item"><a href="./profile">Profile</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Feedback List</li>
-            </ol>
-        </nav>
-    </div>
-    <div class="feedback-list">
-        <div class="table-container" >
-            <div class="table-header">
-                <div class="search-box">
-                    <input type="text" placeholder="Search by customer name, content" id="searchInput" onkeyup="applyFilters()">
-                    <button type="button">
-                        <i class="fa fa-search"></i>
-                    </button>
+
+        </style>
+    </head>
+    <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
+        <body>
+            <section class="container-fluid" style="width: 80%">
+                <div class="bread_crumb">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
+                            <li class="breadcrumb-item"><a href="./profile">Profile</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Feedback List</li>
+                        </ol>
+                    </nav>
                 </div>
-                <div class="status-filter" style="display: flex; gap: 10px">
-                    <div>Filter by status: </div>
-                    <select id="statusFilter" onchange="applyFilters()">
-                        <option value="all">All</option>
-                        <option value="Public">Public</option>
-                        <option value="Hidden">Hidden</option>
-                        <option value="Processing">Processing</option>
-                    </select>
-                    <div>Service Name: </div>
-                    <select id="serviceFilter" onchange="applyFilters()">
-                        <option value="all">All Services</option>
-                        <c:forEach var="service" items="${service.getAllService()}">
-                            <option value="${service.getFullname().trim()}">${service.getFullname()}</option>
-                        </c:forEach>
-                    </select>
-                    <div>Rated Star: </div>
-                    <select id="starFilter" onchange="applyFilters()">
-                        <option value="all">All Stars</option>
-                        <c:forEach var="star" begin="0" end="5">
-                            <option value="${star}">${star}</option>
-                        </c:forEach>
-                    </select>
+                <div class="feedback-list">
+                    <div class="table-container" >
+                        <div class="table-header">
+                            <div class="search-box">
+                                <input type="text" placeholder="Search by customer name, content" id="searchInput" onkeyup="applyFilters()">
+                                <button type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                            <div class="status-filter" style="display: flex; gap: 10px">
+                                <div>Filter by status: </div>
+                                <select id="statusFilter" onchange="applyFilters()">
+                                    <option value="all">All</option>
+                                    <option value="Processed">Processed</option>
+                                    <option value="Processing">Processing</option>
+                                </select>
+                                <div>Service Name: </div>
+                                <select id="serviceFilter" onchange="applyFilters()">
+                                    <option value="all">All Services</option>
+                                <c:forEach var="service" items="${service.getAllService()}">
+                                    <option value="${service.getFullname().trim()}">${service.getFullname()}</option>
+                                </c:forEach>
+                            </select>
+                            <div>Rated Star: </div>
+                            <select id="starFilter" onchange="applyFilters()">
+                                <option value="all">All Stars</option>
+                                <c:forEach var="star" begin="0" end="5">
+                                    <option value="${star}">${star}</option>
+                                </c:forEach>
+                            </select>
+                            <div>Display Status:</div>
+                            <select id="displayStatusFilter" onchange="applyFilters()">
+                                <option value="all">All</option>
+                                <option value="Public">Public</option>
+                                <option value="Hidden">Hidden</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="feedback-table table .table-striped">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable(0)">Feedback ID <i class="fa fa-sort"></i></th>
+                                <th onclick="sortTable(1)">Customer Name<i class="fa fa-sort"></i></th>
+                                <th onclick="sortTable(2)">Service Name</th>
+                                <th onclick="sortTable(3)">Rated Star</th>
+                                <th>Content</th>
+                                <th onclick="sortTable(5)">Status</th>
+                                <th onclick="sortTable(6)">Display Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feedbackTableBody">
+                            <c:forEach var="feedback" items="${feedback}">
+                                <tr>
+                                    <td>${feedback.getId()}</td>
+                                    <td>${user.getProfileById(feedback.getUser_id()).getFullName()}</td>
+                                    <td>${service.getServiceById(feedback.getService_id()).getFullname()}</td>
+                                    <td>${feedback.getRated_star()}</td>
+                                    <td>${feedback.getContent()}</td>
+                                    <td>${feedback.getStatus()}</td>
+                                    <td>${feedback.isIsPublic()?'Public':'Hidden'}</td>
+                                    <td><a href="./managerFeedbackList?action=detail&&id=${feedback.getId()}" class="btn btn-view">View</a></td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                    <div id="pagination"></div>
                 </div>
             </div>
-            <table class="feedback-table table .table-striped">
-                <thead>
-                <tr>
-                    <th onclick="sortTable(0)">Feedback ID <i class="fa fa-sort"></i></th>
-                    <th onclick="sortTable(1)">Customer Name<i class="fa fa-sort"></i></th>
-                    <th onclick="sortTable(2)">Service Name</th>
-                    <th onclick="sortTable(3)">Rated Star</th>
-                    <th>Content</th>
-                    <th onclick="sortTable(5)">Status</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody id="feedbackTableBody">
-                <c:forEach var="feedback" items="${feedback}">
-                    <tr>
-                        <td>${feedback.getId()}</td>
-                        <td>${user.getProfileById(feedback.getUser_id()).getFullName()}</td>
-                        <td>${service.getServiceById(feedback.getService_id()).getFullname()}</td>
-                        <td>${feedback.getRated_star()}</td>
-                        <td>${feedback.getContent()}</td>
-                        <td>${feedback.getStatus() == 'Processing' ? "Processing" : (feedback.getRated_star() <= 0 ? "Hidden" : "Public")}</td>
-                        <td><a href="./managerFeedbackList?action=detail&&id=${feedback.getId()}" class="btn btn-view">View</a></td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-            <div id="pagination"></div>
-        </div>
-    </div>
-</section>
-</body>
-<jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+        </section>
+    </body>
+    <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
 
-<script>
-    let currentPage = 1;
-    const rowsPerPage = 5;
-    let allRows = [];
-    let filteredRows = [];
+    <script>
+        let currentPage = 1;
+        const rowsPerPage = 5;
+        let allRows = [];
+        let filteredRows = [];
 
-    function initializeTable() {
-        const table = document.getElementById('feedbackTableBody');
-        allRows = Array.from(table.getElementsByTagName('tr'));
-        filteredRows = allRows;
-        applyFilters();
-    }
-
-    function applyFilters() {
-    const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
-    const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
-    const serviceFilter = document.getElementById("serviceFilter").value.toLowerCase();
-    const starFilter = document.getElementById("starFilter").value;
-
-    filteredRows = allRows.filter(row => {
-        const cells = row.getElementsByTagName("td");
-        const fullname = cells[1].innerText.toLowerCase();
-        const serviceName = cells[2].innerText.toLowerCase();
-        const ratedStar = cells[3].innerText;
-        const status = cells[5].innerText.toLowerCase();
-
-        const isStarFilterMatch = starFilter === "all" || 
-                                  (ratedStar === starFilter || ratedStar === (parseInt(starFilter) * -1).toString());
-
-        return (fullname.includes(searchValue) || cells[4].innerText.toLowerCase().includes(searchValue)) &&
-               (statusFilter === "all" || status.includes(statusFilter)) &&
-               (serviceFilter === "all" || serviceName.includes(serviceFilter)) &&
-               isStarFilterMatch;
-    });
-
-    currentPage = 1;
-    displayTable();
-}
-
-
-    function displayTable() {
-        const table = document.getElementById('feedbackTableBody');
-        const totalRows = filteredRows.length;
-
-        Array.from(table.children).forEach(row => row.style.display = "none");
-
-        const startIndex = (currentPage - 1) * rowsPerPage;
-        const endIndex = Math.min(startIndex + rowsPerPage, totalRows);
-
-        for (let i = startIndex; i < endIndex; i++) {
-            if (filteredRows[i]) filteredRows[i].style.display = "";
+        function initializeTable() {
+            const table = document.getElementById('feedbackTableBody');
+            allRows = Array.from(table.getElementsByTagName('tr'));
+            filteredRows = allRows;
+            applyFilters();
         }
 
-        createPagination(Math.ceil(totalRows / rowsPerPage), currentPage);
-    }
+        function applyFilters() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
+            const serviceFilter = document.getElementById("serviceFilter").value.toLowerCase();
+            const starFilter = document.getElementById("starFilter").value;
+            const displayStatusFilter = document.getElementById("displayStatusFilter").value.toLowerCase(); // Lấy giá trị lọc display status
 
-    function createPagination(totalPages, currentPage) {
+            filteredRows = allRows.filter(row => {
+                const cells = row.getElementsByTagName("td");
+                const fullname = cells[1].innerText.toLowerCase();
+                const serviceName = cells[2].innerText.toLowerCase();
+                const ratedStar = cells[3].innerText;
+                const status = cells[5].innerText.toLowerCase();
+                const displayStatus = cells[6].innerText.toLowerCase();
+
+                const isStarFilterMatch = starFilter === "all" ||
+                        (ratedStar === starFilter || ratedStar === (parseInt(starFilter) * -1).toString());
+
+                return (fullname.includes(searchValue) || cells[4].innerText.toLowerCase().includes(searchValue)) &&
+                        (statusFilter === "all" || status.includes(statusFilter)) &&
+                        (serviceFilter === "all" || serviceName.includes(serviceFilter)) &&
+                        isStarFilterMatch &&
+                        (displayStatusFilter === "all" || displayStatus.includes(displayStatusFilter));
+            });
+
+            currentPage = 1;
+            displayTable();
+        }
+
+
+
+        function displayTable() {
+            const table = document.getElementById('feedbackTableBody');
+            const totalRows = filteredRows.length;
+
+            Array.from(table.children).forEach(row => row.style.display = "none");
+
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = Math.min(startIndex + rowsPerPage, totalRows);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                if (filteredRows[i])
+                    filteredRows[i].style.display = "";
+            }
+
+            createPagination(Math.ceil(totalRows / rowsPerPage), currentPage);
+        }
+
+        function createPagination(totalPages, currentPage) {
             let pagination = document.getElementById('pagination');
             let str = '<ul>';
             let active;
@@ -313,21 +325,21 @@
             pagination.innerHTML = str;
         }
 
-    function goToPage(pageNumber) {
-        currentPage = pageNumber;
-        displayTable();
-    }
+        function goToPage(pageNumber) {
+            currentPage = pageNumber;
+            displayTable();
+        }
 
-    function sortTable(columnIndex) {
+        function sortTable(columnIndex) {
             const table = document.getElementById("feedbackTableBody");
             const isAscending = table.dataset.sortOrder === "asc";
             filteredRows.sort((a, b) => {
                 let aValue, bValue;
-                if (columnIndex === 0 ||columnIndex === 3) {
+                if (columnIndex === 0 || columnIndex === 3) {
                     aValue = parseInt(a.cells[columnIndex].innerText);
                     bValue = parseInt(b.cells[columnIndex].innerText);
                     return isAscending ? aValue - bValue : bValue - aValue;
-                } else if (columnIndex === 1 || columnIndex === 2 || columnIndex === 5) {
+                } else if (columnIndex === 1 || columnIndex === 2 || columnIndex === 5 || columnIndex === 6) {
                     aValue = a.cells[columnIndex].innerText.toLowerCase();
                     bValue = b.cells[columnIndex].innerText.toLowerCase();
                     return isAscending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
@@ -342,6 +354,6 @@
             displayTable();
         }
 
-    window.onload = initializeTable;
-</script>
+        window.onload = initializeTable;
+    </script>
 </html>
