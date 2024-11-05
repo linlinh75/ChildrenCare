@@ -182,6 +182,11 @@
                                                             </span>
                                                         </td>
                                                         <td>
+                                                            <button
+                                                                onclick="window.location.href='user-details?id=${user.id}'"
+                                                                class="btn btn-info">
+                                                                <i class="fa-solid fa-eye"></i>
+                                                            </button>
                                                             <button onclick='showEditModal("${user.id}")'
                                                                 class="btn btn-primary">
                                                                 <i class="fa-solid fa-pen"></i>
