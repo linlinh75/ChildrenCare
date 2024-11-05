@@ -31,6 +31,7 @@ public class ServiceDAO extends DBContext {
         }
         return ulist;
     }
+
     public List<Service> getAllManageService() {
         List<Service> ulist = new ArrayList<>();
         String s = "SELECT * FROM service";
@@ -91,12 +92,15 @@ public class ServiceDAO extends DBContext {
             e.printStackTrace();
         } finally {
             try {
-                if (resultSet != null)
+                if (resultSet != null) {
                     resultSet.close();
-                if (preparedStatement != null)
+                }
+                if (preparedStatement != null) {
                     preparedStatement.close();
-                if (connection != null)
+                }
+                if (connection != null) {
                     connection.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -122,7 +126,7 @@ public class ServiceDAO extends DBContext {
     }
 
     public List<Service> getServiceWithPagination(int offset, int noOfRecords) {
-        String query = "SELECT * FROM service LIMIT ?, ?";
+        String query = "SELECT * FROM service where status = 1 LIMIT ?, ?";
         List<Service> list = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, offset);
@@ -186,6 +190,163 @@ public class ServiceDAO extends DBContext {
                 if (rs.next()) {
                     return rs.getInt(1);
                 }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    // Add these methods to your existing ServiceDAO class
+    public List<Service> getServicesWithPagination(int page, int servicesPerPage) {
+        List<Service> services = new ArrayList<>();
+        int offset = (page - 1) * servicesPerPage;
+
+        String sql = "SELECT * FROM service LIMIT ?, ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, offset);
+            ps.setInt(2, servicesPerPage);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Service service = getFromResultSet(rs);
+                services.add(service);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return services;
+    }
+
+    public List<Service> getServicesWithPaginationAndStatus(int page, int servicesPerPage, boolean status) {
+        List<Service> services = new ArrayList<>();
+        int offset = (page - 1) * servicesPerPage;
+
+        String sql = "SELECT * FROM service WHERE status = ? LIMIT ?, ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setBoolean(1, status);
+            ps.setInt(2, offset);
+            ps.setInt(3, servicesPerPage);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Service service = getFromResultSet(rs);
+                services.add(service);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return services;
+    }
+
+    public boolean toggleServiceStatus(int serviceId) {
+        String sql = "UPDATE service SET status = NOT status WHERE id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, serviceId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean addService(Service service) {
+        String sql = "INSERT INTO service (fullname, original_price, sale_price, thumbnail_link, "
+                + "category_id, description, details, featured, status, updated_date) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, service.getFullname());
+            ps.setFloat(2, service.getOriginalPrice());
+            ps.setFloat(3, service.getSalePrice());
+            ps.setString(4, service.getThumbnailLink());
+            ps.setInt(5, service.getCategoryId());
+            ps.setString(6, service.getDescription());
+            ps.setString(7, service.getDetails());
+            ps.setBoolean(8, service.isFeatured());
+            ps.setBoolean(9, service.isStatus());
+//            ps.setInt(10, service.getQuantity());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateService(Service service, String newImagePath) {
+        String sql;
+        if (newImagePath != null) {
+            sql = "UPDATE service SET fullname = ?, original_price = ?, sale_price = ?, "
+                    + "thumbnail_link = ?, category_id = ?, description = ?, details = ?, "
+                    + "featured = ?, status = ?, updated_date = NOW() "
+                    + "WHERE id = ?";
+        } else {
+            sql = "UPDATE service SET fullname = ?, original_price = ?, sale_price = ?, "
+                    + "category_id = ?, description = ?, details = ?, featured = ?, "
+                    + "status = ?, updated_date = NOW() "
+                    + "WHERE id = ?";
+        }
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, service.getFullname());
+            ps.setFloat(2, service.getOriginalPrice());
+            ps.setFloat(3, service.getSalePrice());
+
+            int paramIndex = 4;
+            if (newImagePath != null) {
+                ps.setString(paramIndex++, newImagePath);
+            }
+
+            ps.setInt(paramIndex++, service.getCategoryId());
+            ps.setString(paramIndex++, service.getDescription());
+            ps.setString(paramIndex++, service.getDetails());
+            ps.setBoolean(paramIndex++, service.isFeatured());
+            ps.setBoolean(paramIndex++, service.isStatus());
+//            ps.setInt(paramIndex++, service.getQuantity());
+            ps.setInt(paramIndex, service.getId());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+// Helper method to get total count for pagination
+    public int getTotalServicesCount() {
+        String sql = "SELECT COUNT(*) FROM service";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+// Helper method to get total count with status filter for pagination
+    public int getTotalServicesCountByStatus(boolean status) {
+        String sql = "SELECT COUNT(*) FROM service WHERE status = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setBoolean(1, status);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
