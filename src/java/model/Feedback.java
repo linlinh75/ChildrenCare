@@ -21,11 +21,12 @@ public class Feedback {
     private String image_link;
     private String status;
     private Timestamp feedback_time;
+    private boolean isPublic;
 
     public Feedback() {
     }
 
-    public Feedback(int id, int user_id, int reservation_id, int service_id, int rated_star, String content, String image_link, String status, Timestamp feedback_time) {
+    public Feedback(int id, int user_id, int reservation_id, int service_id, int rated_star, String content, String image_link, String status, Timestamp feedback_time, boolean isPublic) {
         this.id = id;
         this.user_id = user_id;
         this.reservation_id = reservation_id;
@@ -35,6 +36,15 @@ public class Feedback {
         this.image_link = image_link;
         this.status = status;
         this.feedback_time = feedback_time;
+        this.isPublic = isPublic;
+    }
+
+    public boolean isIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
     public int getId() {

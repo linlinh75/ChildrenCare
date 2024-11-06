@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <nav id="sidebar" class="sidebar-wrapper">
     <div class="sidebar-content" data-simplebar style="height: calc(100% - 60px);">
@@ -7,6 +9,7 @@
                             <li><a href="managerSliderList"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Slider</a></li>
                             <li><a href="managerFeedbackList"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Feedback</a></li>
                             <li><a href="reservation-admin"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Reservation</a></li>
+                            <li><a href="service-list-admin"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Service</a></li>
                             </c:if>
             <li><a href="changePw.jsp"><i class="uil uil-user me-2 d-inline-block"></i>Change password</a></li>
             <c:if test="${user.roleId == '1'}">

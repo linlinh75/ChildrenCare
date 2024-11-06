@@ -63,13 +63,16 @@ public class FeedbackServlet extends HttpServlet {
     }
 
     private void updateOldFeedbacks(FeedbackDAO feedbackDAO, int customerId) throws SQLException {
-        List<Feedback> feedbacks = feedbackDAO.getFeedbackByCustomerId(customerId);
+        List<Feedback> feedbacks = feedbackDAO.getAllFeedback();
         long thirtyDaysAgo = System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000);
 
         for (Feedback feedback : feedbacks) {
             Timestamp feedbackTimestamp = feedback.getFeedback_time();
             if (feedbackTimestamp.getTime() < thirtyDaysAgo && !"Processed".equals(feedback.getStatus())) {
                 feedbackDAO.updateFeedback(feedback.getReservation_id(), feedback.getService_id(), 0, "No feedback", "Processed");
+            }
+            if (feedback.getRated_star()==0&&feedback.isIsPublic()){
+                feedbackDAO.updateDisplayStatus(feedback.getId(), false);
             }
         }
     }

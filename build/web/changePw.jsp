@@ -35,20 +35,20 @@
                             </div>
                         </c:if>
                     <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="Old password" id="form2Example17"  class="form-control form-control-lg" required/>
-                    <label class="form-label" for="form2Example17">Old Password</label>
+                    <input type="password" name="Old password" id="oldPassword"  class="form-control form-control-lg" required/>
+                    <label class="form-label" for="oldPassword">Old Password</label>
                   </div>
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="New password" id="form2Example17"  class="form-control form-control-lg" required />
-                    <label class="form-label" for="form2Example17">New Password</label>
+                    <input type="password" name="New password" id="newPassword"  class="form-control form-control-lg" required />
+                    <label class="form-label" for="newPassword">New Password</label>
                   </div>
                     <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="confPassword" id="form2Example17"  class="form-control form-control-lg" required />
-                    <label class="form-label" for="form2Example17">Re-Enter Password</label>
+                    <input type="password" name="confPassword" id="confirmPassword"  class="form-control form-control-lg" required />
+                    <label class="form-label" for="confirmPassword">Re-Enter Password</label>
                   </div>
                     <div class="row d-flex">
                   <div class="pt-1 mb-4 col-md-6">
-                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" name="submit" value="submit">Change Password</button>
+                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" name="submit" value="submit" id="changePasswordButton">Change Password</button>
                   </div>
                     <div class="pt-1 mb-4 col-md-6">
                         <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="button" name="undo" value="undo">
