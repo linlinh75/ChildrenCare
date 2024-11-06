@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dal.ReservationDAO;
+import dal.ServiceDAO;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.User;
@@ -21,6 +22,8 @@ import model.Reservation;
 import model.ReservationService;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import model.Service;
+import dal.SliderDAO;
 
 /**
  *
@@ -44,10 +47,16 @@ public class ReservationServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             ReservationDAO res = new ReservationDAO();
+            ServiceDAO sv = new ServiceDAO();
             HttpSession session = request.getSession();
             User loggedInUser = (User) session.getAttribute("account");
+            if (null == loggedInUser) {
+                response.sendRedirect("DataServlet?action=login");
+                return;
+            }
             List<Reservation> list_reservation = res.getReservationbyCustomerId(loggedInUser.getId());
             request.setAttribute("reservation", list_reservation);
+            request.setAttribute("service", sv);
             request.getRequestDispatcher("customer-reservation.jsp").forward(request, response);
         }
     }
@@ -57,10 +66,10 @@ public class ReservationServlet extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -71,10 +80,10 @@ public class ReservationServlet extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -151,19 +160,19 @@ public class ReservationServlet extends HttpServlet {
 
             // Add modal footer with cancel button if applicable
             contentHtml.append("<div class='modal-footer'>");
-            
+
             // Only show cancel button if status isn't 'Cancel' or 'Success'
-            if (!reservation.getStatus().equalsIgnoreCase("Cancel") && 
-                !reservation.getStatus().equalsIgnoreCase("Success")) {
-                
+            if (!reservation.getStatus().equalsIgnoreCase("Cancel")
+                    && !reservation.getStatus().equalsIgnoreCase("Success")) {
+
                 // Get current timestamp and checkup time
                 Timestamp currentTime = new Timestamp(System.currentTimeMillis());
                 Timestamp checkupTime = reservation.getCheckup_time();
-                
+
                 // Calculate time difference in days
                 long diffInMillies = checkupTime.getTime() - currentTime.getTime();
                 long diffInDays = diffInMillies / (24 * 60 * 60 * 1000);
-                
+
                 if (diffInDays >= 3) {
                     contentHtml.append("<button type='button' class='btn btn-danger' onclick='cancelReservation(")
                             .append(reservation.getId())
@@ -173,7 +182,7 @@ public class ReservationServlet extends HttpServlet {
                             .append("title='Cannot cancel within 3 days of appointment'>Cancel Appointment</button>");
                 }
             }
-            
+
             contentHtml.append("<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button>")
                     .append("</div>");
 
@@ -191,40 +200,40 @@ public class ReservationServlet extends HttpServlet {
     private void handleCancelReservation(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         JsonObject jsonResponse = new JsonObject();
-        
+
         try {
             int id = Integer.parseInt(request.getParameter("id"));
             ReservationDAO reservationDAO = new ReservationDAO();
             Reservation reservation = reservationDAO.getReservationById(id);
-            
+
             if (reservation == null) {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Reservation not found");
                 response.getWriter().write(jsonResponse.toString());
                 return;
             }
-            
+
             if (reservation.getStatus().equalsIgnoreCase("Cancel")) {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Reservation is already cancelled");
                 response.getWriter().write(jsonResponse.toString());
                 return;
             }
-            
+
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
             Timestamp checkupTime = reservation.getCheckup_time();
             long diffInMillies = checkupTime.getTime() - currentTime.getTime();
             long diffInDays = diffInMillies / (24 * 60 * 60 * 1000);
-            
+
             if (diffInDays < 3) {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Cannot cancel reservation within 3 days of appointment");
                 response.getWriter().write(jsonResponse.toString());
                 return;
             }
-            
+
             boolean updated = reservationDAO.updateReservationStatus(id, "Cancel");
-            
+
             if (updated) {
                 jsonResponse.addProperty("success", true);
                 jsonResponse.addProperty("message", "Reservation cancelled successfully");
@@ -232,17 +241,17 @@ public class ReservationServlet extends HttpServlet {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Failed to cancel reservation");
             }
-            
+
         } catch (Exception e) {
             jsonResponse.addProperty("success", false);
             jsonResponse.addProperty("message", "Error: " + e.getMessage());
         }
-        
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(jsonResponse.toString());
     }
-    
+
     private String formatDate(Timestamp timestamp) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
         return dateFormat.format(timestamp);

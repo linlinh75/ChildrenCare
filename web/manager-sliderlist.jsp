@@ -12,6 +12,7 @@
                 background-color: #f9f9f9;
                 padding: 20px;
                 border-radius: 8px;
+                min-height: 800px;
             }
 
             .table-header {
@@ -199,18 +200,20 @@
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
-                        <div class="status-filter" style="display: flex">
-                            <div>Filter by status:</div>
-                            <div class="status-filter">
-                                <select id="statusFilter" onchange="filterSliders()">
-                                    <option value="all">All</option>
-                                    <option value="1">Public</option>
-                                    <option value="0">Hidden</option>
-                                </select>
+                        <div class="d-flex" style="gap: 20px"> 
+                            <div class="status-filter" style="display: flex">
+                                <div>Filter by status:</div>
+                                <div class="status-filter">
+                                    <select id="statusFilter" onchange="filterSliders()">
+                                        <option value="all">All</option>
+                                        <option value="1">Public</option>
+                                        <option value="0">Hidden</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <a href="manager-addslider.jsp" type="button" class="btn">Create Slider</a>
+                            <div >
+                                <a href="manager-addslider.jsp" type="button" class="btn btn-primary">Create Slider</a>
+                            </div>
                         </div>
                     </div>
                     <table class="slider-table">
@@ -428,9 +431,9 @@
                 const status = row.getElementsByTagName("td")[4].innerText.trim().toLowerCase();
 
                 const matchesSearch = title.includes(searchValue);
-                const matchesStatus = (statusFilter === "all") || 
-                                      (statusFilter === "1" && status === "public") || 
-                                      (statusFilter === "0" && status === "hidden");
+                const matchesStatus = (statusFilter === "all") ||
+                        (statusFilter === "1" && status === "public") ||
+                        (statusFilter === "0" && status === "hidden");
 
                 return matchesSearch && matchesStatus;
             });

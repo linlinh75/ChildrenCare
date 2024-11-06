@@ -148,35 +148,35 @@
                 <div class="feedback-list">
                     <div class="table-container" >
                         <div class="table-header">
-                            <div class="search-box">
+                            <div class="search-box" style="margin-bottom: 20px">
                                 <input type="text" placeholder="Search by customer name, content" id="searchInput" onkeyup="applyFilters()">
                                 <button type="button">
                                     <i class="fa fa-search"></i>
                                 </button>
                             </div>
                             <div class="status-filter" style="display: flex; gap: 10px">
-                                <div>Filter by status: </div>
+                                <div>Filter:</div>
                                 <select id="statusFilter" onchange="applyFilters()">
+                                    <option value="" class="label">Status</option>
                                     <option value="all">All</option>
                                     <option value="Processed">Processed</option>
                                     <option value="Processing">Processing</option>
                                 </select>
-                                <div>Service Name: </div>
                                 <select id="serviceFilter" onchange="applyFilters()">
+                                    <option value="" class="label">Service</option>
                                     <option value="all">All Services</option>
                                 <c:forEach var="service" items="${service.getAllService()}">
                                     <option value="${service.getFullname().trim()}">${service.getFullname()}</option>
                                 </c:forEach>
                             </select>
-                            <div>Rated Star: </div>
                             <select id="starFilter" onchange="applyFilters()">
                                 <option value="all">All Stars</option>
                                 <c:forEach var="star" begin="0" end="5">
                                     <option value="${star}">${star}</option>
                                 </c:forEach>
                             </select>
-                            <div>Display Status:</div>
                             <select id="displayStatusFilter" onchange="applyFilters()">
+                                <option value="" class="label">Display Status</option>
                                 <option value="all">All</option>
                                 <option value="Public">Public</option>
                                 <option value="Hidden">Hidden</option>
