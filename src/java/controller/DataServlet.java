@@ -61,10 +61,10 @@ public class DataServlet extends HttpServlet {
             List<Slider> list_sliders = sliderDAO.getAllSliders();
             request.setAttribute("list_sliders", list_sliders);
 
-               MedicalExaminationDAO medDAO = new MedicalExaminationDAO();
-            List<MedicalExamination> list_examination = medDAO.getAllExaminationByAuthor(((User)session.getAttribute("account")).getId());
-            
-            request.setAttribute("list_examination", list_examination); 
+//               MedicalExaminationDAO medDAO = new MedicalExaminationDAO();
+//            List<MedicalExamination> list_examination = medDAO.getAllExaminationByAuthor(((User)session.getAttribute("account")).getId());
+//            
+//            request.setAttribute("list_examination", list_examination); 
 
             
             if (s_category == null || s_category.isEmpty()) {
@@ -103,6 +103,7 @@ public class DataServlet extends HttpServlet {
                             response.sendRedirect("/ChildrenCare/HomeServlet");
                         } else {
                             request.getRequestDispatcher("login.jsp").forward(request, response);
+                        
                         }
                         break;
                     }

@@ -10,12 +10,24 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import model.MedicalExamination;
+import model.User;
+import dal.MedicalExaminationDAO;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author Admin
  */
 public class MedicalExaminationServlet extends HttpServlet {
+
+    private MedicalExaminationDAO medicalExaminationDAO;
+
+    @Override
+    public void init() {
+        medicalExaminationDAO = new MedicalExaminationDAO();
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,6 +43,21 @@ public class MedicalExaminationServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setAttribute("active", "med");
         
+        // Get the logged-in user (doctor) ID from session
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        
+        if (user == null || user.getRoleId() != 3) { // Assuming role_id 3 is for doctors
+            response.sendRedirect("login");
+            return;
+        }
+        
+        // Get all examinations for this doctor
+        List<MedicalExamination> examinations = medicalExaminationDAO.getAllExaminationByAuthor(user.getId());
+        request.setAttribute("examinations", examinations);
+        
+        // Forward to the JSP page
+        request.getRequestDispatcher("medical_examinations.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

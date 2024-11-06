@@ -96,18 +96,14 @@
                                             </c:forEach>
                                         </ul>
                                     </li> 
-<%
-   
-    int role = ((User)session.getAttribute("account")).getId();
-    
-%>
 
-                                    <c:if test="${role==3}">
+
+                                   <c:if test="${sessionScope.account.roleId == 3}">
                                     <li class="${active == 'med' ? 'active' : ''}" >
-                                        <a href="DataServlet?action=med">Medical Examination<i class="icofont-rounded-down"></i></a>
-                                        <ul class="dropdown">
+                                        <a href="DataServlet?action=med">Medical Examination</i></a>
+<!--                                        <ul class="dropdown">
                                             <li><a href=""></a></li>
-                                        </ul>
+                                        </ul>-->
                                     </li>
                                     </c:if>
                                 </ul>
