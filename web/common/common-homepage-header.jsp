@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="model.User"%>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Children Care System</title>
@@ -94,7 +95,21 @@
                                                 <li><a href="#">${post.getName()}</a></li>
                                             </c:forEach>
                                         </ul>
-                                    </li>                                    
+                                    </li> 
+<%
+   
+    int role = ((User)session.getAttribute("account")).getId();
+    
+%>
+
+                                    <c:if test="${role==3}">
+                                    <li class="${active == 'med' ? 'active' : ''}" >
+                                        <a href="DataServlet?action=med">Medical Examination<i class="icofont-rounded-down"></i></a>
+                                        <ul class="dropdown">
+                                            <li><a href=""></a></li>
+                                        </ul>
+                                    </li>
+                                    </c:if>
                                 </ul>
                             </nav>
                         </div>

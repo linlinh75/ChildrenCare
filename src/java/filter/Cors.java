@@ -21,7 +21,7 @@ public class Cors implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:3000"); // React URL
+        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type");
         chain.doFilter(request, response);

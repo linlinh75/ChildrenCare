@@ -66,12 +66,14 @@ CREATE TABLE `medical_examination` (
   `service_id` int NOT NULL,
   `user_id` int NOT NULL,
   `prescription` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `author_id` int ,
   PRIMARY KEY (`reservation_id`,`service_id`,`user_id`) USING BTREE,
   KEY `fk_service_exam` (`service_id`) USING BTREE,
   KEY `fk_user_exam` (`user_id`) USING BTREE,
   CONSTRAINT `fk_reservation_exam` FOREIGN KEY (`reservation_id`) REFERENCES `reservation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_service_exam` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_user_exam` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `fk_user_exam` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  FOREIGN KEY (`author_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -81,7 +83,9 @@ CREATE TABLE `medical_examination` (
 
 LOCK TABLES `medical_examination` WRITE;
 /*!40000 ALTER TABLE `medical_examination` DISABLE KEYS */;
-INSERT INTO `medical_examination` VALUES (18,4,16,'Three time a day'),(18,4,17,' 3 times a day'),(18,4,18,'Should come back to hospital'),(18,133,19,'3 times a day'),(18,133,20,'2 times a day');
+INSERT INTO `medical_examination` VALUES (18,4,16,'Cannot use more medicine',3),
+(18,4,17,'Must not use paracetamol',3),
+(18,4,18,'Should come back to hospital',3);
 /*!40000 ALTER TABLE `medical_examination` ENABLE KEYS */;
 UNLOCK TABLES;
 
