@@ -11,8 +11,23 @@
             <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/controller/ReservationServiceCart.java</file>
         </group>
         <group>
-            <file>file:/D:/ChildrenCare/web/forgotPw.jsp</file>
+            <file>file:/D:/ChildrenCare/web/index.html</file>
+            <file>file:/D:/ChildrenCare/src/java/dal/MedicalExaminationDAO.java</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/ReservationStatsServlet.java</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/DashboardServlet.java</file>
+            <file>file:/D:/ChildrenCare/src/java/model/MedicalExamination.java</file>
+            <file>file:/D:/ChildrenCare/web/WEB-INF/web.xml</file>
+            <file>file:/D:/ChildrenCare/web/vnpay_return.jsp</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/MedicalExaminationServlet.java</file>
             <file>file:/D:/ChildrenCare/src/java/dal/DBContext.java</file>
+            <file>file:/D:/ChildrenCare/src/java/model/StatToMap.java</file>
+            <file>file:/D:/ChildrenCare/src/java/dal/ReservationDAO.java</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/DataServlet.java</file>
+            <file>file:/D:/ChildrenCare/src/java/model/DateToMap.java</file>
+            <file>file:/D:/ChildrenCare/web/common/common-homepage-header.jsp</file>
+            <file>file:/D:/ChildrenCare/src/java/model/Reservation.java</file>
+            <file>file:/D:/ChildrenCare/src/java/model/ReservationService.java</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/ReservationCompletionServlet.java</file>
         </group>
     </open-files>
 </project-private>

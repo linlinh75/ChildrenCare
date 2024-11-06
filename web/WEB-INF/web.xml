@@ -164,12 +164,10 @@
         <servlet-name>ReservationStatsServlet</servlet-name>
         <url-pattern>/stats</url-pattern>
     </servlet-mapping>
-<<<<<<< HEAD
+
     <servlet-mapping>
         <servlet-name>DashboardServlet</servlet-name>
         <url-pattern>/dashboard</url-pattern>
     </servlet-mapping>
-=======
 
->>>>>>> 0a240143e7faa31652d1683131aa372c58bf8f18
 </web-app>
