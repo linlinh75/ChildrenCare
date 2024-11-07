@@ -14,7 +14,7 @@
             />
 
         <!-- Title -->
-        <title>Mediplus - Medical and Doctor HTML Template.</title>
+        <title>Children Care Service Details</title>
 
         <!-- Favicon -->
         <link rel="icon" href="img/favicon.png" />
@@ -55,6 +55,66 @@
         <link rel="stylesheet" href="css/color/color1.css" />
 
         <link rel="stylesheet" id="colors" />
+
+        <style>
+            .blog-comments .single-comments {
+                padding: 30px;
+                border: 1px solid #eee;
+                margin-bottom: 30px;
+                border-radius: 5px;
+            }
+        
+            .blog-comments .head img {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+        
+            .meta-info {
+                margin-bottom: 15px;
+            }
+        
+            .rating {
+                font-size: 18px;
+            }
+        
+            .rating .fa-star {
+                color: #ffd700;
+            }
+        
+            .rating .fa-star-o {
+                color: #ddd;
+            }
+        
+            .feedback-image img {
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+        
+            .average-rating {
+                text-align: center;
+                padding: 20px;
+                background: #f9f9f9;
+                border-radius: 5px;
+                margin-bottom: 30px;
+            }
+        
+            .average-rating h4 {
+                margin: 0;
+                color: #333;
+            }
+        
+            .average-rating .fa-star {
+                color: #ffd700;
+                font-size: 24px;
+            }
+        
+            .average-rating .fa-star-o {
+                color: #ddd;
+                font-size: 24px;
+            }
+        </style>
     </head>
     <body>
         <!-- Preloader -->
@@ -75,6 +135,7 @@
             </div>
         </div>
         <!-- End Preloader -->
+
         <!-- Header Area -->
         <jsp:include page="common/common-homepage-header.jsp"></jsp:include>
             <!-- End Header Area -->
@@ -137,12 +198,12 @@
                                         </ul>
                                     </div>
                                     <div class="price-footer">
-                                        <!--                                        <form action="appointment" method="GET">
-                                                                                    <input type="hidden" name="serviceId" value="${service.id}">
-                                                                                    <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                                                                        <i class="fa fa-calendar-plus"></i> Book Appointment
-                                                                                    </button>
-                                                                                </form>-->
+<!--                                        <form action="appointment" method="GET">
+                                            <input type="hidden" name="serviceId" value="${service.id}">
+                                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                                <i class="fa fa-calendar-plus"></i> Book Appointment
+                                            </button>
+                                        </form>-->
                                         <form action="customer-reservation-service-cart" method="POST">
                                             <input type="hidden" name="action" value="add">
                                             <input type="hidden" name="serviceId" value="${service.id}">
@@ -155,6 +216,75 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Feedback Section -->
+<div class="col-12 news-single">
+    <div class="blog-comments">
+        <h2>Customer Feedback</h2>
+        <!-- Average Rating Display -->
+        <div class="average-rating mb-4">
+            <h4>Average Rating: 
+                <span class="text-warning">
+                    <c:set var="averageRating" value="${serviceservlet.getAverageRating(service.id)}"/>
+                    <c:forEach begin="1" end="5" var="i">
+                        <i class="fa fa-star${i <= averageRating ? '' : '-o'}"></i>
+                    </c:forEach>
+                    (${String.format("%.1f", averageRating)})
+                </span>
+            </h4>
+        </div>
+        
+        <div class="comments-body">
+            <c:forEach var="feedback" items="${listFeedback}">
+                <!-- Single Feedback -->
+                <div class="single-comments">
+                    <div class="main">
+                        <div class="head">
+                            <c:choose>
+                                <c:when test="${not empty feedback.image_link}">
+                                    <img src="${feedback.image_link}" alt="Feedback Image"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="img/author1.jpg" alt="Default Image"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                        <div class="body">
+                            <div class="meta-info d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4>${serviceservlet.getUserName(feedback.user_id)}</h4>
+                                    <div class="comment-meta">
+                                        <span class="meta"><i class="fa fa-calendar"></i> ${feedback.feedback_time}</span>
+                                    </div>
+                                </div>
+                                <div class="rating">
+                                    <c:forEach begin="1" end="5" var="i">
+                                        <i class="fa fa-star${i <= feedback.rated_star ? ' text-warning' : '-o'}"></i>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                            <p>${feedback.content}</p>
+                            
+                            <c:if test="${not empty feedback.image_link}">
+                                <div class="feedback-image mt-2">
+                                    <img src="${feedback.image_link}" alt="Feedback Image" 
+                                         class="img-fluid" style="max-width: 200px;"/>
+                                </div>
+                            </c:if>
+                        </div>
+                    </div>
+                </div>
+                <!--/ End Single Feedback -->
+            </c:forEach>
+            
+            <!-- No Feedback Message -->
+            <c:if test="${empty listFeedback}">
+                <div class="alert alert-info">
+                    No feedback available for this service yet.
+                </div>
+            </c:if>
+        </div>
+    </div>
+</div>
                 </div>
             </div>
         </div>
@@ -280,6 +410,43 @@
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
             <!--/ End Footer Area -->
 
+            <!-- jquery Min JS -->
+            <script src="js/jquery.min.js"></script>
+            <!-- jquery Migrate JS -->
+            <script src="js/jquery-migrate.js"></script>
+            <!-- Easing JS -->
+            <script src="js/easing.js"></script>
+            <!-- Color JS -->
+            <script src="js/colors.js"></script>
+            <!-- Popper JS -->
+            <script src="js/popper.min.js"></script>
+            <!-- Bootstrap JS -->
+            <script src="js/bootstrap.min.js"></script>
+            <!-- Bootstrap Datepicker JS -->
+            <script src="js/bootstrap-datepicker.js"></script>
+            <!-- Jquery Nav JS -->
+            <script src="js/jquery.nav.js"></script>
+            <!-- Slicknav JS -->
+            <script src="js/slicknav.min.js"></script>
+            <!-- ScrollUp JS -->
+            <script src="js/jquery.scrollUp.min.js"></script>
+            <!-- Niceselect JS -->
+            <script src="js/niceselect.js"></script>
+            <!-- Tilt Jquery JS -->
+            <script src="js/tilt.jquery.min.js"></script>
+            <!-- Owl Carousel JS -->
+            <script src="js/owl-carousel.js"></script>
+            <!-- counterup JS -->
+            <script src="js/jquery.counterup.min.js"></script>
+            <script src="js/waypoints.min.js"></script>
+            <!-- Steller JS -->
+            <script src="js/steller.js"></script>
+            <!-- Wow JS -->
+            <script src="js/wow.min.js"></script>
+            <!-- Magnific Popup JS -->
+            <script src="js/jquery.magnific-popup.min.js"></script>
+            <!-- Main JS -->
+            <script src="js/main.js"></script>
 
             <script>
                 // Update your existing JavaScript with this version
