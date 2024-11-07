@@ -139,6 +139,7 @@
                             <i class="fa-solid fa-plus"></i> Add New Setting
                         </button>
                     </div>
+
                     <!-- Filter section -->
                     <div class="filter-section">
                         <form action="${pageContext.request.contextPath}/admin-manage-settings" method="get"
