@@ -45,10 +45,7 @@
         <servlet-name>ReservationStatsServlet</servlet-name>
         <servlet-class>controller.ReservationStatsServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>DashboardServlet</servlet-name>
-        <servlet-class>controller.DashboardServlet</servlet-class>
-    </servlet>
+    
     <servlet-mapping>
         <servlet-name>ajaxServlet</servlet-name>
         <url-pattern>/vnpayajax/*</url-pattern>
