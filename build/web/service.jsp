@@ -194,13 +194,19 @@
             </div>
         </section>
         <!-- End Blog Posts -->
+        <!-- Button Cart - Only show for customers -->
+        <c:if test="${sessionScope.account.roleId == 4}">
         <!--Button Cart -->
             <div class="sticky-cart-button">
                 <a href="./customer-reservation-service-cart" class="btn btn-primary">
                     <i class="fa fa-shopping-cart"></i> View Cart
                 </a>
             </div>
+<<<<<<< HEAD
+        </c:if>
+=======
 
+>>>>>>> ef132ec150e81dfe6abf36208c807c95f751bfc3
         <!-- Footer Area -->
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
         <!-- End Footer Area -->

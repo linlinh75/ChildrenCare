@@ -19,61 +19,80 @@ public class SettingsListServlet extends HttpServlet {
         try {
             SettingDAO settingDAO = new SettingDAO();
             
-            // Get parameters
-            int page = 1;
-            int recordsPerPage = 10;
-            String pageStr = request.getParameter("page");
-            if (pageStr != null && !pageStr.isEmpty()) {
-                page = Integer.parseInt(pageStr);
+            // Get parameters with default values
+            int page = getIntParameter(request, "page", 1);
+            int recordsPerPage = getIntParameter(request, "recordsPerPage", 10);
+            
+            // Get filter parameters with null checks
+            String typeFilter = getStringParameter(request, "type", null);
+            String statusFilter = getStringParameter(request, "status", null);
+            String searchKeyword = getStringParameter(request, "search", null);
+            
+            // Get sort parameters with default values
+            String sortBy = getStringParameter(request, "sortBy", "id");  // Default sort by ID
+            String sortOrder = getStringParameter(request, "sortOrder", "asc"); // Default ascending
+            
+            try {
+                // Get filtered and sorted settings
+                List<Setting> settingList = settingDAO.getFilteredAndSortedSettings(
+                    typeFilter, statusFilter, searchKeyword,
+                    sortBy, sortOrder, page, recordsPerPage
+                );
+                
+                // Get total records for pagination
+                int totalRecords = settingDAO.getTotalFilteredSettings(
+                    typeFilter, statusFilter, searchKeyword
+                );
+                
+                // Calculate total pages
+                int totalPages = (int) Math.ceil(totalRecords * 1.0 / recordsPerPage);
+                
+                // Get unique setting types for filter dropdown
+                List<String> settingTypes = settingDAO.getUniqueSettingTypes();
+                
+                // Set attributes
+                request.setAttribute("settingList", settingList);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
+                request.setAttribute("recordsPerPage", recordsPerPage);
+                request.setAttribute("totalRecords", totalRecords);
+                request.setAttribute("typeFilter", typeFilter);
+                request.setAttribute("statusFilter", statusFilter);
+                request.setAttribute("searchKeyword", searchKeyword);
+                request.setAttribute("sortBy", sortBy);
+                request.setAttribute("sortOrder", sortOrder);
+                request.setAttribute("settingTypes", settingTypes);
+                
+                // Forward to JSP
+                request.getRequestDispatcher("admin-SettingsList.jsp").forward(request, response);
+            } catch (Exception e) {
+                throw new ServletException("Error processing settings data", e);
             }
-            
-            // Get filter parameters
-            String typeFilter = request.getParameter("type");
-            String statusFilter = request.getParameter("status");
-            String searchKeyword = request.getParameter("search");
-            
-            // Get sort parameters
-            String sortBy = request.getParameter("sortBy");
-            String sortOrder = request.getParameter("sortOrder");
-            
-            // Get filtered and sorted settings
-            List<Setting> settingList = settingDAO.getFilteredAndSortedSettings(
-                typeFilter, statusFilter, searchKeyword,
-                sortBy, sortOrder, page, recordsPerPage
-            );
-            
-            // Get total records for pagination
-            int totalRecords = settingDAO.getTotalFilteredSettings(
-                typeFilter, statusFilter, searchKeyword
-            );
-            
-            // Calculate total pages
-            int totalPages = (int) Math.ceil(totalRecords * 1.0 / recordsPerPage);
-            
-            // Get unique setting types for filter dropdown
-            List<String> settingTypes = settingDAO.getUniqueSettingTypes();
-            
-            // Set attributes
-            request.setAttribute("settingList", settingList);
-            request.setAttribute("currentPage", page);
-            request.setAttribute("totalPages", totalPages);
-            request.setAttribute("recordsPerPage", recordsPerPage);
-            request.setAttribute("totalRecords", totalRecords);
-            request.setAttribute("typeFilter", typeFilter);
-            request.setAttribute("statusFilter", statusFilter);
-            request.setAttribute("searchKeyword", searchKeyword);
-            request.setAttribute("sortBy", sortBy);
-            request.setAttribute("sortOrder", sortOrder);
-            request.setAttribute("settingTypes", settingTypes);
-            
-            // Forward to JSP
-            request.getRequestDispatcher("admin-SettingsList.jsp").forward(request, response);
             
         } catch (Exception e) {
             System.out.println("Error in SettingsListServlet: " + e.getMessage());
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect("404.html");
         }
+    }
+
+    // Helper method to safely get integer parameters
+    private int getIntParameter(HttpServletRequest request, String paramName, int defaultValue) {
+        String paramValue = request.getParameter(paramName);
+        if (paramValue != null && !paramValue.isEmpty()) {
+            try {
+                return Integer.parseInt(paramValue);
+            } catch (NumberFormatException e) {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    // Helper method to safely get string parameters
+    private String getStringParameter(HttpServletRequest request, String paramName, String defaultValue) {
+        String paramValue = request.getParameter(paramName);
+        return (paramValue != null && !paramValue.trim().isEmpty()) ? paramValue.trim() : defaultValue;
     }
 
     @Override

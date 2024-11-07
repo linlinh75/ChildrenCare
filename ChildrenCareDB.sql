@@ -428,5 +428,37 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+CREATE TABLE `setting` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `value` int DEFAULT NULL,
+  `description` text,
+  `status` varchar(20) DEFAULT 'Active',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Insert some sample data
+INSERT INTO `setting` (`type`, `name`, `value`, `description`, `status`) VALUES
+-- Role settings
+('Role', 'Admin', 1, 'Administrator role with full access', 'Active'),
+('Role', 'Manager', 2, 'Manager role with department access', 'Active'),
+('Role', 'Staff', 3, 'Staff role with limited access', 'Active'),
+('Role', 'Customer', 4, 'Customer role with basic access', 'Active'),
+
+-- Post category settings
+('Post Category', 'Health News', 1, 'Health related news and articles', 'Active'),
+('Post Category', 'Medical Tips', 2, 'Tips and advice for medical care', 'Active'),
+('Post Category', 'Service Updates', 3, 'Updates about our services', 'Active'),
+
+-- Service category settings
+('Service Category', 'Pediatrics', 1, 'Children healthcare services', 'Active'),
+('Service Category', 'Cardiology', 2, 'Heart related services', 'Active'),
+('Service Category', 'Neurology', 3, 'Brain and nervous system services', 'Active'),
+
+-- User status settings
+('User Status', 'Active', 1, 'Active user account', 'Active'),
+('User Status', 'Inactive', 0, 'Inactive user account', 'Active'),
+('User Status', 'Pending', 2, 'Pending user account', 'Active');
 
 -- Dump completed on 2024-11-07  8:32:45

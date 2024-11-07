@@ -17,10 +17,6 @@
         <servlet-class>controller.ProfileUserServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>dashboard</servlet-name>
-        <servlet-class>controller.dashboard</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>UserListServlet</servlet-name>
         <servlet-class>controller.UserListServlet</servlet-class>
     </servlet>
@@ -48,10 +44,7 @@
         <servlet-name>ReservationStatsServlet</servlet-name>
         <servlet-class>controller.ReservationStatsServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>DashboardServlet</servlet-name>
-        <servlet-class>controller.DashboardServlet</servlet-class>
-    </servlet>
+    
     <servlet-mapping>
         <servlet-name>ajaxServlet</servlet-name>
         <url-pattern>/vnpayajax/*</url-pattern>
@@ -164,10 +157,4 @@
         <servlet-name>ReservationStatsServlet</servlet-name>
         <url-pattern>/stats</url-pattern>
     </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>DashboardServlet</servlet-name>
-        <url-pattern>/dashboard</url-pattern>
-    </servlet-mapping>
-
 </web-app>

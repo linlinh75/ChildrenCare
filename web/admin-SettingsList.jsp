@@ -1,48 +1,117 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    <!DOCTYPE html>
-    <html>
+<!DOCTYPE html>
+<html>
 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Settings Management</title>
         <link rel="stylesheet" href="./css/adminDashboard_style.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            /* Pagination styling */
+            .pagination-wrapper {
+                display: flex;
+                justify-content: center;
+                margin: 20px 0;
+            }
+
+            .pagination {
+                display: flex;
+                flex-direction: row; /* Ensure horizontal layout */
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                gap: 5px; /* Space between buttons */
+            }
+
+            .pagination .page-item {
+                margin: 0;
+                display: inline-block; /* Make items display inline */
+            }
+
+            .pagination .page-link {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 40px; /* Fixed width for square shape */
+                height: 40px; /* Same as width for perfect square */
+                padding: 0;
+                margin: 0;
+                border: 1px solid #dee2e6;
+                color: #007bff;
+                text-decoration: none;
+                background-color: #fff;
+                transition: all 0.3s ease;
+            }
+
+            .pagination .page-item.active .page-link {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: white;
+            }
+
+            .pagination .page-link:hover {
+                background-color: #e9ecef;
+                border-color: #dee2e6;
+                color: #0056b3;
+            }
+
+            /* Style for Previous/Next buttons */
+            .pagination .page-item:first-child .page-link,
+            .pagination .page-item:last-child .page-link {
+                width: auto;
+                padding: 0 15px;
+            }
+
+            /* Force horizontal layout */
+            .pagination li {
+                float: left; /* Make list items float left */
+            }
+
+            /* Clear the float */
+            .pagination::after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+        </style>
     </head>
 
     <body>
-        <div class="dashboard-container">
-            <!-- Sidebar -->
-            <div class="side-navbar-container">
-                <h3>Admin Dashboard</h3>
-                <ul>
-                    <li onclick="changeLocation('${pageContext.request.contextPath}/home')">
-                        <i class="fa-solid fa-house"></i>
-                        <span>Home</span>
-                    </li>
-                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-user')">
-                        <i class="fa-solid fa-users"></i>
-                        <span>User Management</span>
-                    </li>
-                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-service')">
-                        <i class="fa-solid fa-stethoscope"></i>
-                        <span>Services</span>
-                    </li>
-                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-settings')"
-                        class="active">
-                        <i class="fa-solid fa-gear"></i>
-                        <span>Settings</span>
-                    </li>
-                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-reservation')">
-                        <i class="fa-solid fa-calendar-check"></i>
-                        <span>Reservations</span>
-                    </li>
-                </ul>
-            </div>
+        <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
+            <div class="dashboard-container">
+                <!-- Sidebar -->
+                <!--            <div class="side-navbar-container">
+                                <h3>Admin Dashboard</h3>
+                                <ul>
+                                    <li onclick="changeLocation('${pageContext.request.contextPath}/home')">
+                                        <i class="fa-solid fa-house"></i>
+                                        <span>Home</span>
+                                    </li>
+                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-user')">
+                                        <i class="fa-solid fa-users"></i>
+                                        <span>User Management</span>
+                                    </li>
+                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-service')">
+                                        <i class="fa-solid fa-stethoscope"></i>
+                                        <span>Services</span>
+                                    </li>
+                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-settings')"
+                                        class="active">
+                                        <i class="fa-solid fa-gear"></i>
+                                        <span>Settings</span>
+                                    </li>
+                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-reservation')">
+                                        <i class="fa-solid fa-calendar-check"></i>
+                                        <span>Reservations</span>
+                                    </li>
+                                </ul>
+                            </div>-->
             <div class="user-container">
                 <div class="user-list-container fade-in">
                     <h1 class="user-container-table">Settings Management</h1>
 
-                    <!-- Success/Error Messages -->
+                    <!-- Success/Error Messages - Only show when needed -->
                     <c:if test="${not empty sessionScope.successMessage}">
                         <div class="alert alert-success">
                             ${sessionScope.successMessage}
@@ -59,9 +128,9 @@
                     <!-- Search and Add Setting -->
                     <div class="top-option">
                         <form action="${pageContext.request.contextPath}/admin-manage-settings" method="get"
-                            class="search-name-form">
+                              class="search-name-form">
                             <input type="text" name="search" placeholder="Search by name or value..."
-                                value="${searchKeyword}">
+                                   value="${searchKeyword}">
                             <button type="submit">
                                 <i class="fa-solid fa-magnifying-glass"></i> Search
                             </button>
@@ -74,7 +143,7 @@
                     <!-- Filter section -->
                     <div class="filter-section">
                         <form action="${pageContext.request.contextPath}/admin-manage-settings" method="get"
-                            class="filter-form">
+                              class="filter-form">
                             <div class="filter-group">
                                 <label>Type:</label>
                                 <select name="type">
@@ -144,13 +213,13 @@
                                                 </td>
                                                 <td>
                                                     <button
-                                                        onclick="window.location.href='setting-details?id=${setting.id}'"
+                                                        onclick="window.location.href = 'setting-details?id=${setting.id}'"
                                                         class="btn btn-info">
                                                         <i class="fa-solid fa-eye"></i>
                                                     </button>
                                                     <button
-                                                        onclick="showEditModalWithData('${setting.id}', '${setting.type}', '${setting.name}', 
-                                                        '${setting.value}', '${setting.description}', '${setting.status}')"
+                                                        onclick="showEditModalWithData('${setting.id}', '${setting.type}', '${setting.name}',
+                                                                        '${setting.value}', '${setting.description}', '${setting.status}')"
                                                         class="btn btn-primary">
                                                         <i class="fa-solid fa-pen"></i>
                                                     </button>
@@ -169,40 +238,19 @@
                             <ul class="pagination">
                                 <c:if test="${currentPage > 1}">
                                     <li class="page-item">
-                                        <a class="page-link" href="admin-manage-settings?page=${currentPage - 1}
-                                        ${not empty searchKeyword ? '&search='+=searchKeyword : ''}
-                                        ${not empty typeFilter ? '&type='+=typeFilter : ''}
-                                        ${not empty statusFilter ? '&status='+=statusFilter : ''}
-                                        ${not empty sortBy ? '&sortBy='+=sortBy : ''}
-                                        ${not empty sortOrder ? '&sortOrder='+=sortOrder : ''}">
-                                            Previous
-                                        </a>
+                                        <a class="page-link" href="admin-manage-settings?page=${currentPage - 1}&sortBy=${sortBy}&sortOrder=${sortOrder}&type=${typeFilter}&status=${statusFilter}&search=${searchKeyword}">Previous</a>
                                     </li>
                                 </c:if>
 
                                 <c:forEach begin="1" end="${totalPages}" var="i">
                                     <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                        <a class="page-link" href="admin-manage-settings?page=${i}
-                                        ${not empty searchKeyword ? '&search='+=searchKeyword : ''}
-                                        ${not empty typeFilter ? '&type='+=typeFilter : ''}
-                                        ${not empty statusFilter ? '&status='+=statusFilter : ''}
-                                        ${not empty sortBy ? '&sortBy='+=sortBy : ''}
-                                        ${not empty sortOrder ? '&sortOrder='+=sortOrder : ''}">
-                                            ${i}
-                                        </a>
+                                        <a class="page-link" href="admin-manage-settings?page=${i}&sortBy=${sortBy}&sortOrder=${sortOrder}&type=${typeFilter}&status=${statusFilter}&search=${searchKeyword}">${i}</a>
                                     </li>
                                 </c:forEach>
 
                                 <c:if test="${currentPage < totalPages}">
                                     <li class="page-item">
-                                        <a class="page-link" href="admin-manage-settings?page=${currentPage + 1}
-                                        ${not empty searchKeyword ? '&search='+=searchKeyword : ''}
-                                        ${not empty typeFilter ? '&type='+=typeFilter : ''}
-                                        ${not empty statusFilter ? '&status='+=statusFilter : ''}
-                                        ${not empty sortBy ? '&sortBy='+=sortBy : ''}
-                                        ${not empty sortOrder ? '&sortOrder='+=sortOrder : ''}">
-                                            Next
-                                        </a>
+                                        <a class="page-link" href="admin-manage-settings?page=${currentPage + 1}&sortBy=${sortBy}&sortOrder=${sortOrder}&type=${typeFilter}&status=${statusFilter}&search=${searchKeyword}">Next</a>
                                     </li>
                                 </c:if>
                             </ul>
@@ -324,18 +372,36 @@
         <script>
             function sortTable(column) {
                 const currentUrl = new URL(window.location.href);
-                const currentSortBy = currentUrl.searchParams.get('sortBy');
-                const currentSortOrder = currentUrl.searchParams.get('sortOrder');
-
+                const params = new URLSearchParams(currentUrl.search);
+                
+                // Get current sort parameters
+                const currentSortBy = params.get('sortBy');
+                const currentSortOrder = params.get('sortOrder');
+                
+                // Determine new sort order
                 let newSortOrder = 'asc';
                 if (column === currentSortBy && currentSortOrder === 'asc') {
                     newSortOrder = 'desc';
                 }
-
-                currentUrl.searchParams.set('sortBy', column);
-                currentUrl.searchParams.set('sortOrder', newSortOrder);
-
-                window.location.href = currentUrl.toString();
+                
+                // Update sort parameters
+                params.set('sortBy', column);
+                params.set('sortOrder', newSortOrder);
+                
+                // Reset to first page when sorting changes
+                params.set('page', '1');
+                
+                // Maintain other parameters (type, status, search)
+                const type = params.get('type');
+                const status = params.get('status');
+                const search = params.get('search');
+                
+                if (type) params.set('type', type);
+                if (status) params.set('status', status);
+                if (search) params.set('search', search);
+                
+                // Redirect with all parameters
+                window.location.href = 'admin-manage-settings?' + params.toString();
             }
 
             function changeLocation(url) {
@@ -466,7 +532,72 @@
                 border-top: 1px solid #ddd;
                 text-align: right;
             }
+
+            /* Button styling in table rows */
+            .table td .btn {
+                padding: 6px 12px;
+                margin: 0 3px;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+
+            .table td .btn-info {
+                background-color: #17a2b8;
+                border-color: #17a2b8;
+                color: white;
+            }
+
+            .table td .btn-primary {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: white;
+            }
+
+            .table td .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+
+            .table td .btn-info:hover {
+                background-color: #138496;
+                border-color: #117a8b;
+            }
+
+            .table td .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+            /* Action buttons container */
+            .table td {
+                white-space: nowrap;
+            }
+
+            /* Icon styling inside buttons */
+            .table td .btn i {
+                font-size: 14px;
+                margin-right: 0;
+            }
+
+            /* Status badge styling */
+            .status-badge {
+                padding: 5px 10px;
+                border-radius: 15px;
+                font-size: 12px;
+                font-weight: 500;
+            }
+
+            .status-badge.active {
+                background-color: #28a745;
+                color: white;
+            }
+
+            .status-badge.inactive {
+                background-color: #dc3545;
+                color: white;
+            }
         </style>
+        <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
     </body>
 
-    </html>
+</html>

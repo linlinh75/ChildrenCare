@@ -16,7 +16,6 @@
         <servlet-name>ProfileUserServlet</servlet-name>
         <servlet-class>controller.ProfileUserServlet</servlet-class>
     </servlet>
-    
     <servlet>
         <servlet-name>UserListServlet</servlet-name>
         <servlet-class>controller.UserListServlet</servlet-class>
@@ -158,7 +157,4 @@
         <servlet-name>ReservationStatsServlet</servlet-name>
         <url-pattern>/stats</url-pattern>
     </servlet-mapping>
-
-  
-
 </web-app>

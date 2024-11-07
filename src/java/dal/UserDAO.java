@@ -368,7 +368,7 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     }
 
     public boolean deleteUser(int userId) {
-        String sql = "UPDATE user SET status = 'Inactive' WHERE id = ?";
+        String sql = "delete from swp.user where id= ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, userId);

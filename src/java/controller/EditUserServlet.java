@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "EditUserServlet", urlPatterns = {"/edit-user"})
 public class EditUserServlet extends HttpServlet {
@@ -38,8 +39,25 @@ public class EditUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            HttpSession session = request.getSession();
+            // Clear any existing messages first
+            session.removeAttribute("successMessage");
+            session.removeAttribute("errorMessage");
+            
+            User loggedInUser = (User) session.getAttribute("account");
+            int userId = Integer.parseInt(request.getParameter("id"));
+            
+            // If editing logged-in user, keep their original status
+            if (loggedInUser != null && loggedInUser.getId() == userId) {
+                String status = request.getParameter("status");
+                if (!status.equals(loggedInUser.getStatus())) {
+                    request.getSession().setAttribute("errorMessage", "Cannot change your own status!");
+                    response.sendRedirect("admin-manage-user");
+                    return;
+                }
+            }
+            
             // Get parameters
-            int id = Integer.parseInt(request.getParameter("id"));
             String fullName = request.getParameter("fullName");
             String email = request.getParameter("email");
             boolean gender = Boolean.parseBoolean(request.getParameter("gender"));
@@ -50,7 +68,7 @@ public class EditUserServlet extends HttpServlet {
             
             // Create user object
             User user = new User();
-            user.setId(id);
+            user.setId(userId);
             user.setFullName(fullName);
             user.setEmail(email);
             user.setGender(gender);
@@ -63,7 +81,8 @@ public class EditUserServlet extends HttpServlet {
             UserDAO userDAO = new UserDAO();
             userDAO.updateUser(user);
             
-            request.getSession().setAttribute("successMessage", "User updated successfully!");
+            // Only set message when operation is successful
+            session.setAttribute("successMessage", "User updated successfully!");
             response.sendRedirect("admin-manage-user");
             
         } catch (Exception e) {
