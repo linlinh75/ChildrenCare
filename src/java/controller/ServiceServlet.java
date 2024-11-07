@@ -13,6 +13,7 @@ import dal.PostDAO;
 import dal.ServiceDAO;
 import dal.SettingDAO;
 import dal.SliderDAO;
+import dal.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +21,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import model.Feedback;
 import model.Post;
@@ -30,6 +34,7 @@ import model.ServiceCategory;
 import model.Service;
 import model.Setting;
 import model.Slider;
+import model.User;
 
 public class ServiceServlet extends HttpServlet {
 
@@ -40,7 +45,7 @@ public class ServiceServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        
+
         ServiceDAO s = new ServiceDAO();
         List<Service> list_service = s.getAllService();
         PostDAO p = new PostDAO();
@@ -120,7 +125,8 @@ public class ServiceServlet extends HttpServlet {
             if (serviceId != null && !serviceId.isEmpty()) {
                 int id = Integer.parseInt(serviceId);
                 Service service = serviceDAO.getServiceById(id);
-
+                List<Feedback> listFeedback = feedbackDAO.getFeedbackByServiceId(id);
+                request.setAttribute("listFeedback", listFeedback);
                 if (service != null) {
                     request.setAttribute("service", service);
                     request.getRequestDispatcher("service-details.jsp").forward(request, response);
@@ -200,5 +206,18 @@ public class ServiceServlet extends HttpServlet {
 
         // Trả về 0 nếu không có đánh giá
         return totalFeedbacks > 0 ? totalRating / totalFeedbacks : 0;
+    }
+
+    public String getUserName(int userId) {
+        // You'll need to implement this to get the user's name from your UserDAO
+        UserDAO userDAO = new UserDAO();
+        User user;
+        try {
+            user = userDAO.getProfileById(userId);
+            return user != null ? user.getFullName() : "Anonymous";
+        } catch (SQLException ex) {
+            Logger.getLogger(ServiceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "Anonymous";
     }
 }

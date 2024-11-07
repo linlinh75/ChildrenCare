@@ -80,59 +80,83 @@
             <!-- Sidebar -->
             <jsp:include page="../common/admin/side_bar_admin.jsp"></jsp:include>
 
-            <!-- Start Page Content -->
-            <main class="page-content bg-light">
-                <div class="top-header">
-                    <div class="header-bar d-flex justify-content-between border-bottom">
-                        <div class="d-flex align-items-center">
-                            <a href="#" class="logo-icon">
-                                <img src="../assets/images/logo-icon.png" height="30" class="small" alt="">
-                                <span class="big">
-                                    <img src="../assets/images/logo-dark.png" height="24" class="logo-light-mode" alt="">
-                                    <img src="../assets/images/logo-light.png" height="24" class="logo-dark-mode" alt="">
-                                </span>
-                            </a>
-                            <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#">
-                                <i class="uil uil-bars"></i>
-                            </a>
-                            <div class="search-bar p-0 d-none d-lg-block ms-2">
-                                <div id="search" class="menu-search mb-0">
-                                    <form role="search" method="get" id="searchform" class="searchform">
-                                        <div>
-                                            <input type="text" class="form-control border rounded-pill" name="s" id="s" placeholder="Search Keywords...">
-                                            <input type="submit" id="searchsubmit" value="Search">
-                                        </div>
-                                    </form>
+                <!-- Start Page Content -->
+                <main class="page-content bg-light">
+                    <div class="top-header">
+                        <div class="header-bar d-flex justify-content-between border-bottom">
+                            <div class="d-flex align-items-center">
+                                <a href="#" class="logo-icon">
+                                    <img src="../assets/images/logo-icon.png" height="30" class="small" alt="">
+                                    <span class="big">
+                                        <img src="../assets/images/logo-dark.png" height="24" class="logo-light-mode" alt="">
+                                        <img src="../assets/images/logo-light.png" height="24" class="logo-dark-mode" alt="">
+                                    </span>
+                                </a>
+                                <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#">
+                                    <i class="uil uil-bars"></i>
+                                </a>
+                                <div class="search-bar p-0 d-none d-lg-block ms-2">
+                                    <div id="search" class="menu-search mb-0">
+                                        <form role="search" method="get" id="searchform" class="searchform">
+                                            <div>
+                                                <input type="text" class="form-control border rounded-pill" name="s" id="s" placeholder="Search Keywords...">
+                                                <input type="submit" id="searchsubmit" value="Search">
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="container-fluid">
+                    <div class="container-fluid">
                     <jsp:include page="../common/common-homepage-header.jsp"></jsp:include>
-                    <div class="layout-specing">
-                        <div class="d-md-flex justify-content-between">
-                            <div class="mt-4 mt-sm-0">
-                                <a href="service-list-admin?action=add" class="btn btn-primary">Add Service</a>
+                        <div class="layout-specing">
+                            <div class="d-md-flex justify-content-between mb-3">
+                                <div class="mt-4 mt-sm-0 ms-auto">
+                                    <a href="service-list-admin?action=add" class="btn btn-primary">Add Service</a>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Filter Section -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="d-flex align-items-center">
-                                    <span class="me-2">Filter by status:</span>
-                                    <div class="btn-group" role="group">
-                                        <a href="service-list-admin?status=all" class="btn btn-sm ${param.status == null || param.status == 'all' ? 'btn-primary' : 'btn-outline-primary'}">
-                                            All
-                                        </a>
-                                        <a href="service-list-admin?status=active" class="btn btn-sm ${param.status == 'active' ? 'btn-primary' : 'btn-outline-success'}">
-                                            Active
-                                        </a>
-                                        <a href="service-list-admin?status=inactive" class="btn btn-sm ${param.status == 'inactive' ? 'btn-primary' : 'btn-outline-secondary'}">
-                                            Inactive
-                                        </a>
+                            <!-- Filter Section -->
+                            <!-- Combined Search and Filter Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <!-- Filter Section -->
+                                        <div class="d-flex align-items-center">
+                                            <span class="me-2">Filter by status:</span>
+                                            <div class="btn-group" role="group">
+                                                <a href="service-list-admin?status=all" class="btn btn-sm ${param.status == null || param.status == 'all' ? 'btn-primary' : 'btn-outline-primary'}">
+                                                All
+                                            </a>
+                                            <a href="service-list-admin?status=active" class="btn btn-sm ${param.status == 'active' ? 'btn-primary' : 'btn-outline-success'}">
+                                                Active
+                                            </a>
+                                            <a href="service-list-admin?status=inactive" class="btn btn-sm ${param.status == 'inactive' ? 'btn-primary' : 'btn-outline-secondary'}">
+                                                Inactive
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Search Section -->
+                                    <div class="search-bar p-0">
+                                        <div id="search" class=" mb-0">
+                                            <form method="get" id="searchform" class="searchform">
+                                                <div class="d-flex align-items-center">
+                                                    <input type="text" class="form-control border rounded-pill me-2" 
+                                                           name="searchQuery" 
+                                                           id="searchQuery" 
+                                                           placeholder="Search Keywords..."
+                                                           value="${param.searchQuery}">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        Search
+                                                    </button>
+                                                </div>
+                                                <!-- Preserve status filter when searching -->
+                                                <input type="hidden" name="status" value="${param.status}">
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -158,14 +182,16 @@
                                                     <span class="badge bg-soft-warning rounded-pill">Featured</span>
                                                 </c:if>
                                             </div>
-                                            
-                                            <h5 class="service-title">${service.fullname}</h5>
-                                            
+                                            <a href="service-list-admin?action=edit&id=${service.id}" class="text-dark title h5 post-title">
+                                                ${service.fullname}
+                                            </a>
+                                            <!-- <h5 class="service-title"></h5> -->
+
                                             <div class="price-info mb-2">
                                                 <span class="original-price">$${service.originalPrice}</span>
                                                 <span class="sale-price">$${service.salePrice}</span>
                                             </div>
-                                            
+
                                             <div class="mb-2">
                                                 <small class="text-muted">Last Updated: ${service.updatedDate}</small>
                                             </div>
@@ -188,44 +214,46 @@
                         </div>
 
                         <!-- Pagination -->
-                      <!-- Pagination -->
-<div class="row">
-    <div class="col-12 mt-4">
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-end mb-0">
-                <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                    <a class="page-link" href="service-list-admin?page=${currentPage - 1}${not empty param.status ? '&status='.concat(param.status) : ''}" 
-                       aria-label="Previous" ${currentPage == 1 ? 'tabindex="-1"' : ''}>
-                        Prev
-                    </a>
-                </li>
+                        <div class="row">
+                            <div class="col-12 mt-4">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-end mb-0">
+                                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                            <a class="page-link" 
+                                               href="service-list-admin?page=${currentPage - 1}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.searchQuery ? '&searchQuery='.concat(param.searchQuery) : ''}" 
+                                               aria-label="Previous" ${currentPage == 1 ? 'tabindex="-1"' : ''}>
+                                                Prev
+                                            </a>
+                                        </li>
 
-                <c:forEach begin="1" end="${totalPages}" var="i">
-                    <li class="page-item ${currentPage == i ? 'active' : ''}">
-                        <a class="page-link" href="service-list-admin?page=${i}${not empty param.status ? '&status='.concat(param.status) : ''}">${i}</a>
-                    </li>
-                </c:forEach>
+                                        <c:forEach begin="1" end="${totalPages}" var="i">
+                                            <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                                <a class="page-link" 
+                                                   href="service-list-admin?page=${i}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.searchQuery ? '&searchQuery='.concat(param.searchQuery) : ''}">${i}</a>
+                                            </li>
+                                        </c:forEach>
 
-                <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                    <a class="page-link" href="service-list-admin?page=${currentPage + 1}${not empty param.status ? '&status='.concat(param.status) : ''}" 
-                       aria-label="Next" ${currentPage == totalPages ? 'tabindex="-1"' : ''}>
-                        Next
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-</div>
+                                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                            <a class="page-link" 
+                                               href="service-list-admin?page=${currentPage + 1}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.searchQuery ? '&searchQuery='.concat(param.searchQuery) : ''}" 
+                                               aria-label="Next" ${currentPage == totalPages ? 'tabindex="-1"' : ''}>
+                                                Next
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Footer -->
                     <jsp:include page="../common/common-homepage-footer.jsp"></jsp:include>
-                </div>
-            </main>
-        </div>
+                    </div>
+                </main>
+            </div>
 
-        <!-- JavaScript -->
-        <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
+            <!-- JavaScript -->
+            <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/simplebar.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
