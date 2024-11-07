@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    <!DOCTYPE html>
-    <html>
+<!DOCTYPE html>
+<html>
 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -183,17 +183,19 @@
     </head>
 
     <body>
-        <div class="dashboard-container">
-            <div class="user-container">
-                <div class="user-details-form">
-                    <div class="form-header">
-                        <h1><i class="fas fa-user-circle"></i> User Details</h1>
-                        <button type="button" onclick="history.back()" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Back
-                        </button>
-                    </div>
+        <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
 
-                    <!-- Success/Error Messages -->
+            <div class="dashboard-container">
+                <div class="user-container">
+                    <div class="user-details-form">
+                        <div class="form-header">
+                            <h1><i class="fas fa-user-circle"></i> User Details</h1>
+                            <button type="button" onclick="history.back()" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </button>
+                        </div>
+
+                        <!-- Success/Error Messages -->
                     <c:if test="${not empty sessionScope.successMessage}">
                         <div class="alert alert-success">
                             <i class="fas fa-check-circle"></i> ${sessionScope.successMessage}
@@ -227,7 +229,7 @@
                             <div class="form-group">
                                 <label><i class="fas fa-user"></i> Full Name</label>
                                 <input type="text" name="fullName" value="${user.fullName}"
-                                    ${sessionScope.account.roleId==1 ? '' : 'readonly' }>
+                                       ${sessionScope.account.roleId==1 ? '' : 'readonly' }>
                             </div>
 
                             <div class="form-group">
@@ -248,7 +250,7 @@
                             <div class="form-group">
                                 <label><i class="fas fa-phone"></i> Mobile</label>
                                 <input type="text" name="mobile" value="${user.mobile}" ${sessionScope.account.roleId==1
-                                    ? '' : 'readonly' }>
+                                                                          ? '' : 'readonly' }>
                             </div>
                         </div>
 
@@ -256,13 +258,13 @@
                             <div class="form-group">
                                 <label><i class="fas fa-map-marker-alt"></i> Address</label>
                                 <input type="text" name="address" value="${user.address}"
-                                    ${sessionScope.account.roleId==1 ? '' : 'readonly' }>
+                                       ${sessionScope.account.roleId==1 ? '' : 'readonly' }>
                             </div>
 
                             <div class="form-group">
                                 <label><i class="fas fa-user-tag"></i> Role</label>
                                 <select name="roleId" ${(sessionScope.account.roleId==1 && user.roleId !=1) ? ''
-                                    : 'disabled' }>
+                                                        : 'disabled' }>
                                     <option value="1" ${user.roleId==1 ? 'selected' : '' }>Admin</option>
                                     <option value="2" ${user.roleId==2 ? 'selected' : '' }>Manager</option>
                                     <option value="3" ${user.roleId==3 ? 'selected' : '' }>Staff</option>
@@ -322,6 +324,8 @@
                 this.submit();
             });
         </script>
+        <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+
     </body>
 
-    </html>
+</html>

@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>src/java/controller/DeleteUserServlet.java</url>
+            <bookmark id="1">
+                <name/>
+                <line>23</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group name="SWP391">
             <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/model/ReservationService.java</file>
@@ -10,28 +19,16 @@
             <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/controller/ReservationServlet.java</file>
             <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/controller/ReservationServiceCart.java</file>
         </group>
-<<<<<<< HEAD
-        <group/>
-=======
         <group>
-            <file>file:/D:/ChildrenCare/web/index.html</file>
-            <file>file:/D:/ChildrenCare/src/java/dal/MedicalExaminationDAO.java</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/ReservationStatsServlet.java</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/DashboardServlet.java</file>
-            <file>file:/D:/ChildrenCare/src/java/model/MedicalExamination.java</file>
-            <file>file:/D:/ChildrenCare/web/WEB-INF/web.xml</file>
-            <file>file:/D:/ChildrenCare/web/vnpay_return.jsp</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/MedicalExaminationServlet.java</file>
-            <file>file:/D:/ChildrenCare/src/java/dal/DBContext.java</file>
-            <file>file:/D:/ChildrenCare/src/java/model/StatToMap.java</file>
-            <file>file:/D:/ChildrenCare/src/java/dal/ReservationDAO.java</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/DataServlet.java</file>
-            <file>file:/D:/ChildrenCare/src/java/model/DateToMap.java</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/SettingsListServlet.java</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/DeleteUserServlet.java</file>
+            <file>file:/D:/ChildrenCare/web/setting-details.jsp</file>
+            <file>file:/D:/ChildrenCare/web/common/admin/side_bar_admin.jsp</file>
             <file>file:/D:/ChildrenCare/web/common/common-homepage-header.jsp</file>
-            <file>file:/D:/ChildrenCare/src/java/model/Reservation.java</file>
-            <file>file:/D:/ChildrenCare/src/java/model/ReservationService.java</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/ReservationCompletionServlet.java</file>
+            <file>file:/D:/ChildrenCare/web/admin-SettingsList.jsp</file>
+            <file>file:/D:/ChildrenCare/web/admin-UserList.jsp</file>
+            <file>file:/D:/ChildrenCare/web/customer-feedback.jsp</file>
+            <file>file:/D:/ChildrenCare/src/java/dal/SettingDAO.java</file>
         </group>
->>>>>>> 09643ecd3d463f491ead8b10f24713f16d91f7a4
     </open-files>
 </project-private>

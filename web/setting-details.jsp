@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    <!DOCTYPE html>
-    <html>
+<!DOCTYPE html>
+<html>
 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -135,21 +135,23 @@
     </head>
 
     <body>
-        <div class="dashboard-container">
+        <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
 
-            <div class="user-container">
-                <div class="setting-details-form">
-                    <div class="form-header">
-                        <h1><i class="fas fa-cog"></i> Setting Details</h1>
-                        <div>
+            <div class="dashboard-container">
 
-                            <button onclick="history.back()" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Back
-                            </button>
+                <div class="user-container">
+                    <div class="setting-details-form">
+                        <div class="form-header">
+                            <h1><i class="fas fa-cog"></i> Setting Details</h1>
+                            <div>
+
+                                <button onclick="history.back()" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Success/Error Messages -->
+                        <!-- Success/Error Messages -->
                     <c:if test="${not empty sessionScope.successMessage}">
                         <div class="alert alert-success">
                             <i class="fas fa-check-circle"></i> ${sessionScope.successMessage}
@@ -178,7 +180,7 @@
                                     Status</option>
                             </select>
                         </div>
-
+                                    <br><br><br>
                         <div class="form-group">
                             <label><i class="fas fa-font"></i> Name</label>
                             <input type="text" name="name" value="${setting.name}" required>
@@ -212,6 +214,8 @@
                 </div>
             </div>
         </div>
+        <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+
     </body>
 
-    </html>
+</html>
