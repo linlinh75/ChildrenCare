@@ -8,7 +8,7 @@ import ReservationChart from './Line';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/react">
       <Routes>
         <Route path="/chart" element={<ReservationChart/>} />
         {/* Add other routes as needed */}

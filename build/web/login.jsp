@@ -36,13 +36,13 @@
 
                   <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="email" name="email" id="form2Example17"  class="form-control form-control-lg" required />
-                    <label class="form-label" for="form2Example17">Email</label>
+                    <input type="email" name="email" id="email"  class="form-control form-control-lg" required />
+                    <label class="form-label" for="email">Email</label>
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="password" id="form2Example27"  class="form-control form-control-lg" required/>
-                    <label class="form-label" for="form2Example27">Password</label>
+                    <input type="password" name="password" id="password"  class="form-control form-control-lg" required/>
+                    <label class="form-label" for="password">Password</label>
                   </div>
                    <c:if test="${ms!=null}">
             <div class="alert alert-danger" role="alert">
@@ -60,7 +60,7 @@
                     </div>
                   </c:if>
                   <div class="pt-1 mb-4">
-                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark  btn-block" type="submit" name="submit" value="submit">Login</button>
+                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark  btn-block" id="loginButtonId" type="submit" name="submit" value="submit">Login</button>
                       </div>
                    <div class="row">
             <div class="col-12">

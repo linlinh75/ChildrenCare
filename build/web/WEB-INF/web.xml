@@ -17,10 +17,6 @@
         <servlet-class>controller.ProfileUserServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>dashboard</servlet-name>
-        <servlet-class>controller.dashboard</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>UserListServlet</servlet-name>
         <servlet-class>controller.UserListServlet</servlet-class>
     </servlet>
@@ -47,6 +43,10 @@
     <servlet>
         <servlet-name>ReservationStatsServlet</servlet-name>
         <servlet-class>controller.ReservationStatsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DashboardServlet</servlet-name>
+        <servlet-class>controller.DashboardServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ajaxServlet</servlet-name>
@@ -154,11 +154,10 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>MedicalExaminationServlet</servlet-name>
-        <url-pattern>/MedicalExaminationServlet</url-pattern>
+        <url-pattern>/staff-exam</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ReservationStatsServlet</servlet-name>
         <url-pattern>/stats</url-pattern>
     </servlet-mapping>
-
 </web-app>

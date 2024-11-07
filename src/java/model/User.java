@@ -96,6 +96,11 @@ public class User {
         this.imageLink = imageLink;
     }
 
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", email=" + email + ", password=" + password + ", fullName=" + fullName + ", gender=" + gender + ", mobile=" + mobile + ", address=" + address + ", imageLink=" + imageLink + ", roleId=" + roleId + ", status=" + status + '}';
+    }
+
     public int getRoleId() {
         return roleId;
     }
