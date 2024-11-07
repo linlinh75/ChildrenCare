@@ -251,7 +251,7 @@
                     <div class="filter-section">
                         <form action="${pageContext.request.contextPath}/admin-manage-user" method="get"
                               class="filter-form">
-                            <div class="filter-group">
+<!--                            <div class="filter-group">
                                 <label>Gender:</label>
                                 <select name="gender">
                                     <option value="">All</option>
@@ -260,7 +260,7 @@
                                     <option value="false" ${genderFilter=='false' ? 'selected' : '' }>Female
                                     </option>
                                 </select>
-                            </div>
+                            </div>-->
 
                             <div class="filter-group">
                                 <label>Role:</label>

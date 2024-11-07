@@ -227,10 +227,37 @@ public class UserDAO extends DBContext {
     }
 
     public int addUser(User user) throws SQLException {
-        String sql = "INSERT INTO user (email, password, full_name, gender, mobile, address, image_link, role_id, status) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Check for duplicate email
+        String checkEmailSql = "SELECT COUNT(*) FROM user WHERE email = ?";
+        // Check for duplicate mobile
+        String checkMobileSql = "SELECT COUNT(*) FROM user WHERE mobile = ?";
+        
+        try {
+            // Check for duplicate email
+            PreparedStatement checkEmailStmt = connection.prepareStatement(checkEmailSql);
+            checkEmailStmt.setString(1, user.getEmail());
+            ResultSet rsEmail = checkEmailStmt.executeQuery();
+            if (rsEmail.next() && rsEmail.getInt(1) > 0) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.WARNING, 
+                    "Cannot add user: Email {0} already exists", user.getEmail());
+                throw new SQLException("Email already exists");
+            }
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            // Check for duplicate mobile
+            PreparedStatement checkMobileStmt = connection.prepareStatement(checkMobileSql);
+            checkMobileStmt.setString(1, user.getMobile());
+            ResultSet rsMobile = checkMobileStmt.executeQuery();
+            if (rsMobile.next() && rsMobile.getInt(1) > 0) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.WARNING, 
+                    "Cannot add user: Mobile {0} already exists", user.getMobile());
+                throw new SQLException("Mobile number already exists");
+            }
+
+            // If no duplicates found, proceed with insert
+            String sql = "INSERT INTO user (email, password, full_name, gender, mobile, address, image_link, role_id, status) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getFullName());
@@ -242,6 +269,10 @@ public class UserDAO extends DBContext {
             stmt.setString(9, user.getStatus());
 
             return stmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Error adding user", ex);
+            throw ex; // Rethrow the exception to be handled by the caller
         }
     }
 
@@ -592,10 +623,38 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     }
 
     public boolean updateUser(User user) {
-        String sql = "UPDATE user SET email=?, full_name=?, gender=?, mobile=?, " +
-                    "address=?, role_id=?, status=? WHERE id=?";
-                    
+        // Check for duplicate email (excluding current user)
+        String checkEmailSql = "SELECT COUNT(*) FROM user WHERE email = ? AND id != ?";
+        // Check for duplicate mobile (excluding current user)
+        String checkMobileSql = "SELECT COUNT(*) FROM user WHERE mobile = ? AND id != ?";
+        
         try {
+            // Check for duplicate email
+            PreparedStatement checkEmailStmt = connection.prepareStatement(checkEmailSql);
+            checkEmailStmt.setString(1, user.getEmail());
+            checkEmailStmt.setInt(2, user.getId());
+            ResultSet rsEmail = checkEmailStmt.executeQuery();
+            if (rsEmail.next() && rsEmail.getInt(1) > 0) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.WARNING, 
+                    "Cannot update user: Email {0} already exists", user.getEmail());
+                throw new SQLException("Email already exists");
+            }
+
+            // Check for duplicate mobile
+            PreparedStatement checkMobileStmt = connection.prepareStatement(checkMobileSql);
+            checkMobileStmt.setString(1, user.getMobile());
+            checkMobileStmt.setInt(2, user.getId());
+            ResultSet rsMobile = checkMobileStmt.executeQuery();
+            if (rsMobile.next() && rsMobile.getInt(1) > 0) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.WARNING, 
+                    "Cannot update user: Mobile {0} already exists", user.getMobile());
+                throw new SQLException("Mobile number already exists");
+            }
+
+            // If no duplicates found, proceed with update
+            String sql = "UPDATE user SET email=?, full_name=?, gender=?, mobile=?, " +
+                        "address=?, role_id=?, status=? WHERE id=?";
+                        
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getFullName());
@@ -607,8 +666,9 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             stmt.setInt(8, user.getId());
             
             return stmt.executeUpdate() > 0;
+            
         } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Error updating user", ex);
             return false;
         }
     }

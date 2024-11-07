@@ -225,8 +225,38 @@ public class SettingDAO extends DBContext {
     }
 
     public boolean addSetting(Setting setting) {
-        String sql = "INSERT INTO setting (type, name, value, description, status) VALUES (?, ?, ?, ?, ?)";
+        // Check for duplicate value within the same type
+        String checkValueSql = "SELECT COUNT(*) FROM setting WHERE type = ? AND value = ?";
+        // Check for duplicate name within the same type
+        String checkNameSql = "SELECT COUNT(*) FROM setting WHERE type = ? AND name = ?";
+        
         try {
+            // Check for duplicate value
+            PreparedStatement checkValueStmt = connection.prepareStatement(checkValueSql);
+            checkValueStmt.setString(1, setting.getType());
+            checkValueStmt.setInt(2, setting.getValue());
+            ResultSet rsValue = checkValueStmt.executeQuery();
+            if (rsValue.next() && rsValue.getInt(1) > 0) {
+                Logger.getLogger(SettingDAO.class.getName()).log(Level.WARNING, 
+                    "Cannot add setting: Value {0} already exists for type {1}", 
+                    new Object[]{setting.getValue(), setting.getType()});
+                return false;
+            }
+
+            // Check for duplicate name
+            PreparedStatement checkNameStmt = connection.prepareStatement(checkNameSql);
+            checkNameStmt.setString(1, setting.getType());
+            checkNameStmt.setString(2, setting.getName());
+            ResultSet rsName = checkNameStmt.executeQuery();
+            if (rsName.next() && rsName.getInt(1) > 0) {
+                Logger.getLogger(SettingDAO.class.getName()).log(Level.WARNING, 
+                    "Cannot add setting: Name {0} already exists for type {1}", 
+                    new Object[]{setting.getName(), setting.getType()});
+                return false;
+            }
+
+            // If no duplicates found, proceed with insert
+            String sql = "INSERT INTO setting (type, name, value, description, status) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, setting.getType());
             stmt.setString(2, setting.getName());
@@ -234,15 +264,48 @@ public class SettingDAO extends DBContext {
             stmt.setString(4, setting.getDescription());
             stmt.setString(5, setting.getStatus());
             return stmt.executeUpdate() > 0;
+            
         } catch (SQLException ex) {
-            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, "Error adding setting", ex);
             return false;
         }
     }
 
     public boolean updateSetting(Setting setting) {
-        String sql = "UPDATE setting SET type=?, name=?, value=?, description=?, status=? WHERE id=?";
+        // Check for duplicate value within the same type (excluding current setting)
+        String checkValueSql = "SELECT COUNT(*) FROM setting WHERE type = ? AND value = ? AND id != ?";
+        // Check for duplicate name within the same type (excluding current setting)
+        String checkNameSql = "SELECT COUNT(*) FROM setting WHERE type = ? AND name = ? AND id != ?";
+        
         try {
+            // Check for duplicate value
+            PreparedStatement checkValueStmt = connection.prepareStatement(checkValueSql);
+            checkValueStmt.setString(1, setting.getType());
+            checkValueStmt.setInt(2, setting.getValue());
+            checkValueStmt.setInt(3, setting.getId());
+            ResultSet rsValue = checkValueStmt.executeQuery();
+            if (rsValue.next() && rsValue.getInt(1) > 0) {
+                Logger.getLogger(SettingDAO.class.getName()).log(Level.WARNING, 
+                    "Cannot update setting: Value {0} already exists for type {1}", 
+                    new Object[]{setting.getValue(), setting.getType()});
+                return false;
+            }
+
+            // Check for duplicate name
+            PreparedStatement checkNameStmt = connection.prepareStatement(checkNameSql);
+            checkNameStmt.setString(1, setting.getType());
+            checkNameStmt.setString(2, setting.getName());
+            checkNameStmt.setInt(3, setting.getId());
+            ResultSet rsName = checkNameStmt.executeQuery();
+            if (rsName.next() && rsName.getInt(1) > 0) {
+                Logger.getLogger(SettingDAO.class.getName()).log(Level.WARNING, 
+                    "Cannot update setting: Name {0} already exists for type {1}", 
+                    new Object[]{setting.getName(), setting.getType()});
+                return false;
+            }
+
+            // If no duplicates found, proceed with update
+            String sql = "UPDATE setting SET type=?, name=?, value=?, description=?, status=? WHERE id=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, setting.getType());
             stmt.setString(2, setting.getName());
@@ -251,8 +314,9 @@ public class SettingDAO extends DBContext {
             stmt.setString(5, setting.getStatus());
             stmt.setInt(6, setting.getId());
             return stmt.executeUpdate() > 0;
+            
         } catch (SQLException ex) {
-            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, "Error updating setting", ex);
             return false;
         }
     }
