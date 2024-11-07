@@ -157,6 +157,19 @@
                                                         </c:forEach>
                                                 </ul>
                                             </li>
+                                            <c:if test="${sessionScope.account.roleId == 3}">
+                                    <li class="${active == 'med' ? 'active' : ''}" >
+                                        <a href="DataServlet?action=med">Medical Examination</i></a>
+<!--                                        <ul class="dropdown">
+                                            <li><a href=""></a></li>
+                                        </ul>-->
+                                    </li>
+                                    </c:if>
+                                    <c:if test="${sessionScope.account.roleId == 1}">
+                                        <li class="${active == 'dashboard' ? 'active' : ''}">
+                                            <a href="admin-dashboard">Dashboard</a>
+                                        </li>
+                                    </c:if>
                                         </ul>
                                     </nav>
                                 </div>

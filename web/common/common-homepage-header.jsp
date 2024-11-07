@@ -106,6 +106,12 @@
                                         </ul>-->
                                     </li>
                                     </c:if>
+                                    <c:if test="${account.roleId == 1}">
+    <li class="nav-item">
+        <a class="nav-link ${active == 'dashboard' ? 'active' : ''}" 
+           href="admin-dashboard">Dashboard</a>
+    </li>
+</c:if>
                                 </ul>
                             </nav>
                         </div>

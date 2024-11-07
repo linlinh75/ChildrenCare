@@ -99,7 +99,8 @@ public class DataServlet extends HttpServlet {
                     }
                     case "login": {
                         HttpSession ses = request.getSession(false);
-                        if (ses.getAttribute("account") != null) {
+
+                    if (ses.getAttribute("account") != null) {
                             response.sendRedirect("/ChildrenCare/HomeServlet");
                         } else {
                             request.getRequestDispatcher("login.jsp").forward(request, response);

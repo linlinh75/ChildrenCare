@@ -9,10 +9,26 @@ package model;
  * @author Admin
  */
 public class MedicalExamination {
-   
+   private int id;
     private ReservationService reservationService;
     private User user;
     private String prescription;
+    private int author_id;
+
+    public int getAuthor_id() {
+        return author_id;
+    }
+
+    public void setAuthor_id(int author_id) {
+        this.author_id = author_id;
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public ReservationService getReservationService() {
         return reservationService;
