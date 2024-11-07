@@ -7,37 +7,28 @@
         <div class="container mt-5">
             <h2>Admin Dashboard</h2>
             
-            <!-- Statistics Cards -->
+            <!-- Reservation Stats -->
             <div class="row mt-4">
-                <!-- Reservation Stats -->
-                <div class="col-md-3">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body">
-                            <h5 class="card-title">New Reservations</h5>
-                            <h2>${stats.newReservations}</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card bg-success text-white">
                         <div class="card-body">
-                            <h5 class="card-title">Successful</h5>
+                            <h5 class="card-title">Successful Reservations</h5>
                             <h2>${stats.successfulReservations}</h2>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card bg-danger text-white">
                         <div class="card-body">
-                            <h5 class="card-title">Cancelled</h5>
+                            <h5 class="card-title">Cancelled Reservations</h5>
                             <h2>${stats.cancelledReservations}</h2>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card bg-warning text-white">
                         <div class="card-body">
-                            <h5 class="card-title">Submitted</h5>
+                            <h5 class="card-title">Submitted Reservations</h5>
                             <h2>${stats.submittedReservations}</h2>
                         </div>
                     </div>
@@ -111,7 +102,6 @@
         </div>
         
         <script>
-            // Adjust iframe height based on content
             window.addEventListener('message', function(e) {
                 if (e.data.type === 'setHeight') {
                     document.querySelector('iframe').style.height = e.data.height + 'px';

@@ -4,29 +4,15 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public class DashboardStats {
-    // Reservation stats
-    private int newReservations;
     private int successfulReservations;
     private int cancelledReservations;
     private int submittedReservations;
-    
-    // Revenue stats
     private BigDecimal totalRevenue;
     private Map<String, BigDecimal> revenueByCategory;
-    
-    // Customer stats
     private int newCustomers;
     private int newReservingCustomers;
 
     // Getters and setters
-    public int getNewReservations() {
-        return newReservations;
-    }
-
-    public void setNewReservations(int newReservations) {
-        this.newReservations = newReservations;
-    }
-
     public int getSuccessfulReservations() {
         return successfulReservations;
     }

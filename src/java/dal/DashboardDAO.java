@@ -10,17 +10,16 @@ import java.util.Map;
 import model.DashboardStats;
 
 public class DashboardDAO extends DBContext {
-    public DashboardStats getDashboardStats(LocalDate startDate, LocalDate endDate) {
+    public DashboardStats getStats(LocalDate startDate, LocalDate endDate) {
         DashboardStats stats = new DashboardStats();
         
         try {
-            // Get reservation stats
+            // Get reservation statistics
             String reservationSql = """
                 SELECT 
                     COUNT(CASE WHEN status = 'Successful' THEN 1 END) as successful,
                     COUNT(CASE WHEN status = 'Cancelled' THEN 1 END) as cancelled,
-                    COUNT(CASE WHEN status = 'Submitted' THEN 1 END) as submitted,
-                    COUNT(*) as total
+                    COUNT(CASE WHEN status = 'Submitted' THEN 1 END) as submitted
                 FROM reservation 
                 WHERE reservation_date BETWEEN ? AND ?
                 """;
@@ -34,14 +33,13 @@ public class DashboardDAO extends DBContext {
                 stats.setSuccessfulReservations(rs.getInt("successful"));
                 stats.setCancelledReservations(rs.getInt("cancelled"));
                 stats.setSubmittedReservations(rs.getInt("submitted"));
-                stats.setNewReservations(rs.getInt("total"));
             }
             
-            // Get revenue stats
+            // Get revenue statistics
             String revenueSql = """
                 SELECT 
                     sc.name as category,
-                    SUM(rs.price) as revenue
+                    SUM(rs.quantity * rs.unit_price) as revenue
                 FROM reservation_service rs
                 JOIN service s ON rs.service_id = s.id
                 JOIN service_category sc ON s.category_id = sc.id
@@ -50,7 +48,7 @@ public class DashboardDAO extends DBContext {
                 AND r.reservation_date BETWEEN ? AND ?
                 GROUP BY sc.id, sc.name
                 """;
-                
+            
             pstmt = connection.prepareStatement(revenueSql);
             pstmt.setDate(1, java.sql.Date.valueOf(startDate));
             pstmt.setDate(2, java.sql.Date.valueOf(endDate));
@@ -69,21 +67,30 @@ public class DashboardDAO extends DBContext {
             stats.setRevenueByCategory(revenueByCategory);
             stats.setTotalRevenue(totalRevenue);
             
-            // Get customer stats
+            // Get customer statistics
             String customerSql = """
                 SELECT 
-                    COUNT(DISTINCT CASE WHEN u.created_date BETWEEN ? AND ? THEN u.id END) as new_customers,
-                    COUNT(DISTINCT CASE WHEN r.reservation_date BETWEEN ? AND ? THEN r.customer_id END) as new_reserving
+                    COUNT(DISTINCT u.id) as new_customers,
+                    COUNT(DISTINCT r.customer_id) as new_reserving
                 FROM user u
-                LEFT JOIN reservation r ON u.id = r.customer_id
-                WHERE u.role_id = 4
+                LEFT JOIN reservation r ON u.id = r.customer_id 
+                    AND r.reservation_date BETWEEN ? AND ?
+                WHERE u.role_id = 4 
+                AND u.id IN (
+                    SELECT id FROM user 
+                    WHERE role_id = 4 
+                    AND id NOT IN (
+                        SELECT DISTINCT customer_id 
+                        FROM reservation 
+                        WHERE reservation_date < ?
+                    )
+                )
                 """;
-                
+            
             pstmt = connection.prepareStatement(customerSql);
             pstmt.setDate(1, java.sql.Date.valueOf(startDate));
             pstmt.setDate(2, java.sql.Date.valueOf(endDate));
             pstmt.setDate(3, java.sql.Date.valueOf(startDate));
-            pstmt.setDate(4, java.sql.Date.valueOf(endDate));
             
             rs = pstmt.executeQuery();
             if (rs.next()) {
