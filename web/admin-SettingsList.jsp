@@ -7,6 +7,74 @@
         <title>Settings Management</title>
         <link rel="stylesheet" href="./css/adminDashboard_style.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            /* Pagination styling */
+            .pagination-wrapper {
+                display: flex;
+                justify-content: center;
+                margin: 20px 0;
+            }
+
+            .pagination {
+                display: flex;
+                flex-direction: row; /* Ensure horizontal layout */
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                gap: 5px; /* Space between buttons */
+            }
+
+            .pagination .page-item {
+                margin: 0;
+                display: inline-block; /* Make items display inline */
+            }
+
+            .pagination .page-link {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 40px; /* Fixed width for square shape */
+                height: 40px; /* Same as width for perfect square */
+                padding: 0;
+                margin: 0;
+                border: 1px solid #dee2e6;
+                color: #007bff;
+                text-decoration: none;
+                background-color: #fff;
+                transition: all 0.3s ease;
+            }
+
+            .pagination .page-item.active .page-link {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: white;
+            }
+
+            .pagination .page-link:hover {
+                background-color: #e9ecef;
+                border-color: #dee2e6;
+                color: #0056b3;
+            }
+
+            /* Style for Previous/Next buttons */
+            .pagination .page-item:first-child .page-link,
+            .pagination .page-item:last-child .page-link {
+                width: auto;
+                padding: 0 15px;
+            }
+
+            /* Force horizontal layout */
+            .pagination li {
+                float: left; /* Make list items float left */
+            }
+
+            /* Clear the float */
+            .pagination::after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+        </style>
     </head>
 
     <body>
@@ -44,7 +112,7 @@
                 <div class="user-list-container fade-in">
                     <h1 class="user-container-table">Settings Management</h1>
 
-                    <!-- Success/Error Messages -->
+                    <!-- Success/Error Messages - Only show when needed -->
                     <c:if test="${not empty sessionScope.successMessage}">
                         <div class="alert alert-success">
                             ${sessionScope.successMessage}

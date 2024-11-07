@@ -10,6 +10,175 @@
         <title>User Management</title>
         <link rel="stylesheet" href="./css/adminDashboard_style.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            /* Pagination styling */
+            .pagination-wrapper {
+                display: flex;
+                justify-content: center;
+                margin: 20px 0;
+            }
+
+            .pagination {
+                display: flex;
+                flex-direction: row; /* Ensure horizontal layout */
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                gap: 5px; /* Space between buttons */
+            }
+
+            .pagination .page-item {
+                margin: 0;
+                display: inline-block; /* Make items display inline */
+            }
+
+            .pagination .page-link {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 40px; /* Fixed width for square shape */
+                height: 40px; /* Same as width for perfect square */
+                padding: 0;
+                margin: 0;
+                border: 1px solid #dee2e6;
+                color: #007bff;
+                text-decoration: none;
+                background-color: #fff;
+                transition: all 0.3s ease;
+            }
+
+            .pagination .page-item.active .page-link {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: white;
+            }
+
+            .pagination .page-link:hover {
+                background-color: #e9ecef;
+                border-color: #dee2e6;
+                color: #0056b3;
+            }
+
+            /* Style for Previous/Next buttons */
+            .pagination .page-item:first-child .page-link,
+            .pagination .page-item:last-child .page-link {
+                width: auto;
+                padding: 0 15px;
+            }
+
+            /* Force horizontal layout */
+            .pagination li {
+                float: left; /* Make list items float left */
+            }
+
+            /* Clear the float */
+            .pagination::after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            /* Modal styling for scrollable content */
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                overflow-y: auto; /* Enable vertical scrolling for the modal */
+            }
+
+            .modal-content {
+                background-color: #fefefe;
+                margin: 20px auto; /* Reduced top margin */
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+                max-width: 600px;
+                border-radius: 8px;
+                max-height: 90vh; /* Maximum height of 90% of viewport height */
+                overflow-y: auto; /* Enable scrolling for long content */
+                position: relative; /* For sticky header and footer */
+            }
+
+            .modal-header {
+                position: sticky;
+                top: 0;
+                background-color: #fff;
+                padding: 15px 0;
+                border-bottom: 1px solid #ddd;
+                margin-bottom: 20px;
+                z-index: 1;
+            }
+
+            .modal-body {
+                padding: 15px 0;
+            }
+
+            .modal-footer {
+                position: sticky;
+                bottom: 0;
+                background-color: #fff;
+                padding: 15px 0;
+                border-top: 1px solid #ddd;
+                margin-top: 20px;
+                text-align: right;
+            }
+
+            /* Smooth scrolling */
+            .modal-content {
+                scroll-behavior: smooth;
+            }
+
+            /* Style scrollbar */
+            .modal-content::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            .modal-content::-webkit-scrollbar-track {
+                background: #f1f1f1;
+            }
+
+            .modal-content::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 4px;
+            }
+
+            .modal-content::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+            /* Animation for modal */
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            .fade-in {
+                animation: fadeIn 0.3s ease-in;
+            }
+
+            /* Smooth transition for modal display */
+            .modal {
+                transition: opacity 0.3s ease-in-out;
+            }
+
+            /* Style for form fields */
+            .modal input:disabled,
+            .modal select:disabled {
+                background-color: #e9ecef;
+                cursor: not-allowed;
+            }
+
+            .modal input:focus,
+            .modal select:focus {
+                border-color: #80bdff;
+                box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+            }
+        </style>
     </head>
 
     <body>
@@ -47,17 +216,21 @@
                     <h1 class="user-container-table">User Management</h1>
 
                     <!-- Success/Error Messages -->
-                    <c:if test="${not empty successMessage}">
+                    <c:if test="${not empty sessionScope.successMessage}">
                         <div class="alert alert-success">
                             <i class="fas fa-check-circle"></i>
-                            ${successMessage}
+                            ${sessionScope.successMessage}
                         </div>
+                        <%-- Remove message from session immediately after displaying --%>
+                        <% session.removeAttribute("successMessage"); %>
                     </c:if>
-                    <c:if test="${not empty errorMessage}">
+                    <c:if test="${not empty sessionScope.errorMessage}">
                         <div class="alert alert-danger">
                             <i class="fas fa-exclamation-circle"></i>
-                            ${errorMessage}
+                            ${sessionScope.errorMessage}
                         </div>
+                        <%-- Remove message from session immediately after displaying --%>
+                        <% session.removeAttribute("errorMessage"); %>
                     </c:if>
 
                     <!-- Search and Add User -->
@@ -146,63 +319,57 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:if test="${empty listUser}">
-                                <div class="alert alert-info">
-                                    Debug: No users found in the list
-                                </div>
-                            </c:if>
-                            
-                            <c:choose>
-                                <c:when test="${empty listUser}">
-                                    <tr>
-                                        <td colspan="8" class="text-center">No users found</td>
-                                    </tr>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:forEach items="${listUser}" var="user">
+                                <c:choose>
+                                    <c:when test="${empty listUser}">
                                         <tr>
-                                            <td>${user.id}</td>
-                                            <td>${user.fullName}</td>
-                                            <td>${user.gender ? 'Male' : 'Female'}</td>
-                                            <td>${user.email}</td>
-                                            <td>${user.mobile}</td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${user.roleId == 1}">Admin</c:when>
-                                                    <c:when test="${user.roleId == 2}">Manager</c:when>
-                                                    <c:when test="${user.roleId == 3}">Staff</c:when>
-                                                    <c:otherwise>Customer</c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="status-badge ${user.status == 'Active' ? 'active' : 'inactive'}">
-                                                    ${user.status}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <button
-                                                    onclick="window.location.href = 'user-details?id=${user.id}'"
-                                                    class="btn btn-info">
-                                                    <i class="fa-solid fa-eye"></i>
-                                                </button>
-                                                <button onclick='showEditModal("${user.id}")'
-                                                        class="btn btn-primary">
-                                                    <i class="fa-solid fa-pen"></i>
-                                                </button>
-                                                
-                                                <c:if test="${sessionScope.account.id ne user.id}">
-                                                    <button
-                                                        onclick='deleteUser("${user.id}", "${user.fullName}")'
-                                                        class="btn btn-danger">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </button>
-                                                </c:if>
-                                            </td>
+                                            <td colspan="8" class="text-center">No users found</td>
                                         </tr>
-                                    </c:forEach>
-                                </c:otherwise>
-                            </c:choose>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach items="${listUser}" var="user">
+                                            <tr>
+                                                <td>${user.id}</td>
+                                                <td>${user.fullName}</td>
+                                                <td>${user.gender ? 'Male' : 'Female'}</td>
+                                                <td>${user.email}</td>
+                                                <td>${user.mobile}</td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${user.roleId == 1}">Admin</c:when>
+                                                        <c:when test="${user.roleId == 2}">Manager</c:when>
+                                                        <c:when test="${user.roleId == 3}">Staff</c:when>
+                                                        <c:otherwise>Customer</c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="status-badge ${user.status == 'Active' ? 'active' : 'inactive'}">
+                                                        ${user.status}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        onclick="window.location.href = 'user-details?id=${user.id}'"
+                                                        class="btn btn-info">
+                                                        <i class="fa-solid fa-eye"></i>
+                                                    </button>
+                                                    <button onclick='showEditModal("${user.id}")'
+                                                            class="btn btn-primary">
+                                                        <i class="fa-solid fa-pen"></i>
+                                                    </button>
+                                                    
+                                                    <c:if test="${sessionScope.account.id ne user.id}">
+                                                        <button
+                                                            onclick='deleteUser("${user.id}", "${user.fullName}")'
+                                                            class="btn btn-danger">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </c:if>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
                             </tbody>
                         </table>
                     </div>
@@ -330,11 +497,11 @@
                     <div class="form-group">
                         <label>Gender</label>
                         <select name="gender" id="editGender">
-                            <option value="true">Male</option>
-                            <option value="false">Female</option>
+                            <option value="1">Male</option>
+                            <option value="0">Female</option>
                         </select>
                     </div>
-
+                    <br><br><br>
                     <div class="form-group">
                         <label>Mobile</label>
                         <input type="text" name="mobile" id="editMobile" required>
@@ -345,22 +512,25 @@
                         <input type="text" name="address" id="editAddress" required>
                     </div>
 
-                    <div class="form-group">
-                        <label>Role</label>
-                        <select name="roleId" id="editRole">
-                            <option value="1">Admin</option>
-                            <option value="2">Manager</option>
-                            <option value="3">Staff</option>
-                            <option value="4">Customer</option>
-                        </select>
-                    </div>
+                    <!-- Role and Status in one line -->
+                    <div class="form-row" style="display: flex; gap: 20px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Role</label>
+                            <select name="roleId" id="editRole">
+                                <option value="1">Admin</option>
+                                <option value="2">Manager</option>
+                                <option value="3">Staff</option>
+                                <option value="4">Customer</option>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select name="status" id="editStatus">
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Status</label>
+                            <select name="status" id="editStatus">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -379,28 +549,48 @@
 
             window.showEditModal = function (userId) {
                 fetch('edit-user?id=' + userId)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(user => {
-                            document.getElementById('editUserId').value = user.id;
-                            document.getElementById('editFullName').value = user.fullName;
-                            document.getElementById('editEmail').value = user.email;
-                            document.getElementById('editGender').value = user.gender.toString();
-                            document.getElementById('editMobile').value = user.mobile;
-                            document.getElementById('editAddress').value = user.address;
-                            document.getElementById('editRole').value = user.roleId;
-                            document.getElementById('editStatus').value = user.status;
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(user => {
+                        // Fill in the form fields with user data
+                        document.getElementById('editUserId').value = user.id;
+                        document.getElementById('editFullName').value = user.fullName;
+                        document.getElementById('editEmail').value = user.email;
+                        
+                        // Set gender dropdown based on boolean value (1 for Male, 0 for Female)
+                        const genderSelect = document.getElementById('editGender');
+                        genderSelect.value = user.gender ? "1" : "0"; // 1 for Male, 0 for Female
+                        
+                        document.getElementById('editMobile').value = user.mobile;
+                        document.getElementById('editAddress').value = user.address;
+                        
+                        // Set Role dropdown
+                        const roleSelect = document.getElementById('editRole');
+                        roleSelect.value = user.roleId.toString();
 
-                            document.getElementById('editUserModal').style.display = 'block';
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Error loading user data');
-                        });
+                        // Set Status dropdown
+                        const statusSelect = document.getElementById('editStatus');
+                        statusSelect.value = user.status;
+
+                        // Disable status field if editing logged-in user
+                        if (user.id === ${sessionScope.account.id}) {
+                            statusSelect.disabled = true;
+                        } else {
+                            statusSelect.disabled = false;
+                        }
+
+                        // Show the modal
+                        const modal = document.getElementById('editUserModal');
+                        modal.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error loading user data');
+                    });
             }
 
             window.deleteUser = function (userId, userName) {

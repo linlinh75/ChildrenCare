@@ -5,13 +5,23 @@
     <div class="sidebar-content" data-simplebar style="height: calc(100% - 60px);">
         <ul class="sidebar-menu pt-3" >
             <li><a href="admin-dashboard.jsp"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
+            
+            <%-- Only show User List and Setting List for Admin (roleId = 1) --%>
+            <c:if test="${sessionScope.account.roleId == 1}">
+                <li><a href="admin-manage-user"><i class="uil uil-users-alt me-2 d-inline-block"></i>User List</a></li>
+                <li><a href="admin-manage-settings"><i class="uil uil-setting me-2 d-inline-block"></i>Setting List</a></li>
+            </c:if>
+            
             <c:if test="${user.roleId == '2'}">
-                            <li><a href="managerSliderList"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Slider</a></li>
-                            <li><a href="managerFeedbackList"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Feedback</a></li>
-                            <li><a href="reservation-admin"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Reservation</a></li>
-                            <li><a href="service-list-admin"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Service</a></li>
-                            </c:if>
+                <li><a href="managerSliderList"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Slider</a></li>
+                <li><a href="managerFeedbackList"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Feedback</a></li>
+                <li><a href="reservation-admin"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Reservation</a></li>
+                <li><a href="service-list-admin"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Service</a></li>
+            </c:if>
+            
             <li><a href="changePw.jsp"><i class="uil uil-user me-2 d-inline-block"></i>Change password</a></li>
+            
+            <!-- Rest of your existing menu items -->
             <c:if test="${user.roleId == '1'}">
                 <li class="sidebar-dropdown">
                     <a href="javascript:void(0)"><i class="uil uil-user me-2 d-inline-block"></i>Doctors</a>

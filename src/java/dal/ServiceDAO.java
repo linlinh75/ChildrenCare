@@ -144,7 +144,7 @@ public class ServiceDAO extends DBContext {
     }
 
     public int getNoOfRecords() {
-        String query = "SELECT COUNT(*) FROM service";
+        String query = "SELECT COUNT(*) FROM service where status = 1";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -156,27 +156,91 @@ public class ServiceDAO extends DBContext {
         return 0;
     }
 
-    public List<Service> searchServices(String query, int offset, int noOfRecords) {
-        List<Service> searchResults = new ArrayList<>();
-        String sql = "SELECT * FROM service WHERE (fullname LIKE ? OR description LIKE ?) AND status = 1 LIMIT ?, ?";
-
+    public List<Service> searchServices(String query, int page, int servicesPerPage) {
+        List<Service> services = new ArrayList<>();
+        int offset = (page - 1) * servicesPerPage;
+        
+        String sql = "SELECT * FROM service WHERE (fullname LIKE ? OR description LIKE ?) AND where status = 1 " +
+                     "LIMIT ?, ?";
+    
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
             ps.setInt(3, offset);
-            ps.setInt(4, noOfRecords);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Service service = getFromResultSet(rs);
-                    searchResults.add(service);
-                }
+            ps.setInt(4, servicesPerPage);
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Service service = getFromResultSet(rs);
+                services.add(service);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return searchResults;
+        
+        return services;
+    }
+    
+    public List<Service> searchServicesWithStatus(String query, int page, int servicesPerPage, boolean status) {
+        List<Service> services = new ArrayList<>();
+        int offset = (page - 1) * servicesPerPage;
+        
+        String sql = "SELECT * FROM service WHERE (fullname LIKE ? OR description LIKE ?) " +
+                     "AND status = ? LIMIT ?, ?";
+    
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, "%" + query + "%");
+            ps.setString(2, "%" + query + "%");
+            ps.setBoolean(3, status);
+            ps.setInt(4, offset);
+            ps.setInt(5, servicesPerPage);
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Service service = getFromResultSet(rs);
+                services.add(service);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return services;
+    }
+    
+    public int getTotalSearchCount(String query) {
+        String sql = "SELECT COUNT(*) FROM service WHERE fullname LIKE ? OR description LIKE ?";
+        
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, "%" + query + "%");
+            ps.setString(2, "%" + query + "%");
+            
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public int getTotalSearchCountWithStatus(String query, boolean status) {
+        String sql = "SELECT COUNT(*) FROM service WHERE (fullname LIKE ? OR description LIKE ?) " +
+                     "AND status = ?";
+        
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, "%" + query + "%");
+            ps.setString(2, "%" + query + "%");
+            ps.setBoolean(3, status);
+            
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public int getNoOfSearchRecords(String query) {
