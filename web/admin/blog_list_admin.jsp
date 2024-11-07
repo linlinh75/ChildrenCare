@@ -1,5 +1,17 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<c:if test="${empty sessionScope.account}">
+    <c:redirect url="login.jsp"/>
+</c:if>
+
+<c:if test="${not empty sessionScope.account}">
+    <c:choose>
+        <c:when test="${sessionScope.account.roleId != '2'}">
+            <c:redirect url="404.html"/>
+        </c:when>
+    </c:choose>
+</c:if>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -106,151 +118,171 @@
                                 </div>
                             </div>
 
-<!--                            <ul class="list-unstyled mb-0">
-                                <li class="list-inline-item mb-0">
-                                    <div class="dropdown dropdown-primary">
-                                        <button type="button" class="btn btn-pills btn-soft-primary dropdown-toggle p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../assets/images/language/american.png" class="avatar avatar-ex-small rounded-circle p-2" alt=""></button>
-                                        <div class="dropdown-menu dd-menu drop-ups dropdown-menu-end bg-white shadow border-0 mt-3 p-2" data-simplebar style="height: 175px;">
-                                            <a href="javascript:void(0)" class="d-flex align-items-center">
-                                                <img src="../assets/images/language/chinese.png" class="avatar avatar-client rounded-circle shadow" alt="">
-                                                <div class="flex-1 text-left ms-2 overflow-hidden">
-                                                    <small class="text-dark mb-0">Chinese</small>
-                                                </div>
-                                            </a>
-
-                                            <a href="javascript:void(0)" class="d-flex align-items-center mt-2">
-                                                <img src="../assets/images/language/european.png" class="avatar avatar-client rounded-circle shadow" alt="">
-                                                <div class="flex-1 text-left ms-2 overflow-hidden">
-                                                    <small class="text-dark mb-0">European</small>
-                                                </div>
-                                            </a>
-
-                                            <a href="javascript:void(0)" class="d-flex align-items-center mt-2">
-                                                <img src="../assets/images/language/indian.png" class="avatar avatar-client rounded-circle shadow" alt="">
-                                                <div class="flex-1 text-left ms-2 overflow-hidden">
-                                                    <small class="text-dark mb-0">Indian</small>
-                                                </div>
-                                            </a>
-
-                                            <a href="javascript:void(0)" class="d-flex align-items-center mt-2">
-                                                <img src="../assets/images/language/japanese.png" class="avatar avatar-client rounded-circle shadow" alt="">
-                                                <div class="flex-1 text-left ms-2 overflow-hidden">
-                                                    <small class="text-dark mb-0">Japanese</small>
-                                                </div>
-                                            </a>
-
-                                            <a href="javascript:void(0)" class="d-flex align-items-center mt-2">
-                                                <img src="../assets/images/language/russian.png" class="avatar avatar-client rounded-circle shadow" alt="">
-                                                <div class="flex-1 text-left ms-2 overflow-hidden">
-                                                    <small class="text-dark mb-0">Russian</small>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="list-inline-item mb-0 ms-1">
-                                    <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                                        <div class="btn btn-icon btn-pills btn-soft-primary"><i data-feather="settings" class="fea icon-sm"></i></div>
-                                    </a>
-                                </li>
-
-                                <li class="list-inline-item mb-0 ms-1">
-                                    <div class="dropdown dropdown-primary">
-                                        <button type="button" class="btn btn-icon btn-pills btn-soft-primary dropdown-toggle p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i data-feather="mail" class="fea icon-sm"></i></button>
-                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">4 <span class="visually-hidden">unread mail</span></span>
-
-                                        <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow rounded border-0 mt-3 px-2 py-2" data-simplebar style="height: 320px; width: 300px;">
-                                            <a href="#" class="d-flex align-items-center justify-content-between py-2">
-                                                <div class="d-inline-flex position-relative overflow-hidden">
-                                                    <img src="../assets/images/client/02.jpg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
-                                                    <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>Janalia</b> <small class="text-muted fw-normal d-inline-block">1 hour ago</small></small>
-                                                </div>
-                                            </a>
-
-                                            <a href="#" class="d-flex align-items-center justify-content-between py-2 border-top">
-                                                <div class="d-inline-flex position-relative overflow-hidden">
-                                                    <img src="../assets/images/client/Codepen.svg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
-                                                    <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>codepen</b>  <small class="text-muted fw-normal d-inline-block">4 hour ago</small></small>
-                                                </div>
-                                            </a>
-
-                                            <a href="#" class="d-flex align-items-center justify-content-between py-2 border-top">
-                                                <div class="d-inline-flex position-relative overflow-hidden">
-                                                    <img src="../assets/images/client/03.jpg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
-                                                    <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>Cristina</b> <small class="text-muted fw-normal d-inline-block">5 hour ago</small></small>
-                                                </div>
-                                            </a>
-
-                                            <a href="#" class="d-flex align-items-center justify-content-between py-2 border-top">
-                                                <div class="d-inline-flex position-relative overflow-hidden">
-                                                    <img src="../assets/images/client/dribbble.svg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
-                                                    <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>Dribbble</b> <small class="text-muted fw-normal d-inline-block">24 hour ago</small></small>
-                                                </div>
-                                            </a>
-
-                                            <a href="#" class="d-flex align-items-center justify-content-between py-2 border-top">
-                                                <div class="d-inline-flex position-relative overflow-hidden">
-                                                    <img src="../assets/images/client/06.jpg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
-                                                    <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>Donald Aghori</b> <small class="text-muted fw-normal d-inline-block">1 day ago</small></small>
-                                                </div>
-                                            </a>
-
-                                            <a href="#" class="d-flex align-items-center justify-content-between py-2 border-top">
-                                                <div class="d-inline-flex position-relative overflow-hidden">
-                                                    <img src="../assets/images/client/07.jpg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
-                                                    <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>Calvin</b> <small class="text-muted fw-normal d-inline-block">2 day ago</small></small>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="list-inline-item mb-0 ms-1">
-                                    <div class="dropdown dropdown-primary">
-                                        <button type="button" class="btn btn-pills btn-soft-primary dropdown-toggle p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../assets/images/doctors/01.jpg" class="avatar avatar-ex-small rounded-circle" alt=""></button>
-                                        <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow border-0 mt-3 py-3" style="min-width: 200px;">
-                                            <a class="dropdown-item d-flex align-items-center text-dark" href="https://shreethemes.in/doctris/layouts/admin/profile.html">
-                                                <img src="../assets/images/doctors/01.jpg" class="avatar avatar-md-sm rounded-circle border shadow" alt="">
-                                                <div class="flex-1 ms-2">
-                                                    <span class="d-block mb-1">Calvin Carlo</span>
-                                                    <small class="text-muted">Orthopedic</small>
-                                                </div>
-                                            </a>
-                                            <a class="dropdown-item text-dark" href="index.html"><span class="mb-0 d-inline-block me-1"><i class="uil uil-dashboard align-middle h6"></i></span> Dashboard</a>
-                                            <a class="dropdown-item text-dark" href="dr-profile.html"><span class="mb-0 d-inline-block me-1"><i class="uil uil-setting align-middle h6"></i></span> Profile Settings</a>
-                                            <div class="dropdown-divider border-top"></div>
-                                            <a class="dropdown-item text-dark" href="lock-screen.html"><span class="mb-0 d-inline-block me-1"><i class="uil uil-sign-out-alt align-middle h6"></i></span> Logout</a>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>-->
+                            <!--                            <ul class="list-unstyled mb-0">
+                                                            <li class="list-inline-item mb-0">
+                                                                <div class="dropdown dropdown-primary">
+                                                                    <button type="button" class="btn btn-pills btn-soft-primary dropdown-toggle p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../assets/images/language/american.png" class="avatar avatar-ex-small rounded-circle p-2" alt=""></button>
+                                                                    <div class="dropdown-menu dd-menu drop-ups dropdown-menu-end bg-white shadow border-0 mt-3 p-2" data-simplebar style="height: 175px;">
+                                                                        <a href="javascript:void(0)" class="d-flex align-items-center">
+                                                                            <img src="../assets/images/language/chinese.png" class="avatar avatar-client rounded-circle shadow" alt="">
+                                                                            <div class="flex-1 text-left ms-2 overflow-hidden">
+                                                                                <small class="text-dark mb-0">Chinese</small>
+                                                                            </div>
+                                                                        </a>
+                            
+                                                                        <a href="javascript:void(0)" class="d-flex align-items-center mt-2">
+                                                                            <img src="../assets/images/language/european.png" class="avatar avatar-client rounded-circle shadow" alt="">
+                                                                            <div class="flex-1 text-left ms-2 overflow-hidden">
+                                                                                <small class="text-dark mb-0">European</small>
+                                                                            </div>
+                                                                        </a>
+                            
+                                                                        <a href="javascript:void(0)" class="d-flex align-items-center mt-2">
+                                                                            <img src="../assets/images/language/indian.png" class="avatar avatar-client rounded-circle shadow" alt="">
+                                                                            <div class="flex-1 text-left ms-2 overflow-hidden">
+                                                                                <small class="text-dark mb-0">Indian</small>
+                                                                            </div>
+                                                                        </a>
+                            
+                                                                        <a href="javascript:void(0)" class="d-flex align-items-center mt-2">
+                                                                            <img src="../assets/images/language/japanese.png" class="avatar avatar-client rounded-circle shadow" alt="">
+                                                                            <div class="flex-1 text-left ms-2 overflow-hidden">
+                                                                                <small class="text-dark mb-0">Japanese</small>
+                                                                            </div>
+                                                                        </a>
+                            
+                                                                        <a href="javascript:void(0)" class="d-flex align-items-center mt-2">
+                                                                            <img src="../assets/images/language/russian.png" class="avatar avatar-client rounded-circle shadow" alt="">
+                                                                            <div class="flex-1 text-left ms-2 overflow-hidden">
+                                                                                <small class="text-dark mb-0">Russian</small>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                            
+                                                            <li class="list-inline-item mb-0 ms-1">
+                                                                <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                                                                    <div class="btn btn-icon btn-pills btn-soft-primary"><i data-feather="settings" class="fea icon-sm"></i></div>
+                                                                </a>
+                                                            </li>
+                            
+                                                            <li class="list-inline-item mb-0 ms-1">
+                                                                <div class="dropdown dropdown-primary">
+                                                                    <button type="button" class="btn btn-icon btn-pills btn-soft-primary dropdown-toggle p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i data-feather="mail" class="fea icon-sm"></i></button>
+                                                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">4 <span class="visually-hidden">unread mail</span></span>
+                            
+                                                                    <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow rounded border-0 mt-3 px-2 py-2" data-simplebar style="height: 320px; width: 300px;">
+                                                                        <a href="#" class="d-flex align-items-center justify-content-between py-2">
+                                                                            <div class="d-inline-flex position-relative overflow-hidden">
+                                                                                <img src="../assets/images/client/02.jpg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
+                                                                                <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>Janalia</b> <small class="text-muted fw-normal d-inline-block">1 hour ago</small></small>
+                                                                            </div>
+                                                                        </a>
+                            
+                                                                        <a href="#" class="d-flex align-items-center justify-content-between py-2 border-top">
+                                                                            <div class="d-inline-flex position-relative overflow-hidden">
+                                                                                <img src="../assets/images/client/Codepen.svg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
+                                                                                <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>codepen</b>  <small class="text-muted fw-normal d-inline-block">4 hour ago</small></small>
+                                                                            </div>
+                                                                        </a>
+                            
+                                                                        <a href="#" class="d-flex align-items-center justify-content-between py-2 border-top">
+                                                                            <div class="d-inline-flex position-relative overflow-hidden">
+                                                                                <img src="../assets/images/client/03.jpg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
+                                                                                <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>Cristina</b> <small class="text-muted fw-normal d-inline-block">5 hour ago</small></small>
+                                                                            </div>
+                                                                        </a>
+                            
+                                                                        <a href="#" class="d-flex align-items-center justify-content-between py-2 border-top">
+                                                                            <div class="d-inline-flex position-relative overflow-hidden">
+                                                                                <img src="../assets/images/client/dribbble.svg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
+                                                                                <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>Dribbble</b> <small class="text-muted fw-normal d-inline-block">24 hour ago</small></small>
+                                                                            </div>
+                                                                        </a>
+                            
+                                                                        <a href="#" class="d-flex align-items-center justify-content-between py-2 border-top">
+                                                                            <div class="d-inline-flex position-relative overflow-hidden">
+                                                                                <img src="../assets/images/client/06.jpg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
+                                                                                <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>Donald Aghori</b> <small class="text-muted fw-normal d-inline-block">1 day ago</small></small>
+                                                                            </div>
+                                                                        </a>
+                            
+                                                                        <a href="#" class="d-flex align-items-center justify-content-between py-2 border-top">
+                                                                            <div class="d-inline-flex position-relative overflow-hidden">
+                                                                                <img src="../assets/images/client/07.jpg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
+                                                                                <small class="text-dark mb-0 d-block text-truncat ms-3">You received a new email from <b>Calvin</b> <small class="text-muted fw-normal d-inline-block">2 day ago</small></small>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                            
+                                                            <li class="list-inline-item mb-0 ms-1">
+                                                                <div class="dropdown dropdown-primary">
+                                                                    <button type="button" class="btn btn-pills btn-soft-primary dropdown-toggle p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../assets/images/doctors/01.jpg" class="avatar avatar-ex-small rounded-circle" alt=""></button>
+                                                                    <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow border-0 mt-3 py-3" style="min-width: 200px;">
+                                                                        <a class="dropdown-item d-flex align-items-center text-dark" href="https://shreethemes.in/doctris/layouts/admin/profile.html">
+                                                                            <img src="../assets/images/doctors/01.jpg" class="avatar avatar-md-sm rounded-circle border shadow" alt="">
+                                                                            <div class="flex-1 ms-2">
+                                                                                <span class="d-block mb-1">Calvin Carlo</span>
+                                                                                <small class="text-muted">Orthopedic</small>
+                                                                            </div>
+                                                                        </a>
+                                                                        <a class="dropdown-item text-dark" href="index.html"><span class="mb-0 d-inline-block me-1"><i class="uil uil-dashboard align-middle h6"></i></span> Dashboard</a>
+                                                                        <a class="dropdown-item text-dark" href="dr-profile.html"><span class="mb-0 d-inline-block me-1"><i class="uil uil-setting align-middle h6"></i></span> Profile Settings</a>
+                                                                        <div class="dropdown-divider border-top"></div>
+                                                                        <a class="dropdown-item text-dark" href="lock-screen.html"><span class="mb-0 d-inline-block me-1"><i class="uil uil-sign-out-alt align-middle h6"></i></span> Logout</a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>-->
                         </div>
                     </div>
 
                     <div class="container-fluid">
                     <jsp:include page="../common/common-homepage-header.jsp"></jsp:include>
                         <div class="layout-specing">
-                            <div class="d-md-flex justify-content-between">
-                            <div class="mt-4 mt-sm-0">
-                                <a href="post-list-admin?action=add" class="btn btn-primary" >Add Blog</a>
+                            <div class="d-md-flex justify-content-between mb-3">
+                                <div class="mt-4 mt-sm-0 ms-auto">
+                                    <a href="post-list-admin?action=add" class="btn btn-primary" >Add Blog</a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="d-flex align-items-center">
-                                    <span class="me-2">Filter by status:</span>
-                                    <div class="btn-group" role="group">
-                                        <a href="post-list-admin?status=all" class="btn btn-sm ${param.status == null || param.status == 'all' ? 'btn-primary' : 'btn-outline-primary'}">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="btn-group" role="group">
+                                            <span class="me-2">Filter by status:</span>
+                                            <a href="post-list-admin?status=all" class="btn btn-sm ${param.status == null || param.status.equalsIgnoreCase('all') ? 'btn-primary' : 'btn-outline-primary'}">
                                             All
                                         </a>
-                                        <a href="post-list-admin?status=Published" class="btn btn-sm ${param.status == 'published' ? 'btn-primary' : 'btn-outline-success'}">
+                                        <a href="post-list-admin?status=Published" class="btn btn-sm ${param.status.equalsIgnoreCase('Published') ? 'btn-primary' : 'btn-outline-success'}">
                                             Published
                                         </a>
-                                        <a href="post-list-admin?status=Hidden" class="btn btn-sm ${param.status == 'hidden' ? 'btn-primary' : 'btn-outline-secondary'}">
+                                        <a href="post-list-admin?status=Hidden" class="btn btn-sm ${param.status.equalsIgnoreCase('Hidden') ? 'btn-primary' : 'btn-outline-secondary'}">
                                             Hidden
                                         </a>
                                     </div>
+                                    <div class="search-bar p-0">
+                                        <div id="search" class=" mb-0">
+                                            <form method="get" id="searchform" class="searchform" action="post-list-admin">
+                                                <div class="d-flex align-items-center">
+                                                    <input type="text" 
+                                                           class="form-control border rounded-pill me-2" 
+                                                           name="searchQuery" 
+                                                           id="searchQuery" 
+                                                           placeholder="Search Keywords..."
+                                                           value="${param.searchQuery}">
+                                                    <!-- Preserve status parameter when searching -->
+                                                    <input type="hidden" name="status" value="${param.status}">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        Search
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -262,7 +294,7 @@
                                         <div class="card-body p-4 d-flex flex-column">
                                             <div class="mb-2">
                                                 <c:choose>
-                                                    <c:when test="${post.statusId == 'Published'}">
+                                                    <c:when test="${fn:toLowerCase(post.statusId) == 'published'}">
                                                         <span class="badge bg-soft-success rounded-pill">Published</span>
                                                     </c:when>
                                                     <c:otherwise>
@@ -275,7 +307,7 @@
                                                     <i class="uil uil-calendar-alt text-dark h6 me-1"></i>${post.updatedDate}
                                                 </li>
                                             </ul>
-                                            <a href="blog-detail.html" class="text-dark title h5 post-title">${post.title}</a>
+                                            <a href="post-list-admin?action=edit&id=${post.id}" class="text-dark title h5 post-title">${post.title}</a>
                                             <div class="post-meta mt-auto d-flex justify-content-between align-items-center">
                                                 <a href="post-list-admin?action=remove&id=${post.id}" class="btn btn-sm btn-soft-danger">
                                                     <i class="uil uil-trash"></i> Remove

@@ -25,13 +25,13 @@ ChartJS.register(
 const ReservationChart = () => {
   function getEndDate(start){
     const sevenDaysAfter = new Date(new Date(start));
-  sevenDaysAfter.setDate(new Date(start).getDate() + 7);
+  sevenDaysAfter.setDate(new Date(start).getDate() + 6);
   const sevenDaysAfterFormatted = sevenDaysAfter.toISOString().split('T')[0];
   return sevenDaysAfterFormatted;
   }
   function getStartDate(end){
     const sevenDaysAgo = new Date(new Date(end));
-  sevenDaysAgo.setDate(new Date(end).getDate() - 7);
+  sevenDaysAgo.setDate(new Date(end).getDate() - 6);
   const sevenDaysAgoFormatted = sevenDaysAgo.toISOString().split('T')[0];
   return sevenDaysAgoFormatted;
   }

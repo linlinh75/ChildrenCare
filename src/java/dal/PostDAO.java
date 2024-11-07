@@ -333,6 +333,93 @@ public class PostDAO extends DBContext {
         return posts;
     }
 
+    public List<Post> searchPostsWithPagination(String searchQuery, String status, int page, int postsPerPage) {
+        List<Post> posts = new ArrayList<>();
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT * FROM post WHERE 1=1");
+        
+        // Add search condition if search query exists
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            queryBuilder.append(" AND (LOWER(title) LIKE LOWER(?) OR LOWER(content) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))");
+        }
+        
+        // Add status condition if status is specified
+        if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("all")) {
+            queryBuilder.append(" AND LOWER(status) = LOWER(?)");
+        }
+        
+        queryBuilder.append(" ORDER BY updated_date DESC LIMIT ? OFFSET ?");
+        
+        try (PreparedStatement stmt = connection.prepareStatement(queryBuilder.toString())) {
+            int paramIndex = 1;
+            
+            // Set search parameters if search query exists
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                String likePattern = "%" + searchQuery.toLowerCase() + "%";
+                stmt.setString(paramIndex++, likePattern);
+                stmt.setString(paramIndex++, likePattern);
+                stmt.setString(paramIndex++, likePattern);
+            }
+            
+            // Set status parameter if status is specified
+            if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("all")) {
+                stmt.setString(paramIndex++, status);
+            }
+            
+            // Set pagination parameters
+            stmt.setInt(paramIndex++, postsPerPage);
+            stmt.setInt(paramIndex++, (page - 1) * postsPerPage);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Post post = getFromResultSet(rs);
+                    posts.add(post);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error searching posts", ex);
+        }
+        return posts;
+    }
+    
+    // Also update the count method to be case-insensitive
+    public int getTotalSearchResults(String searchQuery, String status) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT COUNT(*) FROM post WHERE 1=1");
+        
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            queryBuilder.append(" AND (LOWER(title) LIKE LOWER(?) OR LOWER(content) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))");
+        }
+        
+        if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("all")) {
+            queryBuilder.append(" AND LOWER(status) = LOWER(?)");
+        }
+        
+        try (PreparedStatement stmt = connection.prepareStatement(queryBuilder.toString())) {
+            int paramIndex = 1;
+            
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                String likePattern = "%" + searchQuery.toLowerCase() + "%";
+                stmt.setString(paramIndex++, likePattern);
+                stmt.setString(paramIndex++, likePattern);
+                stmt.setString(paramIndex++, likePattern);
+            }
+            
+            if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("all")) {
+                stmt.setString(paramIndex++, status);
+            }
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error counting search results", ex);
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
         PostDAO postDAO = new PostDAO();
         postDAO.getAllPosts().stream().forEach(item -> {

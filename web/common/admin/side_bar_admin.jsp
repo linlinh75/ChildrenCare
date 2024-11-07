@@ -1,5 +1,3 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <nav id="sidebar" class="sidebar-wrapper">
     <div class="sidebar-content" data-simplebar style="height: calc(100% - 60px);">
@@ -34,15 +32,8 @@
                     </div>
                 </li>
 
-                <li class="sidebar-dropdown">
-                    <a href="javascript:void(0)"><i class="uil uil-wheelchair me-2 d-inline-block"></i>Patients</a>
-                    <div class="sidebar-submenu">
-                        <ul>
-                            <li><a href="patients.html">All Patients</a></li>
-                            <li><a href="add-patient.html">Add Patients</a></li>
-                            <li><a href="patient-profile.html">Profile</a></li>
-                        </ul>
-                    </div>
+                <li class="">
+                    <a href="patients"><i class="uil uil-wheelchair me-2 d-inline-block"></i>Customer</a>
                 </li>
 
                 <li class="sidebar-dropdown">
@@ -68,14 +59,8 @@
                     </div>
                 </li>
 
-                <li class="sidebar-dropdown">
-                    <a href="javascript:void(0)"><i class="uil uil-flip-h me-2 d-inline-block"></i>Blogs</a>
-                    <div class="sidebar-submenu">
-                        <ul>
-                            <li><a href="post-list-admin">Blogs</a></li>
-                            <li><a href="blog-detail.html">Blog Detail</a></li>
-                        </ul>
-                    </div>
+                <li class="">
+                    <a href="post-list-admin"><i class="uil uil-flip-h me-2 d-inline-block"></i>Blogs</a>
                 </li>
 
                 <li class="sidebar-dropdown">

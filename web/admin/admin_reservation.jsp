@@ -1,6 +1,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<c:if test="${empty sessionScope.account}">
+    <c:redirect url="login.jsp"/>
+</c:if>
+
+<c:if test="${not empty sessionScope.account}">
+    <c:choose>
+        <c:when test="${sessionScope.account.roleId != '2' && sessionScope.account.roleId != '3'}">
+            <c:redirect url="404.html"/>
+        </c:when>
+    </c:choose>
+</c:if>
 <!DOCTYPE html>
 <html>
     <head>
@@ -253,7 +264,6 @@
                             <th>Status</th>
                             <th onclick="sortTableByField('totalCost')">Total Cost</th>
                             <th>Action</th>
-                            <th>Approve</th>
                             </thead>
                             <tbody id="reservationTableBody">
                             <c:forEach var="res" items="${reservation}">
@@ -300,14 +310,18 @@
                                                 data-bs-target="#reservationModal">
                                             View Details
                                         </button>
-                                    </td>
-                                    <td>
                                         <c:if test="${fn:toLowerCase(res.status) == 'pending'}">
                                             <button type="button" 
                                                     class="btn btn-success btn-sm" 
                                                     onclick="event.stopPropagation(); approveReservation(${res.getId()})"
                                                     style="width: 100px;">
                                                 Approve
+                                            </button>
+                                            <button type="button" 
+                                                    class="btn btn-success btn-sm mt-2" 
+                                                    onclick="event.stopPropagation(); cancelReservation(${res.getId()})"
+                                                    style="width: 100px;">
+                                                Cancel
                                             </button>
                                         </c:if>
                                     </td>
@@ -645,6 +659,24 @@
                 type: 'POST',
                 data: {
                     action: 'approveReservation',
+                    id: reservationId
+                },
+                success: function () {
+                    window.location.href = 'reservation-admin';
+                }
+            });
+        }
+        
+        function cancelReservation(reservationId) {
+            if (!confirm("Are you sure you want to cancel this reservation?")) {
+                return;
+            }
+
+            $.ajax({
+                url: 'reservation-admin',
+                type: 'POST',
+                data: {
+                    action: 'cancelReservation',
                     id: reservationId
                 },
                 success: function () {

@@ -202,7 +202,11 @@
                     <i class="fa fa-shopping-cart"></i> View Cart
                 </a>
             </div>
+<<<<<<< HEAD
         </c:if>
+=======
+
+>>>>>>> ef132ec150e81dfe6abf36208c807c95f751bfc3
         <!-- Footer Area -->
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
         <!-- End Footer Area -->
