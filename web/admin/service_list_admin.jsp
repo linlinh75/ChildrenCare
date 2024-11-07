@@ -1,5 +1,16 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${empty sessionScope.account}">
+    <c:redirect url="login.jsp"/>
+</c:if>
+
+<c:if test="${not empty sessionScope.account}">
+    <c:choose>
+        <c:when test="${sessionScope.account.roleId != '2'}">
+            <c:redirect url="404.html"/>
+        </c:when>
+    </c:choose>
+</c:if>
 <!DOCTYPE html>
 <html lang="en">
     <head>

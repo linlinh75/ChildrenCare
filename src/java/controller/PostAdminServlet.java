@@ -64,29 +64,34 @@ public class PostAdminServlet extends HttpServlet {
 
     private void listPosts(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Get pagination parameters
         int page = 1;
         int postsPerPage = 8;
-        String status = request.getParameter("status");
 
         String pageParam = request.getParameter("page");
         if (pageParam != null && !pageParam.isEmpty()) {
             page = Integer.parseInt(pageParam);
         }
 
-        List<Post> posts;
-        if (status != null && !status.isEmpty()) {
-            posts = postDAO.getPostsWithPaginationAndStatus(page, postsPerPage, status);
-        } else {
-            posts = postDAO.getPostsWithPagination(page, postsPerPage);
-        }
+        // Get search and filter parameters
+        String searchQuery = request.getParameter("searchQuery");
+        String status = request.getParameter("status");
 
-        int totalPosts = posts.size();
+        // Get posts based on search and filter criteria
+        List<Post> posts = postDAO.searchPostsWithPagination(searchQuery, status, page, postsPerPage);
+
+        // Get total results for pagination
+        int totalPosts = postDAO.getTotalSearchResults(searchQuery, status);
         int totalPages = (int) Math.ceil((double) totalPosts / postsPerPage);
 
+        // Set attributes for JSP
         request.setAttribute("posts", posts);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("selectedStatus", status);
+        request.setAttribute("searchQuery", searchQuery);
+
+        // Forward to JSP
         request.getRequestDispatcher("admin/blog_list_admin.jsp").forward(request, response);
     }
 
@@ -186,10 +191,10 @@ public class PostAdminServlet extends HttpServlet {
         boolean success = postDAO.addPost(newPost);
 
         if (success) {
-            response.sendRedirect(request.getContextPath() + "/post-list-admin?action=list");
+            response.sendRedirect("post-list-admin");
         } else {
             request.setAttribute("error", "Failed to add the post. Please try again.");
-            request.getRequestDispatcher("admin/add_post_admin.jsp").forward(request, response);
+            response.sendRedirect("post-list-admin");
         }
     }
 

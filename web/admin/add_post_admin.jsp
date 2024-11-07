@@ -1,5 +1,16 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${empty sessionScope.account}">
+    <c:redirect url="login.jsp"/>
+</c:if>
+
+<c:if test="${not empty sessionScope.account}">
+    <c:choose>
+        <c:when test="${sessionScope.account.roleId != '2'}">
+            <c:redirect url="404.html"/>
+        </c:when>
+    </c:choose>
+</c:if>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,36 +63,36 @@
                                 <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
                                     <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
                                         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/HomeServlet">ChildrenCare</a></li>
-                                        <li class="breadcrumb-item"><a href="post-list-admin">Blogs</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">Add Post</li>
-                                    </ul>
-                                </nav>
-                            </div>
+                                    <li class="breadcrumb-item"><a href="post-list-admin">Blogs</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Add Post</li>
+                                </ul>
+                            </nav>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-12 mt-4">
-                                    <div class="card border-0 p-4 rounded shadow">
-                                        <div class="card-body">
-                                            <form action="post-list-admin?action=add" method="post" enctype="multipart/form-data" id="blogPostForm">
-                                                <div class="row">
-                                                    <div class="col-12 mb-3">
-                                                        <label class="form-label">Post Title <span class="text-danger">*</span></label>
-                                                        <input name="title" id="title" type="text" class="form-control" placeholder="Title:" required>
-                                                    </div><!--end col-->
+                        <div class="row">
+                            <div class="col-lg-12 mt-4">
+                                <div class="card border-0 p-4 rounded shadow">
+                                    <div class="card-body">
+                                        <form action="post-list-admin?action=add" method="post" enctype="multipart/form-data" id="blogPostForm">
+                                            <div class="row">
+                                                <div class="col-12 mb-3">
+                                                    <label class="form-label">Post Title <span class="text-danger">*</span></label>
+                                                    <input name="title" id="title" type="text" class="form-control" placeholder="Title:" required>
+                                                </div><!--end col-->
 
-                                                    <div class="col-12 mb-3">
-                                                        <label class="form-label">Description <span class="text-danger">*</span></label>
-                                                        <textarea name="description" id="description" rows="3" class="form-control tinymce" placeholder="Description:" required></textarea>
-                                                    </div><!--end col-->
+                                                <div class="col-12 mb-3">
+                                                    <label class="form-label">Description <span class="text-danger">*</span></label>
+                                                    <textarea name="description" id="description" rows="3" class="form-control tinymce" placeholder="Description:" required></textarea>
+                                                </div><!--end col-->
 
-                                                    <div class="col-12 mb-3">
-                                                        <label class="form-label">Content <span class="text-danger">*</span></label>
-                                                        <textarea name="content" id="content" rows="10" class="form-control tinymce" placeholder="Blog content here" required></textarea>
-                                                    </div><!--end col-->
+                                                <div class="col-12 mb-3">
+                                                    <label class="form-label">Content <span class="text-danger">*</span></label>
+                                                    <textarea name="content" id="content" rows="10" class="form-control tinymce" placeholder="Blog content here" required></textarea>
+                                                </div><!--end col-->
 
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Category <span class="text-danger">*</span></label>
-                                                        <select class="form-control department-name select2input" name="category" id="category" required>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Category <span class="text-danger">*</span></label>
+                                                    <select class="form-control department-name select2input" name="category" id="category" required>
                                                         <c:forEach items="${listPostCategorys}" var="obj">
                                                             <option value="${obj.id}">${obj.name}</option>
                                                         </c:forEach>
@@ -117,7 +128,7 @@
         </div>
         <!-- page-wrapper -->
         <!-- TinyMCE Script -->
-        <script src="https://cdn.tiny.cloud/1/xj9owi87s6jlcm4kuhjjrbmgmkuc5iml198grpm1obgvw7r1/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+        <script src="https://cdn.tiny.cloud/1/1q5ygrh06doqe4owfsqgzgl5b4tg7lf6w0cz3udj2fseytwd/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
         <script>
             tinymce.init({
                 selector: '.tinymce',

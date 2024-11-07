@@ -21,6 +21,7 @@ import model.User;
 public class ReservationAdminServlet extends HttpServlet {
 
     private final ReservationDAO reservationDAO = new ReservationDAO();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -36,10 +37,14 @@ public class ReservationAdminServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         int reservationId = Integer.parseInt(request.getParameter("id"));
-        
-        switch(action) {
+
+        switch (action) {
             case "approveReservation":
                 reservationDAO.updateReservationStatus(reservationId, "Approved");
+                response.sendRedirect("reservation-admin");
+                break;
+            case "cancelReservation":
+                reservationDAO.updateReservationStatus(reservationId, "Cancel");
                 response.sendRedirect("reservation-admin");
                 break;
         }
