@@ -183,7 +183,6 @@
 
     <body>
         <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
-        <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
 
             <div class="dashboard-container">
                 <!-- Sidebar -->
