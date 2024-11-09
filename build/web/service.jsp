@@ -203,6 +203,7 @@
                 </a>
             </div>
         </c:if>
+        
         <!-- Footer Area -->
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
         <!-- End Footer Area -->

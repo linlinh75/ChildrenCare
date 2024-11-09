@@ -374,23 +374,9 @@
                 opacity: 0;
             }
 
-            .successedit {
-                background-color: #d4edda;
-                color: #155724;
-                border-color: #c3e6cb;
-                padding: 15px 20px;
-                margin-bottom: 20px;
-                border: 1px solid transparent;
-                border-radius: 4px;
-                display: flex;
-                align-items: center;
-                font-size: 14px;
-            }
-
-            .successedit i {
-                margin-right: 10px;
-                font-size: 18px;
-                color: #155724;
+            .alert-success:hover {
+                background-color: #b0ffc5;
+                border-color: #69d384;
             }
         </style>
     </head>
@@ -920,7 +906,7 @@
 
                 // Tạo element cho message
                 const messageDiv = document.createElement('div');
-                messageDiv.className = `alert ${isSuccess ? 'successedit' : 'alert-danger'}`;
+                messageDiv.className = `alert ${isSuccess ? 'alert-success' : 'alert-danger'}`;
                 
                 // Tùy chỉnh icon và message dựa trên loại thông báo
                 if (isSuccess) {
