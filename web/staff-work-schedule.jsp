@@ -1,22 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<c:if test="${empty sessionScope.account}">
-    <c:redirect url="login.jsp"/>
-</c:if>
-
-<c:if test="${not empty sessionScope.account}">
-    <c:choose>
-        <c:when test="${sessionScope.account.roleId != '2' && sessionScope.account.roleId != '3'}">
-            <c:redirect url="404.html"/>
-        </c:when>
-    </c:choose>
-</c:if>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>My Reservation</title>
+        <title>My Work Schedule</title>
         <link rel="shortcut icon" href="img/favicon.png">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
         <style>
@@ -210,16 +199,15 @@
     </head>
     <body>
         <div class="page-wrapper doctris-theme toggled">
-            <jsp:include page="../common/admin/side_bar_admin.jsp"></jsp:include>
+            <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
                 <main class="page-content bg-light">
-                <jsp:include page="../common/common-homepage-header.jsp"></jsp:include>
+                <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
                     <section class="container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px">
                         <div class="bread_crumb">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb" style="background-color: white; box-shadow: 0 0 2px 2px rgba(128, 128, 128, 0.1);">
                                     <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
-                                    <li class="breadcrumb-item"><a href="./profile">Manager Dashboard</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">My Reservation</li>
+                                    <li class="breadcrumb-item active" aria-current="page">My Work Schedule</li>
                                 </ol>
                             </nav>
                         </div>
@@ -239,26 +227,18 @@
                             <div class="table-container" style="background-color: white;">
                                 <div class="table-header">
                                     <div class="search-box">
-                                        <input type="text" placeholder="Search by first service name" id="searchInput" onkeyup="applyFilters()">
+                                        <input type="text" placeholder="Search by first customer name" id="searchInput" onkeyup="applyFilters()">
                                         <button type="button">
                                             <i class="fa fa-search"></i>
                                         </button>
                                     </div>
                                     <div class="row">
                                         <div class="status-filter col" style="display: flex; gap: 10px" >
-                                            <div>Filter:</div>
-                                            <select id="statusFilter" onchange="applyFilters()">
-                                                <option value="" class="label">Status</option>
-                                                <option value="all">All</option>
-                                                <option value="Pending">Pending</option>
-                                                <option value="Approved">Approved</option>
-                                                <option value="Successful">Successful</option>
-                                                <option value="Cancelled">Cancelled</option>
-                                            </select>
+                                            Filter:
                                             <select id="serviceFilter" onchange="applyFilters()">
                                                 <option value="" class="label">Service</option>
                                                 <option value="all">All Services</option>
-                                            <c:forEach var="service" items="${service.getAllService()}">
+                                            <c:forEach var="service" items="${service.getAllManageService()}">
                                                 <option value="${service.getFullname().trim()}">${service.getFullname()}</option>
                                             </c:forEach>
 
@@ -270,75 +250,36 @@
                                 <thead>
                                 <th onclick="sortTable(0)">Reservation ID</th>
                                 <th onclick="sortTable(1)">Customer Name</th> 
-                                <th onclick="sortTable(2)">Reservation Date</th>
-                                <th onclick="sortTable(3)">First Service</th>
-                                <th onclick="sortTable(4)">Checkup Time</th>
-                                <th>Status</th>
-                                <th onclick="sortTable(6)">Total Cost</th>
+                                <th onclick="sortTable(2)">Time Start</th>
+                                <th onclick="sortTable(3)">Time End</th>
+                                <th onclick="sortTable(4)">List Service</th>
                                 <th>Action</th>
                                 </thead>
                                 <tbody id="reservationTableBody">
-                                    <c:forEach var="res" items="${reservation}">
-                                        <tr style="cursor: pointer;" onclick="window.location.href = './ReservationServlet?action=information&id=${res.getId()}'">
-                                            <td>${res.getId()}</td>
+                                    <c:forEach var="s" items="${schedule}">
+                                        <tr style="cursor: pointer;" >
+                                            <td>${s.getReservation_id()}</td>
                                             <c:forEach var="user" items="${users}">
-                                                <c:if test="${user.getId()==res.getCustomer_id()}">
+                                                <c:if test="${user.getId() == reservation.getReservationById(s.getReservation_id()).getCustomer_id()}">
                                                     <td>${user.getFullName()}</td>
                                                 </c:if>
                                             </c:forEach>
-                                            <td>${res.getReservation_date()}</td>
-                                            <td>${res.getList_service().get(0).getService_name()}</td>
-                                            <td>${res.getCheckup_time()}</td>
-                                            <td  style="font-weight: bold">
-                                                <c:choose>
-                                                    <c:when test="${res.status == 'Pending'}">
-                                                        <span style="color: orange;">Pending</span>
-                                                    </c:when>
-                                                    <c:when test="${res.status == 'Approved'}">
-                                                        <span style="color: green;">Approved</span>
-                                                    </c:when>
-                                                    <c:when test="${res.status == 'Successful'}">
-                                                        <span style="color: #37F525;">Successful</span>
-                                                    </c:when>
-                                                    <c:when test="${res.status == 'Cancelled'}">
-                                                        <span style="color: red;">Cancelled</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span>${res.getStatus()}</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
+                                            <td>${s.getStart_at()}</td>
+                                            <td>${s.getEnd_at()}</td>
                                             <td>
-                                                <c:set var="totalCost" value="0" />
-                                                <c:forEach var="service" items="${res.getList_service()}">
-                                                    <c:set var="itemCost" value="${service.getQuantity() * service.getUnit_price()}" />
-                                                    <c:set var="totalCost" value="${totalCost + itemCost}" />
+                                                <c:forEach var="service" items="${reservation.getReservationById(s.getReservation_id()).getList_service()}">
+                                                    ${service.getService_name()}<br/>
                                                 </c:forEach>
-                                                <c:out value="${totalCost}" />
                                             </td>
                                             <td>
                                                 <button type="button" 
                                                         class="btn btn-primary btn-sm" 
                                                         style="margin-bottom: 8px"
-                                                        onclick="event.stopPropagation(); viewReservationDetails(${res.getId()})" 
+                                                        onclick="event.stopPropagation(); viewReservationDetails(${s.getReservation_id()})" 
                                                         data-bs-toggle="modal" 
                                                         data-bs-target="#reservationModal">
                                                     View Details
                                                 </button>
-                                                <c:if test="${fn:toLowerCase(res.status) == 'pending'}">
-                                                    <button type="button" 
-                                                            class="btn btn-success btn-sm" 
-                                                            onclick="event.stopPropagation(); approveReservation(${res.getId()})"
-                                                            style="width: 100px;">
-                                                        Approve
-                                                    </button>
-                                                    <button type="button" 
-                                                            class="btn btn-danger btn-sm mt-2" 
-                                                            onclick="event.stopPropagation(); cancelReservation(${res.getId()})"
-                                                            style="width: 100px;">
-                                                        Cancel
-                                                    </button>
-                                                </c:if>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -348,7 +289,7 @@
                         </div>
                     </div>
                 </section>
-                <jsp:include page="../common/common-homepage-footer.jsp"></jsp:include>
+                <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
             </main>
         </div>
     </body>
@@ -387,23 +328,21 @@
         }
         function applyFilters() {
             const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
-            const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
             const serviceFilter = document.getElementById("serviceFilter").value.toLowerCase();
 
             filteredRows = allRows.filter(row => {
                 const cells = row.getElementsByTagName("td");
-                const fullname = cells[3].innerText.toLowerCase();
-                const serviceName = cells[3].innerText.toLowerCase();
-                const status = cells[5].innerText.toLowerCase();
+                const fullname = cells[1].innerText.toLowerCase();
+                const serviceCell = cells[4].innerText.toLowerCase();
+                const servicesList = serviceCell.split('\n');
+                const serviceMatch = serviceFilter === "all" || servicesList.some(service => service.includes(serviceFilter));
 
-                return (fullname.includes(searchValue) &&
-                        (statusFilter === "all" || status.includes(statusFilter)) &&
-                        (serviceFilter === "all" || serviceName.includes(serviceFilter))
-                        );
+                return (fullname.includes(searchValue) && serviceMatch);
             });
             currentPage = 1;
             displayTable();
         }
+
         function displayTable() {
             const table = document.getElementById('reservationTableBody');
             const totalRows = filteredRows.length;
@@ -479,15 +418,15 @@
             filteredRows.sort((a, b) => {
                 let aValue, bValue;
 
-                if (columnIndex === 0 || columnIndex === 6) {
+                if (columnIndex === 0) {
                     aValue = parseInt(a.cells[columnIndex].innerText);
                     bValue = parseInt(b.cells[columnIndex].innerText);
                     return isAscending ? aValue - bValue : bValue - aValue;
-                } else if (columnIndex === 2 || columnIndex === 4) {
+                } else if (columnIndex === 2 || columnIndex === 3) {
                     aValue = Date.parse(a.cells[columnIndex].innerText);
                     bValue = Date.parse(b.cells[columnIndex].innerText);
                     return isAscending ? aValue - bValue : bValue - aValue;
-                } else if (columnIndex === 1 || columnIndex === 3) {
+                } else if (columnIndex === 1 || columnIndex === 4) {
                     aValue = a.cells[columnIndex].innerText.toLowerCase();
                     bValue = b.cells[columnIndex].innerText.toLowerCase();
                     return isAscending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
@@ -548,70 +487,7 @@
                 }
             });
         }
-        function cancelReservation(reservationId) {
-            if (!confirm("Are you sure you want to cancel this appointment?")) {
-                return;
-            }
 
-            $.ajax({
-                url: 'ReservationServlet',
-                type: 'POST',
-                data: {
-                    action: 'cancelReservation',
-                    id: reservationId
-                },
-                success: function (response) {
-                    if (response.success) {
-                        alert(response.message);
-                        // Close modal
-                        $('#reservationModal').modal('hide');
-                        // Reload page to update reservation list
-                        location.reload();
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert('Error cancelling reservation: ' + error);
-                }
-            });
-        }
     </script>
-    <script>
-        function approveReservation(reservationId) {
-            if (!confirm("Are you sure you want to approve this reservation?")) {
-                return;
-            }
 
-            $.ajax({
-                url: 'reservation-manager',
-                type: 'POST',
-                data: {
-                    action: 'approveReservation',
-                    id: reservationId
-                },
-                success: function () {
-                    window.location.href = 'reservation-manager';
-                }
-            });
-        }
-
-        function cancelReservation(reservationId) {
-            if (!confirm("Are you sure you want to cancel this reservation?")) {
-                return;
-            }
-
-            $.ajax({
-                url: 'reservation-manager',
-                type: 'POST',
-                data: {
-                    action: 'cancelReservation',
-                    id: reservationId
-                },
-                success: function () {
-                    window.location.href = 'reservation-manager';
-                }
-            });
-        }
-    </script>
 </html>

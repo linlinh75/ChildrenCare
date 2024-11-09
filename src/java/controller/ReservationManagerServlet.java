@@ -5,6 +5,7 @@
 package controller;
 
 import dal.ReservationDAO;
+import dal.ServiceDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,9 +17,10 @@ import java.io.PrintWriter;
 import java.util.List;
 import model.Reservation;
 import model.User;
+import dal.UserDAO;
 
-@WebServlet(name = "ReservationAdminServlet", urlPatterns = {"/reservation-admin"})
-public class ReservationAdminServlet extends HttpServlet {
+@WebServlet(name = "ReservationManagerServlet", urlPatterns = {"/reservation-manager"})
+public class ReservationManagerServlet extends HttpServlet {
 
     private final ReservationDAO reservationDAO = new ReservationDAO();
 
@@ -27,7 +29,12 @@ public class ReservationAdminServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User loggedInUser = (User) session.getAttribute("account");
+        ServiceDAO sv = new ServiceDAO();
         List<Reservation> list_reservation = reservationDAO.getAllReservation();
+        UserDAO u = new UserDAO();
+        List<User> ulist= u.getAllUser();
+        request.setAttribute("service", sv);
+        request.setAttribute("users", ulist);
         request.setAttribute("reservation", list_reservation);
         request.getRequestDispatcher("admin/admin_reservation.jsp").forward(request, response);
     }
@@ -41,11 +48,11 @@ public class ReservationAdminServlet extends HttpServlet {
         switch (action) {
             case "approveReservation":
                 reservationDAO.updateReservationStatus(reservationId, "Approved");
-                response.sendRedirect("reservation-admin");
+                response.sendRedirect("reservation-manager");
                 break;
             case "cancelReservation":
-                reservationDAO.updateReservationStatus(reservationId, "Cancel");
-                response.sendRedirect("reservation-admin");
+                reservationDAO.updateReservationStatus(reservationId, "Cancelled");
+                response.sendRedirect("reservation-manager");
                 break;
         }
     }

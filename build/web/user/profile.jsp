@@ -5,7 +5,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Doctris - Doctor Appointment Booking System</title>
+    <title>Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
@@ -20,10 +20,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     <meta name="website" content="../../../index.html" />
     <meta name="Version" content="v1.2.0" />
     <!-- favicon -->
-    <link
-      rel="shortcut icon"
-      href="${pageContext.request.contextPath}/assets/images/favicon.ico.png"
-    />
+    <link rel="shortcut icon" href="img/favicon.png" />
     <link
       rel="stylesheet"
       href="${pageContext.request.contextPath}/css/style.css"
@@ -100,9 +97,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
                 <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
                   <li class="breadcrumb-item">
-                    <a href="HomeServlet">Children Care</a>
+                    <a href="HomeServlet">Home</a>
                   </li>
-                  <li class="breadcrumb-item"><a href="#">Patients</a></li>
                   <li class="breadcrumb-item active" aria-current="page">
                     Profile
                   </li>
@@ -305,13 +301,6 @@ ${user.address}</textarea
     <!-- page-wrapper -->
 
     <!-- javascript -->
-    <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
-    <!-- simplebar -->
-    <script src="${pageContext.request.contextPath}/assets/js/simplebar.min.js"></script>
-    <!-- Icons -->
-    <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
-    <!-- Main Js -->
-    <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
 
     <script>
       document

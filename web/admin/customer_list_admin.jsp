@@ -16,7 +16,7 @@
 
     <head>
         <meta charset="utf-8" />
-        <title>Doctris - Doctor Appointment Booking System</title>
+        <title>Customer List</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Premium Bootstrap 4 Landing Page Template" />
         <meta name="keywords" content="Appointment, Booking, System, Dashboard, Health" />
@@ -24,7 +24,7 @@
         <meta name="email" content="support@shreethemes.in" />
         <meta name="website" content="../../../index.html" />
         <meta name="Version" content="v1.2.0" />
-        <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon.ico.png">
+        <link rel="shortcut icon" href="img/favicon.png">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
         <!-- Bootstrap -->
         <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -67,7 +67,7 @@
                                 </div>
                             </div>
 
-                           </div>
+                        </div>
                     </div>
 
                     <div class="container-fluid">
@@ -78,8 +78,8 @@
 
                                 <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
                                     <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
-                                        <li class="breadcrumb-item"><a href="index.html">Doctris</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">Patients</li>
+                                        <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">Customer List</li>
                                     </ul>
                                 </nav>
                             </div>
@@ -101,30 +101,6 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!--                                                <tr>
-                                                                                                    <th class="p-3">1</th>
-                                                                                                    <td class="py-3">
-                                                                                                        <a href="#" class="text-dark">
-                                                                                                            <div class="d-flex align-items-center">
-                                                                                                                <img src="../assets/images/client/01.jpg" class="avatar avatar-md-sm rounded-circle shadow" alt="">
-                                                                                                                <span class="ms-2">Howard Tanner</span>
-                                                                                                            </div>
-                                                                                                        </a>
-                                                                                                    </td>
-                                                                                                    <td class="p-3">Male</td>
-                                                                                                    <td class="p-3">1451 - ABC Street, NY</td>
-                                                                                                    <td class="p-3">(+452) 8945 4568</td>
-                                                                                                    <td class="p-3">Cardiology</td>
-                                                                                                    <td class="p-3">20th Dec 2020</td>
-                                                                                                    <td class="p-3">11:00AM</td>
-                                                                                                    <td class="p-3"><span class="badge bg-soft-success">Approved</span></td>
-                                                                                                    <td class="text-end p-3">
-                                                                                                        <a href="#" class="btn btn-icon btn-pills btn-soft-primary" data-bs-toggle="modal" data-bs-target="#viewprofile"><i class="uil uil-eye"></i></a>
-                                                                                                        <a href="#" class="btn btn-icon btn-pills btn-soft-success" data-bs-toggle="modal" data-bs-target="#editprofile"><i class="uil uil-pen"></i></a>
-                                                                                                        <a href="#" class="btn btn-icon btn-pills btn-soft-danger"><i class="uil uil-trash"></i></a>
-                                                                                                    </td>
-                                                                                                </tr>-->
-
                                             <c:forEach var="customer" items="${customers}">
                                                 <tr>
                                                     <td class="p-3">${customer.id}</td>
@@ -366,12 +342,6 @@
                         });
             }
         </script>
-        <!-- JavaScript -->
-        <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
-        <script src="${pageContext.request.contextPath}/assets/js/simplebar.min.js"></script>
-        <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
-        <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
-
     </body>
 
 </html>

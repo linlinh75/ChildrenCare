@@ -132,7 +132,6 @@
                                 <!-- End Logo -->
                                 <!-- Mobile Nav -->
                                 <div class="mobile-nav"></div>
-                                <!-- End Mobile Nav -->
                             </div>
                             <div class="col-lg-6 col-md-9 col-12">
                                 <!-- Main Menu -->
@@ -158,18 +157,22 @@
                                                 </ul>
                                             </li>
                                             <c:if test="${sessionScope.account.roleId == 3}">
-                                    <li class="${active == 'med' ? 'active' : ''}" >
-                                        <a href="DataServlet?action=med">Medical Examination</i></a>
-<!--                                        <ul class="dropdown">
-                                            <li><a href=""></a></li>
-                                        </ul>-->
-                                    </li>
-                                    </c:if>
-                                    <c:if test="${sessionScope.account.roleId == 1}">
-                                        <li class="${active == 'dashboard' ? 'active' : ''}">
-                                            <a href="admin-dashboard">Dashboard</a>
-                                        </li>
-                                    </c:if>
+                                                <li class="${active == 'med' ? 'active' : ''}" >
+                                                    <a href="DataServlet?action=med">Medical Examination</i></a>
+                                                </li>
+                                            </c:if>
+                                            <c:if test="${sessionScope.account.roleId == 1}">
+                                                <li class="${active == 'dashboard' ? 'active' : ''}">
+                                                    <a href="admin-dashboard">Dashboard</a>
+                                                </li>
+                                            </c:if>
+
+                                            <c:if test="${account.roleId == 2}">
+                                                <li class="nav-item">
+                                                    <a class="nav-link ${active == 'dashboard' ? 'active' : ''}" 
+                                                       href="profile">Manager Dashboard</a>
+                                                </li>
+                                            </c:if>
                                         </ul>
                                     </nav>
                                 </div>
@@ -186,7 +189,7 @@
                                                         <img src="./${account.getImageLink()}" alt="Avatar" class="rounded-circle" style="width: 60px; height: 50px;">
                                                     </div>
                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                                                        <a class="dropdown-item" href="/ChildrenCare/profile">Profile</a>
+                                                        <a class="dropdown-item" href="DataServlet?action=profile">Profile</a>
                                                         <c:if test="${sessionScope.account.roleId == 4}">
                                                             <a class="dropdown-item" href="/ChildrenCare/ReservationServlet">My Reservation</a>
                                                         </c:if>                                                        <div class="dropdown-divider"></div>
