@@ -112,7 +112,7 @@ public class ReservationCompletionServlet extends HttpServlet {
             reservationDao.statusReservation(rid,"Submitted");
             User user = userDao.getProfileById(res.getCustomer_id());
             try {
-                String content = "<p>Your reservation has been submitted. Your doctor is Dr. "
+                String content = "<p>Your reservation has been approved. Your doctor is Dr. "
                         + assignDoctor.getFullName() + ". Email: " + assignDoctor.getEmail()
                         + ". Mobile: " + assignDoctor.getMobile()
                         + ". Please complete the transaction by transfering the fees by VNPAY: </p>"

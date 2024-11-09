@@ -4,13 +4,13 @@
         <html>
             <jsp:include page="common/common-homepage-header.jsp"/>
             <body>
-                <c:if test="${success}">
+                
+                <div class="container mt-5 ">
+                    <c:if test="${param.success == 'true'}">
                     <div class="alert alert-success">
                         You have been added medical examination for reservation 
                     </div>
                 </c:if>
-                <div class="container mt-5 ">
-                    
                         <h2>Medical Examinations</h2>
                         <div class="d-flex justify-content-between mt-5">
                             <div class="input-group w-50">

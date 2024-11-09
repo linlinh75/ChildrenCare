@@ -160,7 +160,7 @@ public class ServiceDAO extends DBContext {
         List<Service> services = new ArrayList<>();
         int offset = (page - 1) * servicesPerPage;
         
-        String sql = "SELECT * FROM service WHERE (fullname LIKE ? OR description LIKE ?) AND where status = 1 " +
+        String sql = "SELECT * FROM service WHERE (fullname LIKE ? OR description LIKE ?) AND status = 1 " +
                      "LIMIT ?, ?";
     
         try (PreparedStatement ps = connection.prepareStatement(sql)) {

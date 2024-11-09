@@ -1,12 +1,25 @@
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <jsp:include page="common/common-homepage-header.jsp"/>
     <body>
         <div class="container mt-5">
-            <h2>Admin Dashboard</h2>
-            
+            <h2 class="mb-5">Admin Dashboard</h2>
+            <form method="admin-dashboard"
+                >
+                <label>
+          Start Date:
+          <input type="date" name="startDate" value="${startDate}"/>
+        </label>
+        <label>
+          End Date:
+          <input type="date" name="endDate" value="${endDate}"/>
+        </label>
+                <button onClick={} class="btn btn-sucess">Update</button>
+            </form>
             <!-- Statistics Cards -->
             <div class="row mt-4">
                 <!-- Reservation Stats -->
@@ -50,7 +63,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Revenue</h5>
-                            <h2>$${stats.totalRevenue}</h2>
+                            <h2>$<fmt:formatNumber value="${stats.totalRevenue}" pattern="#,##0.00"/></h2>
                         </div>
                     </div>
                 </div>
@@ -62,7 +75,7 @@
                                 <c:forEach items="${stats.revenueByCategory}" var="entry">
                                     <tr>
                                         <td>${entry.key}</td>
-                                        <td>$${entry.value}</td>
+                                        <td>$<fmt:formatNumber value="${entry.value}" pattern="#,##0.00"/></td>
                                     </tr>
                                 </c:forEach>
                             </table>
@@ -76,7 +89,7 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">New Customers</h5>
+                            <h5 class="card-title">New Customers </h5>
                             <h2>${stats.newCustomers}</h2>
                         </div>
                     </div>
@@ -84,14 +97,14 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">New Reserving Customers</h5>
+                            <h5 class="card-title">New Reserving Customers </h5>
                             <h2>${stats.newReservingCustomers}</h2>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Chart Container -->
+            <!-- Existing Chart Section -->
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="card">
@@ -120,4 +133,4 @@
         </script>
     </body>
     <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
-</html> 
+</html>
