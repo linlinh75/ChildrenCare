@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -295,9 +296,17 @@ public class ReservationDAO extends DBContext {
             rs=stm.executeQuery();
             while(rs.next()){
                 User u = new User();
+                u.setId(rs.getInt("id"));
                 u.setFullName(rs.getString("full_name"));
                 u.setEmail(rs.getString("email"));
                 u.setMobile(rs.getString("mobile"));
+                u.setGender(rs.getBoolean("gender"));
+                u.setAddress(rs.getString("address"));
+                u.setRoleId(rs.getInt("role_id"));
+                u.setStatus(rs.getString("status"));
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                u.setCreated_date(LocalDate.parse(rs.getString("created_date"), formatter));
+                u.setImageLink(rs.getString("image_link"));
                 return u;
             }
             

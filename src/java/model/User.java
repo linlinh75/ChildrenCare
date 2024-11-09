@@ -1,5 +1,7 @@
 package model;
 
+import java.time.LocalDate;
+
 /**
  * Represents a user of the application.
  */
@@ -15,7 +17,15 @@ public class User {
     private String imageLink;
     private int roleId;
     private String status;
+    private LocalDate created_date;
 
+    public LocalDate getCreated_date() {
+        return created_date;
+    }
+
+    public void setCreated_date(LocalDate created_date) {
+        this.created_date = created_date;
+    }
     public User() {
     }
 
