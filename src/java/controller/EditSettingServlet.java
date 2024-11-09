@@ -28,12 +28,7 @@ public class EditSettingServlet extends HttpServlet {
             int status = Integer.parseInt(request.getParameter("status"));
             
             // Tạo đối tượng Setting với thông tin mới
-            Setting setting = new Setting();
-            setting.setType(type);
-            setting.setName(name);
-            setting.setValue(value);
-            setting.setDescription(description);
-            setting.setStatus(status);
+            Setting setting = new Setting(type, name, value, description, status);
             
             // Cập nhật setting và xử lý kết quả
             SettingDAO settingDAO = new SettingDAO();
@@ -44,10 +39,11 @@ public class EditSettingServlet extends HttpServlet {
                     session.setAttribute("successMessage", "Setting updated successfully!");
                     break;
                 case -1:
-                    session.setAttribute("errorMessage", "Setting with this type and value already exists!");
+                    session.setAttribute("errorMessage", "Invalid setting type!");
                     break;
                 case -2:
-                    session.setAttribute("errorMessage", "Setting with this type and name already exists!");
+                    session.setAttribute("errorMessage", 
+                        "A setting with this name or value already exists in " + type + "!");
                     break;
                 case -3:
                     session.setAttribute("errorMessage", "Database error occurred!");
@@ -57,7 +53,7 @@ public class EditSettingServlet extends HttpServlet {
             }
             
             // Redirect về trang chi tiết setting
-            response.sendRedirect("setting-details?id=" + id);
+            response.sendRedirect("setting-details?id=" + value);
             
         } catch (Exception e) {
             request.getSession().setAttribute("errorMessage", "Error updating setting: " + e.getMessage());

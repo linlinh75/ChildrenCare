@@ -24,16 +24,10 @@ public class AddSettingServlet extends HttpServlet {
         try {
             String type = request.getParameter("type");
             String name = request.getParameter("name");
-            int value = Integer.parseInt(request.getParameter("value"));
             String description = request.getParameter("description");
             int status = Integer.parseInt(request.getParameter("status"));
             
-            Setting setting = new Setting();
-            setting.setType(type);
-            setting.setName(name);
-            setting.setValue(value);
-            setting.setDescription(description);
-            setting.setStatus(status);
+            Setting setting = new Setting(type, name, 0, description, status);
             
             SettingDAO settingDAO = new SettingDAO();
             int result = settingDAO.addSetting(setting);
@@ -43,10 +37,11 @@ public class AddSettingServlet extends HttpServlet {
                     request.getSession().setAttribute("successMessage", "Setting added successfully!");
                     break;
                 case -1:
-                    request.getSession().setAttribute("errorMessage", "Setting with this type and value already exists!");
+                    request.getSession().setAttribute("errorMessage", "Invalid setting type!");
                     break;
                 case -2:
-                    request.getSession().setAttribute("errorMessage", "Setting with this type and name already exists!");
+                    request.getSession().setAttribute("errorMessage", 
+                        "A setting with this name already exists in " + type + "!");
                     break;
                 case -3:
                     request.getSession().setAttribute("errorMessage", "Database error occurred!");

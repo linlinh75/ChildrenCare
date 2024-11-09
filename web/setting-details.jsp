@@ -44,8 +44,7 @@
             }
 
             .form-group input,
-            .form-group select,
-            .form-group textarea {
+            .form-group select {
                 width: 100%;
                 padding: 10px;
                 border: 1px solid #ddd;
@@ -54,17 +53,28 @@
             }
 
             .form-group textarea {
-                min-height: 100px;
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 14px;
+                min-height: 120px;
                 resize: vertical;
             }
 
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                outline: none;
+                border-color: #4CAF50;
+                box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+            }
+
             .form-actions {
-                display: flex;
-                justify-content: flex-end;
-                gap: 10px;
                 margin-top: 30px;
                 padding-top: 20px;
                 border-top: 1px solid #eee;
+                text-align: right;
             }
 
             .btn {
@@ -84,6 +94,7 @@
             .btn-secondary {
                 background-color: #6c757d;
                 color: white;
+                margin-right: 10px;
             }
 
             .btn:hover {
@@ -94,42 +105,26 @@
             .alert {
                 padding: 15px;
                 margin-bottom: 20px;
-                border-radius: 5px;
-                font-weight: 500;
+                border: 1px solid transparent;
+                border-radius: 4px;
             }
 
             .alert-success {
-                background-color: #d4edda;
                 color: #155724;
-                border: 1px solid #c3e6cb;
+                background-color: #d4edda;
+                border-color: #c3e6cb;
             }
 
             .alert-danger {
-                background-color: #f8d7da;
                 color: #721c24;
-                border: 1px solid #f5c6cb;
+                background-color: #f8d7da;
+                border-color: #f5c6cb;
             }
 
-            .status-badge {
-                display: inline-block;
-                padding: 5px 10px;
-                border-radius: 15px;
-                font-size: 12px;
-                font-weight: 500;
-            }
-
-            .status-badge.active {
-                background-color: #28a745;
-                color: white;
-            }
-
-            .status-badge.inactive {
-                background-color: #dc3545;
-                color: white;
-            }
-
-            .user-container {
-                margin-left: 0px;
+            .required-field::after {
+                content: "*";
+                color: red;
+                margin-left: 4px;
             }
         </style>
     </head>
@@ -137,20 +132,19 @@
     <body>
         <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
 
-            <div class="dashboard-container">
-
-                <div class="user-container">
-                    <div class="setting-details-form">
-                        <div class="form-header">
-                            <h1><i class="fas fa-cog"></i> Setting Details</h1>
-                            <div>
-                                <a href="${pageContext.request.contextPath}/admin-manage-settings" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left"></i> Back to Settings List
-                                </a>
-                            </div>
+        <div class="dashboard-container">
+            <div class="user-container">
+                <div class="setting-details-form">
+                    <div class="form-header">
+                        <h1><i class="fas fa-cog"></i> Setting Details</h1>
+                        <div>
+                            <a href="${pageContext.request.contextPath}/admin-manage-settings" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Settings List
+                            </a>
                         </div>
+                    </div>
 
-                        <!-- Success/Error Messages -->
+                    <!-- Success/Error Messages -->
                     <c:if test="${not empty sessionScope.successMessage}">
                         <div class="alert alert-success">
                             <i class="fas fa-check-circle"></i> ${sessionScope.successMessage}
@@ -164,22 +158,17 @@
                         </div>
                     </c:if>
 
-                    <form action="edit-setting" method="POST">
-                        <input type="hidden" name="id" value="${setting.id}">
+                    <form action="edit-setting" method="POST" id="settingForm">
+                        <input type="hidden" name="id" value="${setting.value}">
 
                         <div class="form-group">
                             <label><i class="fas fa-tag"></i> Type</label>
                             <select name="type" required>
-                                <option value="Role" ${setting.type=='Role' ? 'selected' : '' }>Role</option>
-                                <option value="Post Category" ${setting.type=='Post Category' ? 'selected' : '' }>Post
-                                    Category</option>
-                                <option value="Service Category" ${setting.type=='Service Category' ? 'selected' : '' }>
-                                    Service Category</option>
-                                <option value="User Status" ${setting.type=='User Status' ? 'selected' : '' }>User
-                                    Status</option>
+                                <option value="Post Category" ${setting.type=='Post Category' ? 'selected' : ''}>Post Category</option>
+                                <option value="Service Category" ${setting.type=='Service Category' ? 'selected' : ''}>Service Category</option>
                             </select>
                         </div>
-                                    <br><br><br>
+
                         <div class="form-group">
                             <label><i class="fas fa-font"></i> Name</label>
                             <input type="text" name="name" value="${setting.name}" required>
@@ -187,12 +176,12 @@
 
                         <div class="form-group">
                             <label><i class="fas fa-sort-numeric-up"></i> Value</label>
-                            <input type="number" name="value" value="${setting.value}" required>
+                            <input type="number" name="value" value="${setting.value}" readonly>
                         </div>
 
                         <div class="form-group">
                             <label><i class="fas fa-align-left"></i> Description</label>
-                            <textarea name="description" rows="4">${setting.description}</textarea>
+                            <textarea name="description" required minlength="10">${setting.description}</textarea>
                         </div>
 
                         <div class="form-group">
@@ -212,8 +201,28 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            document.getElementById('settingForm').onsubmit = function(e) {
+                const name = this.querySelector('[name="name"]').value.trim();
+                const description = this.querySelector('[name="description"]').value.trim();
+                
+                if (name.length < 2) {
+                    e.preventDefault();
+                    alert('Name must be at least 2 characters long');
+                    return false;
+                }
+                
+                if (description.length < 10) {
+                    e.preventDefault();
+                    alert('Description must be at least 10 characters long');
+                    return false;
+                }
+                
+                return true;
+            };
+        </script>
+
         <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
-
     </body>
-
 </html>

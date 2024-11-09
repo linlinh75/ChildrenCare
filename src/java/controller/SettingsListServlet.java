@@ -29,7 +29,7 @@ public class SettingsListServlet extends HttpServlet {
             String searchKeyword = getStringParameter(request, "search", null);
             
             // Get sort parameters
-            String sortBy = getStringParameter(request, "sortBy", "value");  // Default sort by value
+            String sortBy = getStringParameter(request, "sortBy", "type");  // Default sort by value
             String sortOrder = getStringParameter(request, "sortOrder", "asc");
             
             // Get filtered and sorted settings

@@ -157,7 +157,4 @@
         <servlet-name>ReservationStatsServlet</servlet-name>
         <url-pattern>/stats</url-pattern>
     </servlet-mapping>
-    <listener>
-        <listener-class>listener.ContextListener</listener-class>
-    </listener>
 </web-app>

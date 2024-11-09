@@ -7,7 +7,7 @@
         <title>Settings Management</title>
         <link rel="stylesheet" href="./css/adminDashboard_style.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        
+
         <style>
             /* Pagination styling */
             .pagination-wrapper {
@@ -75,19 +75,37 @@
                 display: table;
                 clear: both;
             }
+
+            /* Existing styles... */
+            
+            .form-group textarea {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                resize: vertical;
+                min-height: 80px;
+            }
+            
+            /* Add max-width for description column */
+            .table td:nth-child(5) {
+                max-width: 200px;
+                white-space: normal;
+                word-wrap: break-word;
+            }
         </style>
     </head>
 
     <body>
         <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
             <div class="dashboard-container">
-               <!--Sidebar-->
-               
-            <div class="user-container">
-                <div class="user-list-container fade-in">
-                    <h1 class="user-container-table">Settings Management</h1>
+                <!--Sidebar-->
 
-                    <!-- Success/Error Messages - Only show when needed -->
+                <div class="user-container">
+                    <div class="user-list-container fade-in">
+                        <h1 class="user-container-table">Settings Management</h1>
+
+                        <!-- Success/Error Messages - Only show when needed -->
                     <c:if test="${not empty sessionScope.successMessage}">
                         <div class="alert alert-success">
                             ${sessionScope.successMessage}
@@ -161,6 +179,9 @@
                                     <th onclick="sortTable('value')" class="sortable">
                                         Value <i class="fas fa-sort"></i>
                                     </th>
+                                    <th onclick="sortTable('description')" class="sortable">
+                                        Description <i class="fas fa-sort"></i>
+                                    </th>
                                     <th onclick="sortTable('status')" class="sortable">
                                         Status <i class="fas fa-sort"></i>
                                     </th>
@@ -182,6 +203,7 @@
                                                 <td>${setting.type}</td>
                                                 <td>${setting.name}</td>
                                                 <td>${setting.value}</td>
+                                                <td>${setting.description}</td>
                                                 <td>
                                                     <span
                                                         class="status-badge ${setting.status == 1 ? 'active' : 'inactive'}">
@@ -195,9 +217,9 @@
                                                         <i class="fa-solid fa-eye"></i>
                                                     </button>
                                                     <button
-                                                        onclick="showEditModalWithData('${setting.value}', '${setting.type}', 
-                                                                '${setting.name}', '${setting.value}', '${setting.description}', 
-                                                                '${setting.status}')"
+                                                        onclick="showEditModalWithData('${setting.value}', '${setting.type}',
+                                                                        '${setting.name}', '${setting.description}',
+                                                                        '${setting.status}')"
                                                         class="btn btn-primary">
                                                         <i class="fa-solid fa-pen"></i>
                                                     </button>
@@ -251,10 +273,8 @@
                         <div class="form-group">
                             <label class="required-field">Type</label>
                             <select name="type" required>
-                                <option value="Role">Role</option>
                                 <option value="Post Category">Post Category</option>
                                 <option value="Service Category">Service Category</option>
-                                <option value="User Status">User Status</option>
                             </select>
                         </div>
 
@@ -264,21 +284,16 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="required-field">Value</label>
-                            <input type="number" name="value" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea name="description" rows="3"></textarea>
-                        </div>
-
-                        <div class="form-group">
                             <label class="required-field">Status</label>
                             <select name="status" required>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required-field">Description</label>
+                            <textarea name="description" rows="3" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -306,10 +321,8 @@
                         <div class="form-group">
                             <label class="required-field">Type</label>
                             <select name="type" id="editType" required>
-                                <option value="Role">Role</option>
                                 <option value="Post Category">Post Category</option>
                                 <option value="Service Category">Service Category</option>
-                                <option value="User Status">User Status</option>
                             </select>
                         </div>
 
@@ -320,12 +333,7 @@
 
                         <div class="form-group">
                             <label class="required-field">Value</label>
-                            <input type="number" name="value" id="editValue" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea name="description" id="editDescription" rows="3"></textarea>
+                            <input type="number" name="value" id="editValue" readonly>
                         </div>
 
                         <div class="form-group">
@@ -334,6 +342,11 @@
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required-field">Description</label>
+                            <textarea name="description" id="editDescription" rows="3" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -352,33 +365,36 @@
             function sortTable(column) {
                 const currentUrl = new URL(window.location.href);
                 const params = new URLSearchParams(currentUrl.search);
-                
+
                 // Get current sort parameters
                 const currentSortBy = params.get('sortBy');
                 const currentSortOrder = params.get('sortOrder');
-                
+
                 // Determine new sort order
                 let newSortOrder = 'asc';
                 if (column === currentSortBy && currentSortOrder === 'asc') {
                     newSortOrder = 'desc';
                 }
-                
+
                 // Update sort parameters
                 params.set('sortBy', column);
                 params.set('sortOrder', newSortOrder);
-                
+
                 // Reset to first page when sorting changes
                 params.set('page', '1');
-                
+
                 // Maintain other parameters (type, status, search)
                 const type = params.get('type');
                 const status = params.get('status');
                 const search = params.get('search');
-                
-                if (type) params.set('type', type);
-                if (status) params.set('status', status);
-                if (search) params.set('search', search);
-                
+
+                if (type)
+                    params.set('type', type);
+                if (status)
+                    params.set('status', status);
+                if (search)
+                    params.set('search', search);
+
                 // Redirect with all parameters
                 window.location.href = 'admin-manage-settings?' + params.toString();
             }
@@ -391,14 +407,14 @@
                 document.getElementById('addSettingModal').style.display = 'block';
             }
 
-            function showEditModalWithData(id, type, name, value, description, status) {
-                document.getElementById('editSettingId').value = id;
+            function showEditModalWithData(value, type, name, description, status) {
+                document.getElementById('editSettingId').value = value;
                 document.getElementById('editType').value = type;
                 document.getElementById('editName').value = name;
+                document.getElementById('editDescription').value = description || '';
                 document.getElementById('editValue').value = value;
-                document.getElementById('editDescription').value = description;
                 document.getElementById('editStatus').value = status;
-
+                
                 document.getElementById('editSettingModal').style.display = 'block';
             }
 
@@ -436,6 +452,46 @@
 
                 return true;
             }
+
+            document.getElementById('editSettingForm').onsubmit = function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                
+                const name = formData.get('name').trim();
+                const description = formData.get('description').trim();
+                
+                if (name.length < 2) {
+                    alert('Name must be at least 2 characters long');
+                    return false;
+                }
+                
+                if (description.length < 10) {
+                    alert('Description must be at least 10 characters long');
+                    return false;
+                }
+                
+                fetch('edit-setting', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('editSettingModal').style.display = 'none';
+                        window.location.reload();
+                    } else {
+                        throw new Error('Failed to update setting');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating setting: ' + error.message);
+                });
+            };
+
+            document.querySelectorAll('.modal textarea').forEach(textarea => {
+                textarea.style.minHeight = '100px';
+                textarea.style.resize = 'vertical';
+            });
         </script>
 
         <style>
@@ -574,6 +630,39 @@
             .status-badge.inactive {
                 background-color: #dc3545;
                 color: white;
+            }
+
+            .modal textarea {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-family: inherit;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            .modal textarea:focus {
+                border-color: #007bff;
+                outline: none;
+                box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+            }
+
+            .form-error {
+                color: #dc3545;
+                font-size: 12px;
+                margin-top: 4px;
+                display: none;
+            }
+
+            .form-group.has-error .form-error {
+                display: block;
+            }
+
+            .form-group.has-error input,
+            .form-group.has-error textarea,
+            .form-group.has-error select {
+                border-color: #dc3545;
             }
         </style>
         <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
