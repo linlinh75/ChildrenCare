@@ -45,7 +45,8 @@ public class AdminDashboardServlet extends HttpServlet {
         }
          DashboardStats stats = dashboardDAO.getDashboardStats(startDate, endDate);
         request.setAttribute("stats", stats);
-        
+        request.setAttribute("startDate", startDate);
+        request.setAttribute("endDate", endDate);
         request.getRequestDispatcher("admin_dashboard.jsp").forward(request, response);
     }
 }

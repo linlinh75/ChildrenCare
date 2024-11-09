@@ -8,13 +8,15 @@
     <body>
         <div class="container mt-5">
             <h2 class="mb-5">Admin Dashboard</h2>
-            <form><label>
+            <form method="admin-dashboard"
+                >
+                <label>
           Start Date:
-          <input type="date" name="start" />
+          <input type="date" name="startDate" value="${startDate}"/>
         </label>
         <label>
           End Date:
-          <input type="date" name="end" />
+          <input type="date" name="endDate" value="${endDate}"/>
         </label>
                 <button onClick={} class="btn btn-sucess">Update</button>
             </form>
@@ -87,7 +89,7 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">New Customers Today</h5>
+                            <h5 class="card-title">New Customers </h5>
                             <h2>${stats.newCustomers}</h2>
                         </div>
                     </div>
@@ -95,7 +97,7 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">New Reserving Customers Today</h5>
+                            <h5 class="card-title">New Reserving Customers </h5>
                             <h2>${stats.newReservingCustomers}</h2>
                         </div>
                     </div>
