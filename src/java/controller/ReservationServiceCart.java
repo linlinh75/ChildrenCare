@@ -206,6 +206,7 @@ public class ReservationServiceCart extends HttpServlet {
             // Save reservation to database
             ReservationDAO reservationDAO = new ReservationDAO();
             int reservationId = reservationDAO.insertReservation(reservation);
+            reservation.setId(reservationId);
             request.setAttribute("reservation", reservation);
 request.setAttribute("reservationId", reservationId);
             if (reservationId > 0) {

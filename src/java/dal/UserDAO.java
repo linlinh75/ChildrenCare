@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import static java.time.LocalDateTime.now;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -615,6 +616,7 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     public List<User> getUserByRoleId(int roleId){
          String sql = "SELECT * FROM user WHERE role_id = ?";
           try {
+               DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
               List<User> usersByRole = new ArrayList<>();
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, roleId);
@@ -631,7 +633,7 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                     rs.getString("image_link"),
                     rs.getInt("role_id"),
                     rs.getString("status"),
-                        rs.getString("created_date")
+                    LocalDateTime.parse(rs.getString("created_date").trim(), formatter).toLocalDate()
                 ));
             }
             return usersByRole;
@@ -641,32 +643,35 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         return null;
     }
     
-    public User getUserById(int id) {
-        String sql = "SELECT * FROM user WHERE id = ?";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new User(
-                    rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getString("full_name"),
-                    rs.getBoolean("gender"),
-                    rs.getString("mobile"),
-                    rs.getString("address"),
-                    rs.getString("image_link"),
-                    rs.getInt("role_id"),
-                    rs.getString("status")
-                );
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+   public User getUserById(int id) {
+    String sql = "SELECT * FROM user WHERE id = ?";
+    try {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return new User(
+                rs.getInt("id"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getString("full_name"),
+                rs.getBoolean("gender"),
+                rs.getString("mobile"),
+                rs.getString("address"),
+                rs.getString("image_link"),
+                rs.getInt("role_id"),
+                rs.getString("status"),
+                LocalDateTime.parse(rs.getString("created_date").trim(), formatter).toLocalDate() // Ensure no extra spaces
+            );
         }
-        return null;
+    } catch (SQLException ex) {
+        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (DateTimeParseException ex) {
+        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Date parsing error: " + ex.getMessage(), ex);
     }
-
+    return null;
+}
     public List<User> getFilteredAndSortedUsers(String genderFilter, String roleFilter, String statusFilter, 
                                           String searchKeyword, String sortBy, String sortOrder, 
                                           int page, int recordsPerPage) {

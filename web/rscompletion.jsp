@@ -20,8 +20,8 @@
     <jsp:include page="/common/common-homepage-header.jsp"></jsp:include>
     <%
         ReservationDAO rdao = new ReservationDAO();
-    Reservation res =  rdao.getReservationById(Integer.parseInt(request.getParameter("reservationId")));
-    User staff = rdao.getStaffByReservationID(Integer.parseInt(request.getParameter("reservationId")));
+    Reservation res =  rdao.getReservationById((int)request.getAttribute("reservationId"));
+    User staff = rdao.getStaffByReservationID((int)request.getAttribute("reservationId"));
     request.setAttribute("staff", staff);
     request.setAttribute("res", res);
     %>
@@ -36,7 +36,8 @@
                                 <div class="col-md-12 col-lg-12 d-flex ">
                                     <div class="card-body p-3 text-black">
                                         <div class="d-flex align-items-center mb-3 pb-1">
-                                            <span class="h1 fw-bold mb-0">Your Reservation Completion</span>
+                                            
+                                            <span class="h1 fw-bold mb-0">Your Reservation Details</span>
                                         </div>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
@@ -69,13 +70,14 @@
                                                               <h2 style="margin-top:2%; font-size: 20px" class="mb-1">Your reservation has been submitted</h2>  
                                                             </c:if>
                                                             
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Reservation ID: ${requestScope.res.getId()}</div>
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Reserved Date: ${requestScope.res.getReservation_date()}</div>
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Reserved Status: ${requestScope.res.getStatus()}</div>
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Assigned Staff: ${requestScope.staff.getFullName()}</div>
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Staff Contact Email: ${requestScope.staff.getEmail()}</div>
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Staff Contact Number: ${requestScope.staff.getMobile()}</div>
-                                                            <button class="btn btn-primary"  ><a href="HomeServlet">Back to Home Page</a></button>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Reservation ID: ${requestScope.res.getId()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Reserved Date: ${requestScope.res.getReservation_date()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Reserved Status: ${requestScope.res.getStatus()}</div>
+                                                            <c:if test="${requestScope.staff!=null}">
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Assigned Staff: ${requestScope.staff.getFullName()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Staff Contact Email: ${requestScope.staff.getEmail()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Staff Contact Number: ${requestScope.staff.getMobile()}</div>
+                                                        </c:if>    <button class="btn btn-primary"  ><a href="HomeServlet">Back to Home Page</a></button>
                                                         </div>
                                                     </div>
                                                 </div>

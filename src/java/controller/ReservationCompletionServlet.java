@@ -86,7 +86,7 @@ public class ReservationCompletionServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
+
             Reservation res = (Reservation) request.getAttribute("reservation");
             HttpSession session = request.getSession(false);
             ReservationDAO reservationDao = new ReservationDAO();
@@ -97,59 +97,11 @@ public class ReservationCompletionServlet extends HttpServlet {
             int amount = reservationDao.getTotal(res.getId());
             if(res.getStatus().equals("Pending")){
                request.setAttribute("res",res );
+               request.setAttribute("reservationId",res.getId() );
                request.getRequestDispatcher("rscompletion.jsp").forward(request, response);
             }           
-            
-            if(res.getStatus().equals("Approved")){
-             
-            List<User> allDoctors = userDao.getUserByRoleId(3);
-            List<WorkSchedule> worklist = new ArrayList<>();
-            worklist = userDao.listDoctorBusy(res.getCheckup_time());
-            List<User> listDoctorFree = new ArrayList<>(allDoctors);
-            Random rand = new Random();
-            for (WorkSchedule w : worklist) {
-                listDoctorFree.removeIf(doctor -> doctor.getId() == w.getDoctorId());
-            }
 
-            int countFreeDoctors = listDoctorFree.size();
 
-            if (countFreeDoctors > 0) {
-               
-               
-                int n = (countFreeDoctors == 1) ? 0 : rand.nextInt(countFreeDoctors);
-                User assignDoctor = listDoctorFree.get(n);
-
-                // Cập nhật thông tin đặt chỗ
-                reservationDao.changeStaffReservation(res.getId(), assignDoctor.getId());
-                reservationDao.assignWorkSchedule(res.getId(), assignDoctor.getId(), res.getCheckup_time());
-                
-
-                System.out.println("Assigned Doctor ID: " + assignDoctor.getId());
-            
-            User user = userDao.getProfileById(res.getCustomer_id());
-            try {
-                String content = "<p>Your reservation has been approved. Your doctor is Dr. "
-                        + assignDoctor.getFullName() + ". Email: " + assignDoctor.getEmail()
-                        + ". Mobile: " + assignDoctor.getMobile()
-                        + ". Please complete the transaction by transfering the fees by VNPAY: </p>"
-                        + "<a href='http://localhost:8080/ChildrenCare/vnpay_pay.jsp?amount=" + amount + "'>Click this link to pay fees</a>";
-                String subject = "Reservation Completion and Payment Guide";
-                EmailSender.sendHtml(user.getEmail(), content, subject);
-                request.setAttribute("res",res );
-               request.getRequestDispatcher("rscompletion.jsp").forward(request, response);
-            } catch (MessagingException ex) {
-                Logger.getLogger(ReservationCompletionServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            } else {
-                System.out.println("No available doctors at this time.");
-                // Xử lý trường hợp không có bác sĩ rảnh
-            }
-            }
-            
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(ReservationCompletionServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //   }
     }
 
     /**
