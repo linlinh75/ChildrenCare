@@ -19,10 +19,13 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import javax.mail.MessagingException;
 import model.Reservation;
 import model.User;
+import model.WorkSchedule;
 import util.EmailSender;
 
 /**
@@ -85,31 +88,44 @@ public class ReservationCompletionServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             Reservation res = (Reservation) request.getAttribute("reservation");
-            String optionPayment = res.getPay_option();
-            System.out.println(optionPayment);
             HttpSession session = request.getSession(false);
             ReservationDAO reservationDao = new ReservationDAO();
             UserDAO userDao = new UserDAO();
             EmailSender e = new EmailSender();
-            Timestamp registeredTime = res.getCheckup_time();
-            int rid = (int) request.getAttribute("reservationId");
-            session.setAttribute("rid", rid);
-            System.out.println(rid);
-            int amount = reservationDao.getTotal(rid);
+            session.setAttribute("rid", res.getId());
+            session.setAttribute("res",res);
+            int amount = reservationDao.getTotal(res.getId());
+            if(res.getStatus().equals("Pending")){
+               request.setAttribute("res",res );
+               request.getRequestDispatcher("rscompletion.jsp").forward(request, response);
+            }           
+            
+            if(res.getStatus().equals("Approved")){
+             
+            List<User> allDoctors = userDao.getUserByRoleId(3);
+            List<WorkSchedule> worklist = new ArrayList<>();
+            worklist = userDao.listDoctorBusy(res.getCheckup_time());
+            List<User> listDoctorFree = new ArrayList<>(allDoctors);
             Random rand = new Random();
-            // Obtain a number between [0 - max id].
-            int countFreeDoctors = userDao.listDoctorFree(registeredTime).size();
-                System.out.println(countFreeDoctors);
-            int n;
-            if(countFreeDoctors==1){
-                n=0;
-            }else{
-                n = rand.nextInt(userDao.listDoctorFree(registeredTime).size() - 1);
+            for (WorkSchedule w : worklist) {
+                listDoctorFree.removeIf(doctor -> doctor.getId() == w.getDoctorId());
             }
-            User assignDoctor = userDao.listDoctorFree(registeredTime).get(n);
-            reservationDao.changeStaffReservation(rid, assignDoctor.getId());
-            reservationDao.assignWorkSchedule(rid,assignDoctor.getId() , registeredTime);
-            reservationDao.statusReservation(rid,"Submitted");
+
+            int countFreeDoctors = listDoctorFree.size();
+
+            if (countFreeDoctors > 0) {
+               
+               
+                int n = (countFreeDoctors == 1) ? 0 : rand.nextInt(countFreeDoctors);
+                User assignDoctor = listDoctorFree.get(n);
+
+                // Cập nhật thông tin đặt chỗ
+                reservationDao.changeStaffReservation(res.getId(), assignDoctor.getId());
+                reservationDao.assignWorkSchedule(res.getId(), assignDoctor.getId(), res.getCheckup_time());
+                
+
+                System.out.println("Assigned Doctor ID: " + assignDoctor.getId());
+            
             User user = userDao.getProfileById(res.getCustomer_id());
             try {
                 String content = "<p>Your reservation has been approved. Your doctor is Dr. "
@@ -119,11 +135,17 @@ public class ReservationCompletionServlet extends HttpServlet {
                         + "<a href='http://localhost:8080/ChildrenCare/vnpay_pay.jsp?amount=" + amount + "'>Click this link to pay fees</a>";
                 String subject = "Reservation Completion and Payment Guide";
                 EmailSender.sendHtml(user.getEmail(), content, subject);
-                request.setAttribute("message", "Email sent");
-        request.getRequestDispatcher("/customer-reservationServiceCart.jsp").forward(request, response);
+                request.setAttribute("res",res );
+               request.getRequestDispatcher("rscompletion.jsp").forward(request, response);
             } catch (MessagingException ex) {
                 Logger.getLogger(ReservationCompletionServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
+            } else {
+                System.out.println("No available doctors at this time.");
+                // Xử lý trường hợp không có bác sĩ rảnh
+            }
+            }
+            
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(ReservationCompletionServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }

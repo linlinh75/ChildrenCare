@@ -40,7 +40,7 @@ public class AdminDashboardServlet extends HttpServlet {
             startDate = LocalDate.parse(request.getParameter("startDate"));
             endDate = LocalDate.parse(request.getParameter("endDate"));
         } else {
-            startDate = LocalDate.now().minusDays(30);
+            startDate = LocalDate.now().minusDays(7);
             endDate = LocalDate.now();
         }
          DashboardStats stats = dashboardDAO.getDashboardStats(startDate, endDate);

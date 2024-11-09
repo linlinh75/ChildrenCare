@@ -65,9 +65,13 @@
                                                     <div class="tab-content ml-1" id="myTabContent" style="">
                                                         <div class="row" style="text-align: start; margin-bottom: 1%">
                                                             <h2 style="margin-top:5%; font-size: 30px">Reservation Details</h2>
-                                                            <h2 style="margin-top:2%; font-size: 20px" class="mb-1">Your reservation has been submitted</h2>
+                                                            <c:if test="${requestScope.res.getStatus()}">
+                                                              <h2 style="margin-top:2%; font-size: 20px" class="mb-1">Your reservation has been submitted</h2>  
+                                                            </c:if>
+                                                            
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Reservation ID: ${requestScope.res.getId()}</div>
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Reserved Date: ${requestScope.res.getReservation_date()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Reserved Status: ${requestScope.res.getStatus()}</div>
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Assigned Staff: ${requestScope.staff.getFullName()}</div>
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Staff Contact Email: ${requestScope.staff.getEmail()}</div>
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%">Staff Contact Number: ${requestScope.staff.getMobile()}</div>

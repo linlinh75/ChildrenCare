@@ -19,6 +19,10 @@ public class User {
     private String status;
     private LocalDate created_date;
 
+    public User(int aInt, String string, String string0, String string1, boolean aBoolean, String string2, String string3, String string4, int aInt0, String string5, String string6) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public LocalDate getCreated_date() {
         return created_date;
     }

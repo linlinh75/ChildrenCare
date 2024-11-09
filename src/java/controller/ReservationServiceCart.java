@@ -213,7 +213,7 @@ request.setAttribute("reservationId", reservationId);
                 clearCart(cart);
 
                 // Set success message
-                session.setAttribute("success", "Appointment booked successfully! Your reservation ID is: " + reservationId);
+                session.setAttribute("book-success", "Appointment booked successfully! Your reservation ID is: " + reservationId);
 
                 // Redirect to appropriate page
                request.getRequestDispatcher("reservecompletion").forward(request, response);
