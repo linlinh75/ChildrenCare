@@ -97,6 +97,7 @@ public class ReservationCompletionServlet extends HttpServlet {
             int amount = reservationDao.getTotal(res.getId());
             if(res.getStatus().equals("Pending")){
                request.setAttribute("res",res );
+               request.setAttribute("amount",amount );
                request.setAttribute("reservationId",res.getId() );
                request.getRequestDispatcher("rscompletion.jsp").forward(request, response);
             }           

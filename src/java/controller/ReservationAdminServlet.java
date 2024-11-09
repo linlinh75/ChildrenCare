@@ -85,7 +85,7 @@ public class ReservationAdminServlet extends HttpServlet {
                                     + assignDoctor.getFullName() + ". Email: " + assignDoctor.getEmail()
                                     + ". Mobile: " + assignDoctor.getMobile()
                                     + ". Please complete the transaction by transfering the fees by VNPAY: </p>"
-                                    + "<a href='http://localhost:8080/ChildrenCare/vnpay_pay.jsp?amount=" + amount + "'>Click this link to pay fees</a>";
+                                    + "<a href='http://localhost:8080/ChildrenCare/vnpay_pay.jsp?amount=" + amount + "&rid="+res.getId()+"'>Click this link to pay fees</a>";
                             String subject = "Reservation Completion and Payment Guide";
                             EmailSender.sendHtml(user.getEmail(), content, subject);
                             request.setAttribute("res", res);

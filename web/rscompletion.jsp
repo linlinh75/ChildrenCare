@@ -70,9 +70,10 @@
                                                               <h2 style="margin-top:2%; font-size: 20px" class="mb-1">Your reservation has been submitted</h2>  
                                                             </c:if>
                                                             
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Reservation ID: ${requestScope.res.getId()}</div>
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Reserved Date: ${requestScope.res.getReservation_date()}</div>
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Reserved Status: ${requestScope.res.getStatus()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%; text-success">Reservation ID: ${requestScope.res.getId()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%; text-success">Reserved Date: ${requestScope.res.getReservation_date()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%; text-success">Reserved Status: ${requestScope.res.getStatus()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%; text-success">Reserved Total: ${requestScope.amount} $</div>
                                                             <c:if test="${requestScope.staff!=null}">
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Assigned Staff: ${requestScope.staff.getFullName()}</div>
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Staff Contact Email: ${requestScope.staff.getEmail()}</div>
