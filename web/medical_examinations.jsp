@@ -148,7 +148,7 @@
                         let rowsCount = rows.length;
                         let pageCount = Math.ceil(rowsCount / rowsPerPage);
                         const pagination = $('#pagination');
-                        
+                        let currentPage = 1;
                         // Function to update pagination based on visible rows
                         function updatePagination() {
                             rows = $('#examinationTable tbody tr.exam-row:visible');
@@ -165,7 +165,7 @@
                                 
                                 // Add page numbers
                                 for(let i = 1; i <= pageCount; i++) {
-                                    pagination.append('<li class="page-item ' + (i == 1 ? 'active' : '') + '"><span class="page-link" data-page="' + i + '">' + i + '</span></li>');
+                                    pagination.append('<li class="page-item ' + (i === 1 ? 'active' : '') + '"><span class="page-link" data-page="' + i + '">' + i + '</span></li>');
                                 }
                                 
                                 // Add Next button
@@ -204,6 +204,7 @@
                             if (this.value === '') {
                                 $('.exam-row').show();
                                 updatePagination();
+                                showPage(1);
                             }
                         });
                     });
