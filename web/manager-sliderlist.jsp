@@ -307,89 +307,11 @@
                             <div id="pagination"></div>
                         </div>
                     </div>
-                    <table class="slider-table">
-                        <thead>
-                            <tr>
-                                <th onclick="sortTable(0)">Slider ID <i class="fa fa-sort"></i></th>
-                                <th onclick="sortTable(1)">Title <i class="fa fa-sort"></i></th>
-                                <th>Image</th>
-                                <th onclick="sortTable(3)">Back Link <i class="fa fa-sort"></i></th>
-                                <th >Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sliderTableBody">
-                            <c:forEach var="slider" items="${slider}">
-                                <tr>
-                                    <td>${slider.getId()}</td>
-                                    <td>${slider.getTitle()}</td>
-                                    <td><img style="width: 200px; height: 100px;" src="${slider.getImageLink()}" alt="alt"/></td>
-                                    <td>${slider.getBacklink()}</td>
-                                    <td class="actions">
-                                        <form action="managerSliderList" method="post" style="display: flex; flex-direction: column; ">
-                                            <c:choose>
-                                                <c:when test="${slider.getStatus() == 1}">
-                                                    <button type="submit" class="btn-public" name="submit" value="1">Public</button>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <button type="submit" class="btn-hidden" name="submit" value="0">Hidden</button>
-                                                </c:otherwise>
-                                            </c:choose>
-                                            <input type="hidden" name="sliderId" value="${slider.getId()}">
-                                        </form>
-                                    </td>
-                                    <td class="actions">
-                                        <form action="managerSliderList" method="post" style="display: flex; flex-direction: column; ">
-                                            <a style="margin-bottom: 5px; width: 70px; border-radius: 4px; color: #fff; text-align: center" class="btn-view" href="managerSliderList?action=detail&id=${slider.getId()}">View</a>
-                                            <button style="margin-bottom: 5px; " type="button" class="btn-edit" onclick="openPopup(JSON.stringify({
-                                                        id: '${slider.getId()}',
-                                                        title: '${slider.getTitle()}',
-                                                        backlink: '${slider.getBacklink()}',
-                                                        imageLink: '${slider.getImageLink()}',
-                                                        status: '${slider.getStatus()}',
-                                                        note: '${slider.getNotes()}'
-                                                    }))">Edit</button>
-                                            <a style="margin-bottom: 5px; width: 70px; border-radius: 4px; color: #fff; text-align: center" class="btn-delete" href="managerSliderList?action=delete&id=${slider.getId()}" id="slide-${slider.getId()}"  onclick="return confirmDelete()" >Delete</a>
-                                            <input type="hidden" name="sliderId" value="${slider.getId()}">
-                                        </form>
-                                    </td>
-                                    <!-- Popup Edit -->
-                            <div id="editPopup" class="popup">
-                                <div class="popup-content">
-                                    <span class="close" onclick="closePopup()">&times;</span>
-                                    <h2 style="text-align: center; margin-bottom: 20px;">Edit Slider</h2>
-                                    <form id="editForm" method="post" action="managerSliderList" enctype="multipart/form-data">
-                                        <input type="hidden" name="sliderId" id="sliderId">
-                                        <div style="margin-bottom: 10px;">
-                                            <label for="sliderTitle" style="width: 100px; font-weight: bold">Title<span style="color: red;">*</span></label>
-                                            <input style="width: 80%; height: 80px;" type="text" name="sliderTitle" id="sliderTitle" required>
-                                        </div>
-                                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                            <label for="sliderImage" style="width: 100px; font-weight: bold">Image<span style="color: red;">*</span></label>
-                                            <img id="sliderImagePreview" style="width: 200px; height: 100px; margin-right: 10px;" alt="Image Preview"/>
-                                            <input type="file" id="sliderImageInput" name="sliderImage" accept="image/*" >
-                                        </div>
-                                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                            <label for="sliderBacklink" style="width: 100px; font-weight: bold">Back Link<span style="color: red;">*</span></label>
-                                            <input type="text" name="sliderBacklink" id="sliderBacklink" required>
-                                        </div>
-                                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                            <label for="sliderNote" style="width: 100px; font-weight: bold">Notes</label>
-                                            <input style="width: 80%; height: 80px;" type="text" name="sliderNote" id="sliderNote">
-                                        </div>
-                                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                            <button style="text-align: center !important; margin-bottom: 20px;" type="submit" name="submit" value="edit" class="btn btn-edit" onclick="return confirmEdit()">Save</button>
-                                    </form>
-                                </div>
-                            </div>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
-                    <div id="pagination"></div>
-                </div>
-            </div>
-        </section>
+
+                </section>
+                <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+            </main>
+        </div>
     </body>
 
 

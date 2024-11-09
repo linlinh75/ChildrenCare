@@ -159,15 +159,7 @@
             <!-- page-wrapper -->
 
             <!-- javascript -->
-            <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
-        <!-- simplebar -->
-        <script src="${pageContext.request.contextPath}/assets/js/simplebar.min.js"></script>
-        <!-- Icons -->
-        <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
-        <!-- Main Js -->
-        <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
-
-
+         
         <script>
             document.getElementById('uploadButton').addEventListener('click', function (e) {
                 e.preventDefault();

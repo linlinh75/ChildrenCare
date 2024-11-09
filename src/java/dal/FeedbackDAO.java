@@ -15,6 +15,27 @@ public class FeedbackDAO extends DBContext {
     public List<Feedback> getFeedbackByServiceId(int serviceId) {
         List<Feedback> listFeedbacks = new ArrayList<>();
 
+        String sql = "SELECT * FROM feedback WHERE service_id = ? and isPublic=1";
+        try {
+            if (connection != null) {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setObject(1, serviceId);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    Feedback feedback = getFromResultSet(rs);
+                    listFeedbacks.add(feedback);
+                }
+            } else {
+                System.out.println("Connection is null, cannot execute query.");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return listFeedbacks;
+    }
+    public List<Feedback> getAllFeedbackByServiceId(int serviceId) {
+        List<Feedback> listFeedbacks = new ArrayList<>();
+
         String sql = "SELECT * FROM feedback WHERE service_id = ?";
         try {
             if (connection != null) {

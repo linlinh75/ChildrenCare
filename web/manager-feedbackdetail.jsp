@@ -166,10 +166,13 @@
         <script>
             function editStatus() {
                 const feedbackId = ${feedback.getId()};
-                window.location.href = "managerFeedbackList?action=change&id=" + feedbackId;
+                if (confirm("Are you sure you want to change status of this feedback?")) {
+                    window.location.href = "managerFeedbackList?action=change&id=" + feedbackId;
+                    alert("Status change successful!");
+                }
             }
-
         </script>
+
 
 
 

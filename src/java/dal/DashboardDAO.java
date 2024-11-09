@@ -21,7 +21,7 @@ public class DashboardDAO extends DBContext {
                     COUNT(*) as total,
                     COUNT(CASE WHEN status = 'Successful' THEN 1 END) as successful,
                     COUNT(CASE WHEN status = 'Cancelled' THEN 1 END) as cancelled,
-                    COUNT(CASE WHEN status = 'Submitted' THEN 1 END) as submitted
+                    COUNT(CASE WHEN status = 'Pending' THEN 1 END) as submitted
                 FROM reservation 
                 WHERE DATE(reservation_date) BETWEEN ? AND ?
                 """;

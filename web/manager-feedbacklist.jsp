@@ -151,6 +151,9 @@
                                 </ol>
                             </nav>
                         </div>
+                        <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#" style="margin-bottom:20px">
+                            <i class="uil uil-bars"></i>
+                        </a>
                         <div class="feedback-list" style="background-color: white; box-shadow: 0 0 2px 2px rgba(128, 128, 128, 0.1);">
                             <div class="table-container" style="background-color: white;">
                                 <div class="table-header">
