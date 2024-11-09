@@ -7,6 +7,7 @@
         <title>Settings Management</title>
         <link rel="stylesheet" href="./css/adminDashboard_style.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
         <style>
             /* Pagination styling */
             .pagination-wrapper {
@@ -80,33 +81,8 @@
     <body>
         <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
             <div class="dashboard-container">
-                <!-- Sidebar -->
-                <!--            <div class="side-navbar-container">
-                                <h3>Admin Dashboard</h3>
-                                <ul>
-                                    <li onclick="changeLocation('${pageContext.request.contextPath}/home')">
-                                        <i class="fa-solid fa-house"></i>
-                                        <span>Home</span>
-                                    </li>
-                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-user')">
-                                        <i class="fa-solid fa-users"></i>
-                                        <span>User Management</span>
-                                    </li>
-                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-service')">
-                                        <i class="fa-solid fa-stethoscope"></i>
-                                        <span>Services</span>
-                                    </li>
-                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-settings')"
-                                        class="active">
-                                        <i class="fa-solid fa-gear"></i>
-                                        <span>Settings</span>
-                                    </li>
-                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-reservation')">
-                                        <i class="fa-solid fa-calendar-check"></i>
-                                        <span>Reservations</span>
-                                    </li>
-                                </ul>
-                            </div>-->
+               <!--Sidebar-->
+               
             <div class="user-container">
                 <div class="user-list-container fade-in">
                     <h1 class="user-container-table">Settings Management</h1>
@@ -199,32 +175,35 @@
                                         </tr>
                                     </c:when>
                                     <c:otherwise>
+                                        <c:set var="count" value="1"/>
                                         <c:forEach items="${settingList}" var="setting">
                                             <tr>
-                                                <td>${setting.id}</td>
+                                                <td>${count}</td>
                                                 <td>${setting.type}</td>
                                                 <td>${setting.name}</td>
                                                 <td>${setting.value}</td>
                                                 <td>
                                                     <span
-                                                        class="status-badge ${setting.status == 'Active' ? 'active' : 'inactive'}">
-                                                        ${setting.status}
+                                                        class="status-badge ${setting.status == 1 ? 'active' : 'inactive'}">
+                                                        ${setting.status == 1 ? 'Active' : 'Inactive'}
                                                     </span>
                                                 </td>
                                                 <td>
                                                     <button
-                                                        onclick="window.location.href = 'setting-details?id=${setting.id}'"
+                                                        onclick="window.location.href = 'setting-details?id=${setting.value}'"
                                                         class="btn btn-info">
                                                         <i class="fa-solid fa-eye"></i>
                                                     </button>
                                                     <button
-                                                        onclick="showEditModalWithData('${setting.id}', '${setting.type}', '${setting.name}',
-                                                                        '${setting.value}', '${setting.description}', '${setting.status}')"
+                                                        onclick="showEditModalWithData('${setting.value}', '${setting.type}', 
+                                                                '${setting.name}', '${setting.value}', '${setting.description}', 
+                                                                '${setting.status}')"
                                                         class="btn btn-primary">
                                                         <i class="fa-solid fa-pen"></i>
                                                     </button>
                                                 </td>
                                             </tr>
+                                            <c:set var="count" value="${count + 1}"/>
                                         </c:forEach>
                                     </c:otherwise>
                                 </c:choose>
@@ -297,8 +276,8 @@
                         <div class="form-group">
                             <label class="required-field">Status</label>
                             <select name="status" required>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
                             </select>
                         </div>
                     </div>
@@ -352,8 +331,8 @@
                         <div class="form-group">
                             <label class="required-field">Status</label>
                             <select name="status" id="editStatus" required>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
                             </select>
                         </div>
                     </div>

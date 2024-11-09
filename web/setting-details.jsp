@@ -144,10 +144,9 @@
                         <div class="form-header">
                             <h1><i class="fas fa-cog"></i> Setting Details</h1>
                             <div>
-
-                                <button onclick="history.back()" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left"></i> Back
-                                </button>
+                                <a href="${pageContext.request.contextPath}/admin-manage-settings" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to Settings List
+                                </a>
                             </div>
                         </div>
 
@@ -199,9 +198,8 @@
                         <div class="form-group">
                             <label><i class="fas fa-toggle-on"></i> Status</label>
                             <select name="status" required>
-                                <option value="Active" ${setting.status=='Active' ? 'selected' : '' }>Active</option>
-                                <option value="Inactive" ${setting.status=='Inactive' ? 'selected' : '' }>Inactive
-                                </option>
+                                <option value="1" ${setting.status == 1 ? 'selected' : ''}>Active</option>
+                                <option value="0" ${setting.status == 0 ? 'selected' : ''}>Inactive</option>
                             </select>
                         </div>
 

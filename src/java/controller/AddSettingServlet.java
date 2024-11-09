@@ -26,7 +26,7 @@ public class AddSettingServlet extends HttpServlet {
             String name = request.getParameter("name");
             int value = Integer.parseInt(request.getParameter("value"));
             String description = request.getParameter("description");
-            String status = request.getParameter("status");
+            int status = Integer.parseInt(request.getParameter("status"));
             
             Setting setting = new Setting();
             setting.setType(type);
@@ -36,12 +36,23 @@ public class AddSettingServlet extends HttpServlet {
             setting.setStatus(status);
             
             SettingDAO settingDAO = new SettingDAO();
-            boolean success = settingDAO.addSetting(setting);
+            int result = settingDAO.addSetting(setting);
             
-            if (success) {
-                request.getSession().setAttribute("successMessage", "Setting added successfully!");
-            } else {
-                request.getSession().setAttribute("errorMessage", "Failed to add setting.");
+            switch (result) {
+                case 1:
+                    request.getSession().setAttribute("successMessage", "Setting added successfully!");
+                    break;
+                case -1:
+                    request.getSession().setAttribute("errorMessage", "Setting with this type and value already exists!");
+                    break;
+                case -2:
+                    request.getSession().setAttribute("errorMessage", "Setting with this type and name already exists!");
+                    break;
+                case -3:
+                    request.getSession().setAttribute("errorMessage", "Database error occurred!");
+                    break;
+                default:
+                    request.getSession().setAttribute("errorMessage", "Failed to add setting!");
             }
             
             response.sendRedirect("admin-manage-settings");

@@ -61,14 +61,14 @@ public class AddUserServlet extends HttpServlet {
             int result = userDAO.addUser(user);
             
             if (result > 0) {
-                try {
-                    EmailUtil.sendPasswordEmail(email, password);
-                    request.getSession().setAttribute("successMessage", 
-                        "User added successfully! Login credentials have been sent to their email.");
-                } catch (MessagingException e) {
-                    request.getSession().setAttribute("successMessage", 
-                        "User added successfully! Failed to send email: " + e.getMessage());
-                }
+//                try {
+//                    EmailUtil.sendPasswordEmail(email, password);
+//                    request.getSession().setAttribute("successMessage", 
+//                        "User added successfully! Login credentials have been sent to their email.");
+//                } catch (MessagingException e) {
+                    request.getSession().setAttribute("successMessage", "User added successfully! ");
+//                                + "Failed to send email: " + e.getMessage());
+//                }
             } else {
                 request.getSession().setAttribute("errorMessage", "Failed to add user.");
             }

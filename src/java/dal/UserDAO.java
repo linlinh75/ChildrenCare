@@ -227,37 +227,18 @@ public class UserDAO extends DBContext {
     }
 
     public int addUser(User user) throws SQLException {
-        // Check for duplicate email
-        String checkEmailSql = "SELECT COUNT(*) FROM user WHERE email = ?";
-        // Check for duplicate mobile
-        String checkMobileSql = "SELECT COUNT(*) FROM user WHERE mobile = ?";
+        // Kiểm tra email và số điện thoại đã tồn tại chưa
+        if (isEmailExistsExceptUser(user.getEmail(), 0)) {
+            return -1; // Email đã tồn tại
+        }
+        if (isMobileExistsExceptUser(user.getMobile(), 0)) {
+            return -2; // Số điện thoại đã tồn tại
+        }
         
-        try {
-            // Check for duplicate email
-            PreparedStatement checkEmailStmt = connection.prepareStatement(checkEmailSql);
-            checkEmailStmt.setString(1, user.getEmail());
-            ResultSet rsEmail = checkEmailStmt.executeQuery();
-            if (rsEmail.next() && rsEmail.getInt(1) > 0) {
-                Logger.getLogger(UserDAO.class.getName()).log(Level.WARNING, 
-                    "Cannot add user: Email {0} already exists", user.getEmail());
-                throw new SQLException("Email already exists");
-            }
+        String sql = "INSERT INTO user (email, password, full_name, gender, mobile, address, image_link, role_id, status) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            // Check for duplicate mobile
-            PreparedStatement checkMobileStmt = connection.prepareStatement(checkMobileSql);
-            checkMobileStmt.setString(1, user.getMobile());
-            ResultSet rsMobile = checkMobileStmt.executeQuery();
-            if (rsMobile.next() && rsMobile.getInt(1) > 0) {
-                Logger.getLogger(UserDAO.class.getName()).log(Level.WARNING, 
-                    "Cannot add user: Mobile {0} already exists", user.getMobile());
-                throw new SQLException("Mobile number already exists");
-            }
-
-            // If no duplicates found, proceed with insert
-            String sql = "INSERT INTO user (email, password, full_name, gender, mobile, address, image_link, role_id, status) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            PreparedStatement stmt = connection.prepareStatement(sql);
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getFullName());
@@ -268,11 +249,7 @@ public class UserDAO extends DBContext {
             stmt.setInt(8, user.getRoleId());
             stmt.setString(9, user.getStatus());
 
-            return stmt.executeUpdate();
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Error adding user", ex);
-            throw ex; // Rethrow the exception to be handled by the caller
+            return stmt.executeUpdate(); // Trả về số dòng được thêm
         }
     }
 
@@ -622,39 +599,54 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         return 0;
     }
 
-    public boolean updateUser(User user) {
-        // Check for duplicate email (excluding current user)
-        String checkEmailSql = "SELECT COUNT(*) FROM user WHERE email = ? AND id != ?";
-        // Check for duplicate mobile (excluding current user)
-        String checkMobileSql = "SELECT COUNT(*) FROM user WHERE mobile = ? AND id != ?";
-        
+    // Thêm phương thức kiểm tra email tồn tại (trừ user hiện tại)
+    private boolean isEmailExistsExceptUser(String email, int userId) {
+        String sql = "SELECT COUNT(*) FROM user WHERE email = ? AND id != ?";
         try {
-            // Check for duplicate email
-            PreparedStatement checkEmailStmt = connection.prepareStatement(checkEmailSql);
-            checkEmailStmt.setString(1, user.getEmail());
-            checkEmailStmt.setInt(2, user.getId());
-            ResultSet rsEmail = checkEmailStmt.executeQuery();
-            if (rsEmail.next() && rsEmail.getInt(1) > 0) {
-                Logger.getLogger(UserDAO.class.getName()).log(Level.WARNING, 
-                    "Cannot update user: Email {0} already exists", user.getEmail());
-                throw new SQLException("Email already exists");
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, email);
+            stmt.setInt(2, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 
-            // Check for duplicate mobile
-            PreparedStatement checkMobileStmt = connection.prepareStatement(checkMobileSql);
-            checkMobileStmt.setString(1, user.getMobile());
-            checkMobileStmt.setInt(2, user.getId());
-            ResultSet rsMobile = checkMobileStmt.executeQuery();
-            if (rsMobile.next() && rsMobile.getInt(1) > 0) {
-                Logger.getLogger(UserDAO.class.getName()).log(Level.WARNING, 
-                    "Cannot update user: Mobile {0} already exists", user.getMobile());
-                throw new SQLException("Mobile number already exists");
+    // Thêm phương thức kiểm tra số điện thoại tồn tại (trừ user hiện tại)
+    private boolean isMobileExistsExceptUser(String mobile, int userId) {
+        String sql = "SELECT COUNT(*) FROM user WHERE mobile = ? AND id != ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, mobile);
+            stmt.setInt(2, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 
-            // If no duplicates found, proceed with update
-            String sql = "UPDATE user SET email=?, full_name=?, gender=?, mobile=?, " +
-                        "address=?, role_id=?, status=? WHERE id=?";
-                        
+    // Sửa lại phương thức updateUser
+    public int updateUser(User user) {
+        // Kiểm tra email và số điện thoại đã tồn tại với user khác chưa
+        if (isEmailExistsExceptUser(user.getEmail(), user.getId())) {
+            return -1; // Email đã tồn tại
+        }
+        if (isMobileExistsExceptUser(user.getMobile(), user.getId())) {
+            return -2; // Số điện thoại đã tồn tại
+        }
+        
+        String sql = "UPDATE user SET email=?, full_name=?, gender=?, mobile=?, " +
+                    "address=?, role_id=?, status=? WHERE id=?";
+                    
+        try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getFullName());
@@ -665,11 +657,10 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             stmt.setString(7, user.getStatus());
             stmt.setInt(8, user.getId());
             
-            return stmt.executeUpdate() > 0;
-            
+            return stmt.executeUpdate(); // Trả về số dòng được cập nhật
         } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Error updating user", ex);
-            return false;
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return -3; // Lỗi SQL
         }
     }
 
