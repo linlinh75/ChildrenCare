@@ -7,6 +7,7 @@
         <title>Settings Management</title>
         <link rel="stylesheet" href="./css/adminDashboard_style.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
         <style>
             /* Pagination styling */
             .pagination-wrapper {
@@ -74,44 +75,244 @@
                 display: table;
                 clear: both;
             }
+
+            /* Existing styles... */
+            
+            .form-group textarea {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                resize: vertical;
+                min-height: 80px;
+            }
+            
+            /* Add max-width for description column */
+            .table td:nth-child(5) {
+                max-width: 200px;
+                white-space: normal;
+                word-wrap: break-word;
+            }
+
+            .radio-group {
+                display: flex;
+                gap: 20px;
+                margin-top: 8px;
+            }
+
+            .radio-label {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .radio-label input[type="radio"] {
+                width: auto;
+                margin-right: 8px;
+                cursor: pointer;
+            }
+
+            .radio-label span {
+                font-size: 14px;
+                color: #333;
+            }
+
+            /* Custom radio button styling */
+            .radio-label input[type="radio"] {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                width: 20px;
+                height: 20px;
+                border: 2px solid #ddd;
+                border-radius: 50%;
+                outline: none;
+                margin-right: 8px;
+                position: relative;
+                cursor: pointer;
+            }
+
+            .radio-label input[type="radio"]:checked {
+                border-color: #007bff;
+            }
+
+            .radio-label input[type="radio"]:checked::before {
+                content: '';
+                position: absolute;
+                width: 12px;
+                height: 12px;
+                background-color: #007bff;
+                border-radius: 50%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .radio-label:hover input[type="radio"] {
+                border-color: #007bff;
+            }
+
+            .radio-label:hover span {
+                color: #007bff;
+            }
+
+            /* Add scrollable modal styles */
+            .modal-content {
+                max-height: 90vh; /* Maximum height is 90% of viewport height */
+                overflow-y: auto; /* Enable vertical scrolling */
+                display: flex;
+                flex-direction: column;
+            }
+
+            .modal-header {
+                position: sticky;
+                top: 0;
+                background: white;
+                z-index: 1000;
+                padding: 15px 20px;
+                margin: -20px -20px 20px -20px; /* Negative margin to align with modal content */
+                border-bottom: 1px solid #ddd;
+            }
+
+            .modal-footer {
+                position: sticky;
+                bottom: 0;
+                background: white;
+                z-index: 1000;
+                padding: 15px 20px;
+                margin: 20px -20px -20px -20px; /* Negative margin to align with modal content */
+                border-top: 1px solid #ddd;
+            }
+
+            .modal-body {
+                flex: 1;
+                padding: 0 20px;
+                overflow-y: auto;
+            }
+
+            /* Custom scrollbar styling */
+            .modal-content::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            .modal-content::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 4px;
+            }
+
+            .modal-content::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 4px;
+            }
+
+            .modal-content::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+            /* Add some spacing between form groups */
+            .modal-body .form-group {
+                margin-bottom: 25px;
+            }
+
+            /* Make sure the modal doesn't get too tall on smaller screens */
+            @media (max-height: 768px) {
+                .modal-content {
+                    max-height: 85vh;
+                }
+            }
+
+            /* Make sure the modal doesn't get too wide on smaller screens */
+            @media (max-width: 768px) {
+                .modal-content {
+                    width: 95%;
+                    margin: 10px auto;
+                }
+            }
+
+            /* Table header styling */
+            .thead-dark {
+                background-color: #343a40;
+                color: white;
+            }
+
+            .thead-dark th {
+                padding: 15px;
+                font-weight: 500;
+                text-align: left;
+                border-bottom: 2px solid #454d55;
+            }
+
+            .sortable {
+                cursor: pointer;
+                position: relative;
+                padding-right: 20px !important;
+            }
+
+            .sortable i {
+                position: absolute;
+                right: 5px;
+                top: 50%;
+                transform: translateY(-50%);
+                opacity: 0.3;
+                transition: opacity 0.2s;
+            }
+
+            .sortable:hover i {
+                opacity: 1;
+            }
+
+            /* Responsive table */
+            .table-responsive-wrapper {
+                overflow-x: auto;
+                margin: 0 -20px;
+                padding: 0 20px;
+            }
+
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .table td, .table th {
+                padding: 12px 15px;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .table tbody tr:hover {
+                background-color: #f8f9fa;
+            }
+
+            /* Column width control */
+            .table th, .table td {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* Description column special handling */
+            .table td:nth-child(5) {
+                white-space: normal;
+                min-width: 200px;
+                max-width: 300px;
+            }
         </style>
     </head>
 
     <body>
         <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
             <div class="dashboard-container">
-                <!-- Sidebar -->
-                <!--            <div class="side-navbar-container">
-                                <h3>Admin Dashboard</h3>
-                                <ul>
-                                    <li onclick="changeLocation('${pageContext.request.contextPath}/home')">
-                                        <i class="fa-solid fa-house"></i>
-                                        <span>Home</span>
-                                    </li>
-                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-user')">
-                                        <i class="fa-solid fa-users"></i>
-                                        <span>User Management</span>
-                                    </li>
-                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-service')">
-                                        <i class="fa-solid fa-stethoscope"></i>
-                                        <span>Services</span>
-                                    </li>
-                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-settings')"
-                                        class="active">
-                                        <i class="fa-solid fa-gear"></i>
-                                        <span>Settings</span>
-                                    </li>
-                                    <li onclick="changeLocation('${pageContext.request.contextPath}/admin-manage-reservation')">
-                                        <i class="fa-solid fa-calendar-check"></i>
-                                        <span>Reservations</span>
-                                    </li>
-                                </ul>
-                            </div>-->
-            <div class="user-container">
-                <div class="user-list-container fade-in">
-                    <h1 class="user-container-table">Settings Management</h1>
+                <!--Sidebar-->
 
-                    <!-- Success/Error Messages - Only show when needed -->
+                <div class="user-container">
+                    <div class="user-list-container fade-in">
+                        <h1 class="user-container-table">Settings Management</h1>
+
+                        <!-- Success/Error Messages - Only show when needed -->
                     <c:if test="${not empty sessionScope.successMessage}">
                         <div class="alert alert-success">
                             ${sessionScope.successMessage}
@@ -173,22 +374,25 @@
                         <table class="table">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th onclick="sortTable('id')" class="sortable">
+                                    <th onclick="sortTable('id')" class="sortable" style="width: 5%;">
                                         ID <i class="fas fa-sort"></i>
                                     </th>
-                                    <th onclick="sortTable('type')" class="sortable">
+                                    <th onclick="sortTable('type')" class="sortable" style="width: 15%;">
                                         Type <i class="fas fa-sort"></i>
                                     </th>
-                                    <th onclick="sortTable('name')" class="sortable">
+                                    <th onclick="sortTable('name')" class="sortable" style="width: 20%;">
                                         Name <i class="fas fa-sort"></i>
                                     </th>
-                                    <th onclick="sortTable('value')" class="sortable">
+                                    <th onclick="sortTable('value')" class="sortable" style="width: 10%;">
                                         Value <i class="fas fa-sort"></i>
                                     </th>
-                                    <th onclick="sortTable('status')" class="sortable">
+                                    <th onclick="sortTable('description')" class="sortable" style="width: 30%;">
+                                        Description <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th onclick="sortTable('status')" class="sortable" style="width: 10%;">
                                         Status <i class="fas fa-sort"></i>
                                     </th>
-                                    <th>Actions</th>
+                                    <th style="width: 10%;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -199,32 +403,36 @@
                                         </tr>
                                     </c:when>
                                     <c:otherwise>
+                                        <c:set var="count" value="1"/>
                                         <c:forEach items="${settingList}" var="setting">
                                             <tr>
-                                                <td>${setting.id}</td>
+                                                <td>${count}</td>
                                                 <td>${setting.type}</td>
                                                 <td>${setting.name}</td>
                                                 <td>${setting.value}</td>
+                                                <td>${setting.description}</td>
                                                 <td>
                                                     <span
-                                                        class="status-badge ${setting.status == 'Active' ? 'active' : 'inactive'}">
-                                                        ${setting.status}
+                                                        class="status-badge ${setting.status == 1 ? 'active' : 'inactive'}">
+                                                        ${setting.status == 1 ? 'Active' : 'Inactive'}
                                                     </span>
                                                 </td>
                                                 <td>
                                                     <button
-                                                        onclick="window.location.href = 'setting-details?id=${setting.id}'"
+                                                        onclick="window.location.href = 'setting-details?id=${setting.value}'"
                                                         class="btn btn-info">
                                                         <i class="fa-solid fa-eye"></i>
                                                     </button>
                                                     <button
-                                                        onclick="showEditModalWithData('${setting.id}', '${setting.type}', '${setting.name}',
-                                                                        '${setting.value}', '${setting.description}', '${setting.status}')"
+                                                        onclick="showEditModalWithData('${setting.value}', '${setting.type}',
+                                                                        '${setting.name}', '${setting.description}',
+                                                                        '${setting.status}')"
                                                         class="btn btn-primary">
                                                         <i class="fa-solid fa-pen"></i>
                                                     </button>
                                                 </td>
                                             </tr>
+                                            <c:set var="count" value="${count + 1}"/>
                                         </c:forEach>
                                     </c:otherwise>
                                 </c:choose>
@@ -272,34 +480,27 @@
                         <div class="form-group">
                             <label class="required-field">Type</label>
                             <select name="type" required>
-                                <option value="Role">Role</option>
                                 <option value="Post Category">Post Category</option>
                                 <option value="Service Category">Service Category</option>
-                                <option value="User Status">User Status</option>
                             </select>
                         </div>
-
+                        <br><br>
                         <div class="form-group">
                             <label class="required-field">Name</label>
                             <input type="text" name="name" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="required-field">Value</label>
-                            <input type="number" name="value" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea name="description" rows="3"></textarea>
-                        </div>
-
-                        <div class="form-group">
                             <label class="required-field">Status</label>
                             <select name="status" required>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
                             </select>
+                        </div>
+                        <br><br>
+                        <div class="form-group">
+                            <label class="required-field">Description</label>
+                            <textarea name="description" rows="3" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -326,12 +527,16 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="required-field">Type</label>
-                            <select name="type" id="editType" required>
-                                <option value="Role">Role</option>
-                                <option value="Post Category">Post Category</option>
-                                <option value="Service Category">Service Category</option>
-                                <option value="User Status">User Status</option>
-                            </select>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="type" value="Post Category" required>
+                                    <span>Post Category</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="type" value="Service Category" required>
+                                    <span>Service Category</span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -339,22 +544,25 @@
                             <input type="text" name="name" id="editName" required>
                         </div>
 
-                        <div class="form-group">
-                            <label class="required-field">Value</label>
-                            <input type="number" name="value" id="editValue" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea name="description" id="editDescription" rows="3"></textarea>
-                        </div>
+                        <input type="hidden" name="value" id="editValue">
 
                         <div class="form-group">
                             <label class="required-field">Status</label>
-                            <select name="status" id="editStatus" required>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="status" value="1" required>
+                                    <span>Active</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="status" value="0" required>
+                                    <span>Inactive</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required-field">Description</label>
+                            <textarea name="description" id="editDescription" rows="3" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -373,33 +581,36 @@
             function sortTable(column) {
                 const currentUrl = new URL(window.location.href);
                 const params = new URLSearchParams(currentUrl.search);
-                
+
                 // Get current sort parameters
                 const currentSortBy = params.get('sortBy');
                 const currentSortOrder = params.get('sortOrder');
-                
+
                 // Determine new sort order
                 let newSortOrder = 'asc';
                 if (column === currentSortBy && currentSortOrder === 'asc') {
                     newSortOrder = 'desc';
                 }
-                
+
                 // Update sort parameters
                 params.set('sortBy', column);
                 params.set('sortOrder', newSortOrder);
-                
+
                 // Reset to first page when sorting changes
                 params.set('page', '1');
-                
+
                 // Maintain other parameters (type, status, search)
                 const type = params.get('type');
                 const status = params.get('status');
                 const search = params.get('search');
-                
-                if (type) params.set('type', type);
-                if (status) params.set('status', status);
-                if (search) params.set('search', search);
-                
+
+                if (type)
+                    params.set('type', type);
+                if (status)
+                    params.set('status', status);
+                if (search)
+                    params.set('search', search);
+
                 // Redirect with all parameters
                 window.location.href = 'admin-manage-settings?' + params.toString();
             }
@@ -412,14 +623,24 @@
                 document.getElementById('addSettingModal').style.display = 'block';
             }
 
-            function showEditModalWithData(id, type, name, value, description, status) {
-                document.getElementById('editSettingId').value = id;
-                document.getElementById('editType').value = type;
+            function showEditModalWithData(value, type, name, description, status) {
+                document.getElementById('editSettingId').value = value;
                 document.getElementById('editName').value = name;
+                document.getElementById('editDescription').value = description || '';
                 document.getElementById('editValue').value = value;
-                document.getElementById('editDescription').value = description;
-                document.getElementById('editStatus').value = status;
-
+                
+                // Set radio buttons for type
+                const typeRadios = document.querySelectorAll('#editSettingForm input[name="type"]');
+                typeRadios.forEach(radio => {
+                    radio.checked = radio.value === type;
+                });
+                
+                // Set radio buttons for status
+                const statusRadios = document.querySelectorAll('#editSettingForm input[name="status"]');
+                statusRadios.forEach(radio => {
+                    radio.checked = radio.value === status.toString();
+                });
+                
                 document.getElementById('editSettingModal').style.display = 'block';
             }
 
@@ -457,6 +678,46 @@
 
                 return true;
             }
+
+            document.getElementById('editSettingForm').onsubmit = function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                
+                const name = formData.get('name').trim();
+                const description = formData.get('description').trim();
+                
+                if (name.length < 2) {
+                    alert('Name must be at least 2 characters long');
+                    return false;
+                }
+                
+                if (description.length < 10) {
+                    alert('Description must be at least 10 characters long');
+                    return false;
+                }
+                
+                fetch('edit-setting', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('editSettingModal').style.display = 'none';
+                        window.location.reload();
+                    } else {
+                        throw new Error('Failed to update setting');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating setting: ' + error.message);
+                });
+            };
+
+            document.querySelectorAll('.modal textarea').forEach(textarea => {
+                textarea.style.minHeight = '100px';
+                textarea.style.resize = 'vertical';
+            });
         </script>
 
         <style>
@@ -595,6 +856,39 @@
             .status-badge.inactive {
                 background-color: #dc3545;
                 color: white;
+            }
+
+            .modal textarea {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-family: inherit;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            .modal textarea:focus {
+                border-color: #007bff;
+                outline: none;
+                box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+            }
+
+            .form-error {
+                color: #dc3545;
+                font-size: 12px;
+                margin-top: 4px;
+                display: none;
+            }
+
+            .form-group.has-error .form-error {
+                display: block;
+            }
+
+            .form-group.has-error input,
+            .form-group.has-error textarea,
+            .form-group.has-error select {
+                border-color: #dc3545;
             }
         </style>
         <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>

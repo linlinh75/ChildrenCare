@@ -227,6 +227,14 @@ public class UserDAO extends DBContext {
     }
 
     public int addUser(User user) throws SQLException {
+        // Kiểm tra email và số điện thoại đã tồn tại chưa
+        if (isEmailExistsExceptUser(user.getEmail(), 0)) {
+            return -1; // Email đã tồn tại
+        }
+        if (isMobileExistsExceptUser(user.getMobile(), 0)) {
+            return -2; // Số điện thoại đã tồn tại
+        }
+        
         String sql = "INSERT INTO user (email, password, full_name, gender, mobile, address, image_link, role_id, status) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -241,7 +249,7 @@ public class UserDAO extends DBContext {
             stmt.setInt(8, user.getRoleId());
             stmt.setString(9, user.getStatus());
 
-            return stmt.executeUpdate();
+            return stmt.executeUpdate(); // Trả về số dòng được thêm
         }
     }
 
@@ -591,7 +599,50 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         return 0;
     }
 
-    public boolean updateUser(User user) {
+    // Thêm phương thức kiểm tra email tồn tại (trừ user hiện tại)
+    private boolean isEmailExistsExceptUser(String email, int userId) {
+        String sql = "SELECT COUNT(*) FROM user WHERE email = ? AND id != ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, email);
+            stmt.setInt(2, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    // Thêm phương thức kiểm tra số điện thoại tồn tại (trừ user hiện tại)
+    private boolean isMobileExistsExceptUser(String mobile, int userId) {
+        String sql = "SELECT COUNT(*) FROM user WHERE mobile = ? AND id != ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, mobile);
+            stmt.setInt(2, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    // Sửa lại phương thức updateUser
+    public int updateUser(User user) {
+        // Kiểm tra email và số điện thoại đã tồn tại với user khác chưa
+        if (isEmailExistsExceptUser(user.getEmail(), user.getId())) {
+            return -1; // Email đã tồn tại
+        }
+        if (isMobileExistsExceptUser(user.getMobile(), user.getId())) {
+            return -2; // Số điện thoại đã tồn tại
+        }
+        
         String sql = "UPDATE user SET email=?, full_name=?, gender=?, mobile=?, " +
                     "address=?, role_id=?, status=? WHERE id=?";
                     
@@ -606,10 +657,10 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             stmt.setString(7, user.getStatus());
             stmt.setInt(8, user.getId());
             
-            return stmt.executeUpdate() > 0;
+            return stmt.executeUpdate(); // Trả về số dòng được cập nhật
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            return -3; // Lỗi SQL
         }
     }
 

@@ -63,35 +63,35 @@
                 margin-bottom: 30px;
                 border-radius: 5px;
             }
-        
+
             .blog-comments .head img {
                 width: 60px;
                 height: 60px;
                 border-radius: 50%;
                 object-fit: cover;
             }
-        
+
             .meta-info {
                 margin-bottom: 15px;
             }
-        
+
             .rating {
                 font-size: 18px;
             }
-        
+
             .rating .fa-star {
                 color: #ffd700;
             }
-        
+
             .rating .fa-star-o {
                 color: #ddd;
             }
-        
+
             .feedback-image img {
                 border-radius: 8px;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             }
-        
+
             .average-rating {
                 text-align: center;
                 padding: 20px;
@@ -99,20 +99,35 @@
                 border-radius: 5px;
                 margin-bottom: 30px;
             }
-        
+
             .average-rating h4 {
                 margin: 0;
                 color: #333;
             }
-        
+
             .average-rating .fa-star {
                 color: #ffd700;
                 font-size: 24px;
             }
-        
+
             .average-rating .fa-star-o {
                 color: #ddd;
                 font-size: 24px;
+            }
+            .sticky-cart-button {
+                position: fixed;
+                bottom: 100px;
+                right: 20px;
+                z-index: 1000;
+            }
+            .sticky-cart-button .btn {
+                padding: 10px 20px;
+                font-size: 16px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease-in-out;
+            }
+            .sticky-cart-button .btn:hover {
+                transform: scale(1.05);
             }
         </style>
     </head>
@@ -198,18 +213,63 @@
                                         </ul>
                                     </div>
                                     <div class="price-footer">
-<!--                                        <form action="appointment" method="GET">
-                                            <input type="hidden" name="serviceId" value="${service.id}">
-                                            <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                                <i class="fa fa-calendar-plus"></i> Book Appointment
-                                            </button>
-                                        </form>-->
+                                        <!--                                        <form action="appointment" method="GET">
+                                                                                    <input type="hidden" name="serviceId" value="${service.id}">
+                                                                                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                                                                        <i class="fa fa-calendar-plus"></i> Book Appointment
+                                                                                    </button>
+                                                                                </form>-->
                                         <form action="customer-reservation-service-cart" method="POST">
                                             <input type="hidden" name="action" value="add">
                                             <input type="hidden" name="serviceId" value="${service.id}">
-                                            <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                                <i class="fa fa-calendar-plus"></i> Book Appointment
+                                            <button type="button" class="btn btn-primary" onclick="addToCart(${service.id})">
+                                                Add to Cart
                                             </button>
+                                            <script>
+                                                function addToCart(serviceId) {
+                                                    fetch('customer-reservation-service-cart', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/x-www-form-urlencoded',
+                                                        },
+                                                        body: `action=add&serviceId=${serviceId}`
+                                                    })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    // Update cart count badge
+                                                                    const cartBadge = document.getElementById('cart-count');
+                                                                    if (cartBadge) {
+                                                                        cartBadge.textContent = data.cartSize;
+                                                                        cartBadge.style.display = data.cartSize > 0 ? 'inline' : 'none';
+                                                                    }
+
+                                                                    // Show success message
+                                                                    alert(data.message);
+                                                                } else {
+                                                                    alert(data.message);
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('Error:', error);
+                                                                alert('Failed to add service to cart');
+                                                            });
+                                                }
+                                            </script>
+
+                                            <style>
+                                                .cart-badge {
+                                                    position: absolute;
+                                                    top: -8px;
+                                                    right: -8px;
+                                                    background-color: red;
+                                                    color: white;
+                                                    border-radius: 50%;
+                                                    padding: 2px 6px;
+                                                    font-size: 12px;
+                                                    display: none;
+                                                }
+                                            </style>
                                         </form>
                                     </div>
                                 </div>
@@ -217,74 +277,74 @@
                         </div>
                     </div>
                     <!-- Feedback Section -->
-<div class="col-12 news-single">
-    <div class="blog-comments">
-        <h2>Customer Feedback</h2>
-        <!-- Average Rating Display -->
-        <div class="average-rating mb-4">
-            <h4>Average Rating: 
-                <span class="text-warning">
-                    <c:set var="averageRating" value="${serviceservlet.getAverageRating(service.id)}"/>
-                    <c:forEach begin="1" end="5" var="i">
-                        <i class="fa fa-star${i <= averageRating ? '' : '-o'}"></i>
-                    </c:forEach>
-                    (${String.format("%.1f", averageRating)})
-                </span>
-            </h4>
-        </div>
-        
-        <div class="comments-body">
-            <c:forEach var="feedback" items="${listFeedback}">
-                <!-- Single Feedback -->
-                <div class="single-comments">
-                    <div class="main">
-                        <div class="head">
-                            <c:choose>
-                                <c:when test="${not empty feedback.image_link}">
-                                    <img src="${feedback.image_link}" alt="Feedback Image"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="img/author1.jpg" alt="Default Image"/>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
-                        <div class="body">
-                            <div class="meta-info d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h4>${serviceservlet.getUserName(feedback.user_id)}</h4>
-                                    <div class="comment-meta">
-                                        <span class="meta"><i class="fa fa-calendar"></i> ${feedback.feedback_time}</span>
-                                    </div>
-                                </div>
-                                <div class="rating">
-                                    <c:forEach begin="1" end="5" var="i">
-                                        <i class="fa fa-star${i <= feedback.rated_star ? ' text-warning' : '-o'}"></i>
-                                    </c:forEach>
-                                </div>
+                    <div class="col-12 news-single">
+                        <div class="blog-comments">
+                            <h2>Customer Feedback</h2>
+                            <!-- Average Rating Display -->
+                            <div class="average-rating mb-4">
+                                <h4>Average Rating: 
+                                    <span class="text-warning">
+                                        <c:set var="averageRating" value="${serviceservlet.getAverageRating(service.id)}"/>
+                                        <c:forEach begin="1" end="5" var="i">
+                                            <i class="fa fa-star${i <= averageRating ? '' : '-o'}"></i>
+                                        </c:forEach>
+                                        (${String.format("%.1f", averageRating)})
+                                    </span>
+                                </h4>
                             </div>
-                            <p>${feedback.content}</p>
-                            
-                            <c:if test="${not empty feedback.image_link}">
-                                <div class="feedback-image mt-2">
-                                    <img src="${feedback.image_link}" alt="Feedback Image" 
-                                         class="img-fluid" style="max-width: 200px;"/>
-                                </div>
-                            </c:if>
+
+                            <div class="comments-body">
+                                <c:forEach var="feedback" items="${listFeedback}">
+                                    <!-- Single Feedback -->
+                                    <div class="single-comments">
+                                        <div class="main">
+                                            <div class="head">
+                                                <c:choose>
+                                                    <c:when test="${not empty feedback.image_link}">
+                                                        <img src="${feedback.image_link}" alt="Feedback Image"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <img src="img/author1.jpg" alt="Default Image"/>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <div class="body">
+                                                <div class="meta-info d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h4>${serviceservlet.getUserName(feedback.user_id)}</h4>
+                                                        <div class="comment-meta">
+                                                            <span class="meta"><i class="fa fa-calendar"></i> ${feedback.feedback_time}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="rating">
+                                                        <c:forEach begin="1" end="5" var="i">
+                                                            <i class="fa fa-star${i <= feedback.rated_star ? ' text-warning' : '-o'}"></i>
+                                                        </c:forEach>
+                                                    </div>
+                                                </div>
+                                                <p>${feedback.content}</p>
+
+                                                <c:if test="${not empty feedback.image_link}">
+                                                    <div class="feedback-image mt-2">
+                                                        <img src="${feedback.image_link}" alt="Feedback Image" 
+                                                             class="img-fluid" style="max-width: 200px;"/>
+                                                    </div>
+                                                </c:if>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/ End Single Feedback -->
+                                </c:forEach>
+
+                                <!-- No Feedback Message -->
+                                <c:if test="${empty listFeedback}">
+                                    <div class="alert alert-info">
+                                        No feedback available for this service yet.
+                                    </div>
+                                </c:if>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!--/ End Single Feedback -->
-            </c:forEach>
-            
-            <!-- No Feedback Message -->
-            <c:if test="${empty listFeedback}">
-                <div class="alert alert-info">
-                    No feedback available for this service yet.
-                </div>
-            </c:if>
-        </div>
-    </div>
-</div>
                 </div>
             </div>
         </div>
@@ -406,6 +466,16 @@
                 </div>
             </div>
         </div>
+        <!-- Button Cart - Only show for customers -->
+        <c:if test="${sessionScope.account.roleId == 4}">
+            <!--Button Cart -->
+            <div class="sticky-cart-button">
+                <a href="./customer-reservation-service-cart" class="btn btn-primary">
+                    <i class="fa fa-shopping-cart"></i> View Cart
+                </a>
+            </div>
+        </c:if>
+
         <!-- Footer Area -->
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
             <!--/ End Footer Area -->
@@ -413,7 +483,7 @@
             
 
             <script>
-                // Update your existing JavaScript with this version
+                                                // Update your existing JavaScript with this version
 //                document.querySelector('.price-footer form').addEventListener('submit', function (e) {
 //                    e.preventDefault();
 //
@@ -427,46 +497,46 @@
 //                    $('#appointmentModal').modal('show');
 //                });
 
-                document.addEventListener('DOMContentLoaded', function () {
-                    var checkupTimeInput = document.getElementById('checkupTime');
-                    if (checkupTimeInput) {
-                        // Set minimum date to tomorrow
-                        var tomorrow = new Date();
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        tomorrow.setHours(0, 0, 0, 0);
-                        checkupTimeInput.min = tomorrow.toISOString().slice(0, 16);
+                                                document.addEventListener('DOMContentLoaded', function () {
+                                                    var checkupTimeInput = document.getElementById('checkupTime');
+                                                    if (checkupTimeInput) {
+                                                        // Set minimum date to tomorrow
+                                                        var tomorrow = new Date();
+                                                        tomorrow.setDate(tomorrow.getDate() + 1);
+                                                        tomorrow.setHours(0, 0, 0, 0);
+                                                        checkupTimeInput.min = tomorrow.toISOString().slice(0, 16);
 
-                        // Set maximum date to 3 months from now
-                        var maxDate = new Date();
-                        maxDate.setMonth(maxDate.getMonth() + 3);
-                        checkupTimeInput.max = maxDate.toISOString().slice(0, 16);
-                    }
-                });
+                                                        // Set maximum date to 3 months from now
+                                                        var maxDate = new Date();
+                                                        maxDate.setMonth(maxDate.getMonth() + 3);
+                                                        checkupTimeInput.max = maxDate.toISOString().slice(0, 16);
+                                                    }
+                                                });
 
-                document.getElementById('appointmentForm')?.addEventListener('submit', function (e) {
-                    e.preventDefault();
+                                                document.getElementById('appointmentForm')?.addEventListener('submit', function (e) {
+                                                    e.preventDefault();
 
-                    if (this.checkValidity()) {
-                        // Add any additional validation here
-                        this.submit();
-                    } else {
-                        this.reportValidity();
-                    }
-                });
+                                                    if (this.checkValidity()) {
+                                                        // Add any additional validation here
+                                                        this.submit();
+                                                    } else {
+                                                        this.reportValidity();
+                                                    }
+                                                });
 
-                // Add this to your existing JavaScript
-                document.addEventListener('DOMContentLoaded', function () {
-                    // Payment method handling
-                    const paymentSelect = document.getElementById('paymentMethod');
-                    const bankDetails = document.getElementById('bankDetails');
+                                                // Add this to your existing JavaScript
+                                                document.addEventListener('DOMContentLoaded', function () {
+                                                    // Payment method handling
+                                                    const paymentSelect = document.getElementById('paymentMethod');
+                                                    const bankDetails = document.getElementById('bankDetails');
 
-                    if (paymentSelect) {
-                        paymentSelect.addEventListener('change', function () {
-                            // Show bank details only when bank transfer is selected
-                            bankDetails.style.display = this.value === 'bankTransfer' ? 'block' : 'none';
-                        });
-                    }
-                });
+                                                    if (paymentSelect) {
+                                                        paymentSelect.addEventListener('change', function () {
+                                                            // Show bank details only when bank transfer is selected
+                                                            bankDetails.style.display = this.value === 'bankTransfer' ? 'block' : 'none';
+                                                        });
+                                                    }
+                                                });
         </script>
     </body>
 </html>

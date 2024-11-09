@@ -49,28 +49,16 @@ public class UserDetailsServlet extends HttpServlet {
             HttpSession session = request.getSession();
             User loggedInUser = (User) session.getAttribute("account");
             
-            // Debug log
-            System.out.println("POST request received");
-            System.out.println("Form parameters:");
-            request.getParameterMap().forEach((key, value) -> {
-                System.out.println(key + ": " + String.join(", ", value));
-            });
-            
-            // Check if user is admin
             if (loggedInUser != null && loggedInUser.getRoleId() == 1) {
-                // Get form data with null checks
                 String idStr = request.getParameter("id");
-                System.out.println("Received ID: " + idStr); // Debug log
-                
                 if (idStr == null || idStr.trim().isEmpty()) {
                     throw new IllegalArgumentException("User ID is required");
                 }
                 
                 int id = Integer.parseInt(idStr);
-                
-                // Get current user data first
                 UserDAO userDAO = new UserDAO();
                 User currentUser = userDAO.getUserById(id);
+                
                 if (currentUser == null) {
                     throw new IllegalArgumentException("User not found");
                 }
@@ -85,59 +73,44 @@ public class UserDetailsServlet extends HttpServlet {
                     }
                 }
                 
-                // Update only the fields that are provided
-                String fullName = request.getParameter("fullName");
-                String email = request.getParameter("email");
-                String genderStr = request.getParameter("gender");
-                String mobile = request.getParameter("mobile");
-                String address = request.getParameter("address");
-                String roleIdStr = request.getParameter("roleId");
-                String status = request.getParameter("status");
-                
-                // Debug logs
-                System.out.println("Updating user with ID: " + id);
-                System.out.println("Full Name: " + fullName);
-                System.out.println("Email: " + email);
-                System.out.println("Gender: " + genderStr);
-                System.out.println("Mobile: " + mobile);
-                System.out.println("Address: " + address);
-                System.out.println("Role ID: " + roleIdStr);
-                System.out.println("Status: " + status);
-                
-                // Create user object with current values
+                // Create user object with updated values
                 User user = new User();
                 user.setId(id);
-                user.setFullName(fullName != null ? fullName : currentUser.getFullName());
-                user.setEmail(email != null ? email : currentUser.getEmail());
-                user.setGender(genderStr != null ? Boolean.parseBoolean(genderStr) : currentUser.isGender());
-                user.setMobile(mobile != null ? mobile : currentUser.getMobile());
-                user.setAddress(address != null ? address : currentUser.getAddress());
-                user.setRoleId(roleIdStr != null ? Integer.parseInt(roleIdStr) : currentUser.getRoleId());
-                user.setStatus(status != null ? status : currentUser.getStatus());
+                user.setFullName(request.getParameter("fullName"));
+                user.setEmail(request.getParameter("email"));
+                user.setGender(Boolean.parseBoolean(request.getParameter("gender")));
+                user.setMobile(request.getParameter("mobile"));
+                user.setAddress(request.getParameter("address"));
+                user.setRoleId(Integer.parseInt(request.getParameter("roleId")));
+                user.setStatus(request.getParameter("status"));
                 
-                // Keep existing values that shouldn't be modified
+                // Keep existing values
                 user.setPassword(currentUser.getPassword());
                 user.setImageLink(currentUser.getImageLink());
                 
-                // Update user
-                boolean success = userDAO.updateUser(user);
-                
-                if (success) {
-                    session.setAttribute("successMessage", "User updated successfully!");
-                    System.out.println("User updated successfully");
-                } else {
-                    session.setAttribute("errorMessage", "Failed to update user.");
-                    System.out.println("Failed to update user");
+                // Update user and handle result
+                int result = userDAO.updateUser(user);
+                switch (result) {
+                    case 1:
+                        session.setAttribute("successMessage", "User updated successfully!");
+                        break;
+                    case -1:
+                        session.setAttribute("errorMessage", "Email already exists!");
+                        break;
+                    case -2:
+                        session.setAttribute("errorMessage", "Phone number already exists!");
+                        break;
+                    case -3:
+                        session.setAttribute("errorMessage", "Database error occurred!");
+                        break;
+                    default:
+                        session.setAttribute("errorMessage", "Failed to update user!");
                 }
             } else {
                 session.setAttribute("errorMessage", "You don't have permission to modify user information.");
-                System.out.println("Permission denied");
             }
             
-            // Redirect back to the same page
-            String redirectUrl = "user-details?id=" + request.getParameter("id");
-            System.out.println("Redirecting to: " + redirectUrl);
-            response.sendRedirect(redirectUrl);
+            response.sendRedirect("user-details?id=" + request.getParameter("id"));
             
         } catch (Exception e) {
             System.out.println("Error in doPost: " + e.getMessage());

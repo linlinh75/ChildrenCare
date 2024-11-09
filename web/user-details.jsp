@@ -190,21 +190,23 @@
                     <div class="user-details-form">
                         <div class="form-header">
                             <h1><i class="fas fa-user-circle"></i> User Details</h1>
-                            <button type="button" onclick="history.back()" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Back
-                            </button>
+                            <div>
+                                <a href="${pageContext.request.contextPath}/admin-manage-user" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to Users List
+                                </a>
+                            </div>
                         </div>
 
                         <!-- Success/Error Messages -->
                     <c:if test="${not empty sessionScope.successMessage}">
                         <div class="alert alert-success">
-                            <i class="fas fa-check-circle"></i> ${sessionScope.successMessage}
+                            ${sessionScope.successMessage}
                             <% session.removeAttribute("successMessage"); %>
                         </div>
                     </c:if>
                     <c:if test="${not empty sessionScope.errorMessage}">
                         <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle"></i> ${sessionScope.errorMessage}
+                            ${sessionScope.errorMessage}
                             <% session.removeAttribute("errorMessage"); %>
                         </div>
                     </c:if>
