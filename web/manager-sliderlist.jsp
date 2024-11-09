@@ -5,6 +5,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Slider List</title>
+        <!-- favicon -->
+        <link rel="shortcut icon" href="img/favicon.png">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
         <style>
             .table-container {
                 width: 100%;
@@ -172,8 +175,7 @@
             }
         </style>
     </head>
-    <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
-        <body>
+    <body>
         <% String message = (String) session.getAttribute("message"); %>
         <% if (message != null) { %>
         <script>
@@ -181,39 +183,128 @@
             <% session.removeAttribute("message"); %>
         </script>
         <% } %>
-        <section class="container-fluid" style="width: 80%">
-            <div class="bread_crumb">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
-                        <li class="breadcrumb-item"><a href="./profile">Profile</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Slider List</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="slider-list">
-                <div class="table-container">
-                    <div class="table-header">
-                        <div class="search-box">
-                            <input type="text" placeholder="Search by title" id="searchInput" onkeyup="filterSliders()">
-                            <button type="button">
-                                <i class="fa fa-search"></i>
-                            </button>
+        <div class="page-wrapper doctris-theme toggled">
+            <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
+                <main class="page-content bg-light">
+                <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
+                    <section class="container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px;">
+                        <div class="bread_crumb">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb" style="background-color: white; box-shadow: 0 0 2px 2px rgba(128, 128, 128, 0.1);">
+                                    <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="./profile">Manager DashBoard</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Slider List</li>
+                                </ol>
+                            </nav>
                         </div>
-                        <div class="d-flex" style="gap: 20px"> 
-                            <div class="status-filter" style="display: flex">
-                                <div>Filter by status:</div>
-                                <div class="status-filter">
-                                    <select id="statusFilter" onchange="filterSliders()">
-                                        <option value="all">All</option>
-                                        <option value="1">Public</option>
-                                        <option value="0">Hidden</option>
-                                    </select>
+                        <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#" style="margin-bottom:20px">
+                            <i class="uil uil-bars"></i>
+                        </a>
+                        <div class="slider-list" style="background-color: white; box-shadow: 0 0 2px 2px rgba(128, 128, 128, 0.1);">
+                            <div class="table-container" style="background-color: white;">
+                                <div class="table-header">
+                                    <div class="search-box">
+                                        <input type="text" placeholder="Search by title" id="searchInput" onkeyup="filterSliders()">
+                                        <button type="button">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                    <div class="d-flex" style="gap: 20px"> 
+                                        <div class="status-filter" style="display: flex">
+                                            <div>Filter by status:</div>
+                                            <div class="status-filter">
+                                                <select id="statusFilter" onchange="filterSliders()">
+                                                    <option value="all">All</option>
+                                                    <option value="1">Public</option>
+                                                    <option value="0">Hidden</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div >
+                                            <a href="manager-addslider.jsp" type="button" class="btn btn-primary">Create Slider</a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div >
-                                <a href="manager-addslider.jsp" type="button" class="btn btn-primary">Create Slider</a>
-                            </div>
+                                <table class="slider-table">
+                                    <thead>
+                                        <tr>
+                                            <th onclick="sortTable(0)">Slider ID <i class="fa fa-sort"></i></th>
+                                            <th onclick="sortTable(1)">Title <i class="fa fa-sort"></i></th>
+                                            <th>Image</th>
+                                            <th onclick="sortTable(3)">Back Link <i class="fa fa-sort"></i></th>
+                                            <th >Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sliderTableBody">
+                                    <c:forEach var="slider" items="${slider}">
+                                        <tr>
+                                            <td>${slider.getId()}</td>
+                                            <td>${slider.getTitle()}</td>
+                                            <td><img style="width: 200px; height: 100px;" src="${slider.getImageLink()}" alt="alt"/></td>
+                                            <td>${slider.getBacklink()}</td>
+                                            <td class="actions">
+                                                <form action="managerSliderList" method="post" style="display: flex; flex-direction: column; ">
+                                                    <c:choose>
+                                                        <c:when test="${slider.getStatus() == 1}">
+                                                            <button type="submit" class="btn-public" name="submit" value="1">Public</button>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <button type="submit" class="btn-hidden" name="submit" value="0">Hidden</button>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    <input type="hidden" name="sliderId" value="${slider.getId()}">
+                                                </form>
+                                            </td>
+                                            <td class="actions">
+                                                <form action="managerSliderList" method="post" style="display: flex; flex-direction: column; ">
+                                                    <a style="margin-bottom: 5px; width: 70px; border-radius: 4px; color: #fff; text-align: center" class="btn-view" href="managerSliderList?action=detail&id=${slider.getId()}">View</a>
+                                                    <button style="margin-bottom: 5px; " type="button" class="btn-edit" onclick="openPopup(JSON.stringify({
+                                                                id: '${slider.getId()}',
+                                                                title: '${slider.getTitle()}',
+                                                                backlink: '${slider.getBacklink()}',
+                                                                imageLink: '${slider.getImageLink()}',
+                                                                status: '${slider.getStatus()}',
+                                                                note: '${slider.getNotes()}'
+                                                            }))">Edit</button>
+                                                    <a style="margin-bottom: 5px; width: 70px; border-radius: 4px; color: #fff; text-align: center" class="btn-delete" href="managerSliderList?action=delete&id=${slider.getId()}"  onclick="return confirmDelete()">Delete</a>
+                                                    <input type="hidden" name="sliderId" value="${slider.getId()}">
+                                                </form>
+                                            </td>
+                                            <!-- Popup Edit -->
+                                    <div id="editPopup" class="popup">
+                                        <div class="popup-content">
+                                            <span class="close" onclick="closePopup()">&times;</span>
+                                            <h2 style="text-align: center; margin-bottom: 20px;">Edit Slider</h2>
+                                            <form id="editForm" method="post" action="managerSliderList" enctype="multipart/form-data">
+                                                <input type="hidden" name="sliderId" id="sliderId">
+                                                <div style="margin-bottom: 10px;">
+                                                    <label for="sliderTitle" style="width: 100px; font-weight: bold">Title<span style="color: red;">*</span></label>
+                                                    <input style="width: 80%; height: 80px;" type="text" name="sliderTitle" id="sliderTitle" required>
+                                                </div>
+                                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                                    <label for="sliderImage" style="width: 100px; font-weight: bold">Image<span style="color: red;">*</span></label>
+                                                    <img id="sliderImagePreview" style="width: 200px; height: 100px; margin-right: 10px;" alt="Image Preview"/>
+                                                    <input type="file" id="sliderImageInput" name="sliderImage" accept="image/*" >
+                                                </div>
+                                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                                    <label for="sliderBacklink" style="width: 100px; font-weight: bold">Back Link<span style="color: red;">*</span></label>
+                                                    <input type="text" name="sliderBacklink" id="sliderBacklink" required>
+                                                </div>
+                                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                                    <label for="sliderNote" style="width: 100px; font-weight: bold">Notes</label>
+                                                    <input style="width: 80%; height: 80px;" type="text" name="sliderNote" id="sliderNote">
+                                                </div>
+                                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                                    <button style="text-align: center !important; margin-bottom: 20px;" type="submit" name="submit" value="edit" class="btn btn-edit" onclick="return confirmEdit()">Save</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                            <div id="pagination"></div>
                         </div>
                     </div>
                     <table class="slider-table">
@@ -300,7 +391,7 @@
             </div>
         </section>
     </body>
-    <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+
 
     <script>
         let currentPage = 1;

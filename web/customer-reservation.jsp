@@ -221,7 +221,6 @@
                                         <option value="" class="label">Status</option>
                                         <option value="all">All</option>
                                         <option value="Pending">Pending</option>
-                                        <option value="Submitted">Submitted</option>
                                         <option value="Approved">Approved</option>
                                         <option value="Successful">Successful</option>
                                         <option value="Cancelled">Cancelled</option>
@@ -262,9 +261,6 @@
                                         <c:choose>
                                             <c:when test="${res.status == 'Pending'}">
                                                 <span style="color: orange;">Pending</span>
-                                            </c:when>
-                                            <c:when test="${res.status == 'Submitted'}">
-                                                <span style="color: blue;">Submitted</span>
                                             </c:when>
                                             <c:when test="${res.status == 'Approved'}">
                                                 <span style="color: green;">Approved</span>
@@ -503,33 +499,6 @@
                 }
             });
         }
-        function cancelReservation(reservationId) {
-            if (!confirm("Are you sure you want to cancel this appointment?")) {
-                return;
-            }
-
-            $.ajax({
-                url: 'ReservationServlet',
-                type: 'POST',
-                data: {
-                    action: 'cancelReservation',
-                    id: reservationId
-                },
-                success: function (response) {
-                    if (response.success) {
-                        alert(response.message);
-                        // Close modal
-                        $('#reservationModal').modal('hide');
-                        // Reload page to update reservation list
-                        location.reload();
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert('Error cancelling reservation: ' + error);
-                }
-            });
-        }
+        
     </script>
 </html>

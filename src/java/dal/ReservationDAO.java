@@ -427,6 +427,7 @@ public class ReservationDAO extends DBContext {
     public static void main(String[] args) {
         ReservationDAO userdao = new ReservationDAO();
         List<Reservation> ulist = userdao.getAllReservation();
+        userdao.getUserByReservationID(1).getFullName();
 //        System.out.println(ulist.get(0).getCustomer_id());
 //        System.out.println(ulist.get(0).getCheckup_time());
 //        System.out.println(ulist.get(0).getList_service().get(0));

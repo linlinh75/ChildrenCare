@@ -124,6 +124,9 @@ public class DataServlet extends HttpServlet {
                         request.getRequestDispatcher("staff-exam").forward(request, response);
                         break;
                     }
+                    case "profile": {
+                        request.getRequestDispatcher("./profile").forward(request, response);
+                    }
                     default:
                         break;
                 }

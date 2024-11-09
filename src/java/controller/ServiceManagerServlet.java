@@ -19,9 +19,9 @@ import java.util.List;
 import model.Service;
 import model.ServiceCategory;
 
-@WebServlet("/service-list-admin")
+@WebServlet("/service-list-manager")
 @MultipartConfig
-public class ServiceAdminServlet extends HttpServlet {
+public class ServiceManagerServlet extends HttpServlet {
 
     private final ServiceDAO serviceDAO = new ServiceDAO();
     private final ServiceCategoryDAO serviceCategoryDAO = new ServiceCategoryDAO();
@@ -118,7 +118,7 @@ public class ServiceAdminServlet extends HttpServlet {
             request.setAttribute("service", service);
             request.getRequestDispatcher("admin/edit_service_admin.jsp").forward(request, response);
         } else {
-            response.sendRedirect(request.getContextPath() + "/service-list-admin?action=list");
+            response.sendRedirect(request.getContextPath() + "/service-list-manager?action=list");
         }
     }
 
@@ -136,7 +136,7 @@ public class ServiceAdminServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "Invalid service ID.");
         }
-        response.sendRedirect(request.getContextPath() + "/service-list-admin?action=list");
+        response.sendRedirect(request.getContextPath() + "/service-list-manager?action=list");
     }
 
     @Override
@@ -198,7 +198,7 @@ public class ServiceAdminServlet extends HttpServlet {
         boolean success = serviceDAO.addService(newService);
 
         if (success) {
-            response.sendRedirect(request.getContextPath() + "/service-list-admin?action=list");
+            response.sendRedirect(request.getContextPath() + "/service-list-manager?action=list");
         } else {
             request.setAttribute("error", "Failed to add the service. Please try again.");
             request.getRequestDispatcher("admin/add_service_admin.jsp").forward(request, response);
@@ -246,7 +246,7 @@ public class ServiceAdminServlet extends HttpServlet {
         boolean success = serviceDAO.updateService(service, newImagePath);
 
         if (success) {
-            response.sendRedirect(request.getContextPath() + "/service-list-admin?action=list");
+            response.sendRedirect(request.getContextPath() + "/service-list-manager?action=list");
         } else {
             request.setAttribute("error", "Failed to update the service. Please try again.");
             request.setAttribute("service", service);
