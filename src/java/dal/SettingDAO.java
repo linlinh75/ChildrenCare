@@ -64,10 +64,10 @@ public class SettingDAO extends DBContext {
             }
         }
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
-            sql.append(" AND (name LIKE ? OR description LIKE ?)");
+            sql.append(" AND (name LIKE ? OR CAST(value AS CHAR) = ?)");
             String searchPattern = "%" + searchKeyword.trim() + "%";
             params.add(searchPattern);
-            params.add(searchPattern);
+            params.add(searchKeyword.trim());
         }
         
         // Add sorting
@@ -292,10 +292,10 @@ public class SettingDAO extends DBContext {
             }
         }
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
-            sql.append(" AND (name LIKE ? OR description LIKE ?)");
+            sql.append(" AND (name LIKE ? OR CAST(value AS CHAR) = ?)");
             String searchPattern = "%" + searchKeyword.trim() + "%";
             params.add(searchPattern);
-            params.add(searchPattern);
+            params.add(searchKeyword.trim());
         }
         
         try {

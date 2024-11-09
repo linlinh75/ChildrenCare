@@ -126,6 +126,7 @@
                 color: red;
                 margin-left: 4px;
             }
+
         </style>
     </head>
 
@@ -168,7 +169,7 @@
                                 <option value="Service Category" ${setting.type=='Service Category' ? 'selected' : ''}>Service Category</option>
                             </select>
                         </div>
-
+                            <br><br><br>
                         <div class="form-group">
                             <label><i class="fas fa-font"></i> Name</label>
                             <input type="text" name="name" value="${setting.name}" required>
@@ -191,6 +192,7 @@
                                 <option value="0" ${setting.status == 0 ? 'selected' : ''}>Inactive</option>
                             </select>
                         </div>
+                            <br>
 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">

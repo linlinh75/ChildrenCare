@@ -93,6 +93,213 @@
                 white-space: normal;
                 word-wrap: break-word;
             }
+
+            .radio-group {
+                display: flex;
+                gap: 20px;
+                margin-top: 8px;
+            }
+
+            .radio-label {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .radio-label input[type="radio"] {
+                width: auto;
+                margin-right: 8px;
+                cursor: pointer;
+            }
+
+            .radio-label span {
+                font-size: 14px;
+                color: #333;
+            }
+
+            /* Custom radio button styling */
+            .radio-label input[type="radio"] {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                width: 20px;
+                height: 20px;
+                border: 2px solid #ddd;
+                border-radius: 50%;
+                outline: none;
+                margin-right: 8px;
+                position: relative;
+                cursor: pointer;
+            }
+
+            .radio-label input[type="radio"]:checked {
+                border-color: #007bff;
+            }
+
+            .radio-label input[type="radio"]:checked::before {
+                content: '';
+                position: absolute;
+                width: 12px;
+                height: 12px;
+                background-color: #007bff;
+                border-radius: 50%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .radio-label:hover input[type="radio"] {
+                border-color: #007bff;
+            }
+
+            .radio-label:hover span {
+                color: #007bff;
+            }
+
+            /* Add scrollable modal styles */
+            .modal-content {
+                max-height: 90vh; /* Maximum height is 90% of viewport height */
+                overflow-y: auto; /* Enable vertical scrolling */
+                display: flex;
+                flex-direction: column;
+            }
+
+            .modal-header {
+                position: sticky;
+                top: 0;
+                background: white;
+                z-index: 1000;
+                padding: 15px 20px;
+                margin: -20px -20px 20px -20px; /* Negative margin to align with modal content */
+                border-bottom: 1px solid #ddd;
+            }
+
+            .modal-footer {
+                position: sticky;
+                bottom: 0;
+                background: white;
+                z-index: 1000;
+                padding: 15px 20px;
+                margin: 20px -20px -20px -20px; /* Negative margin to align with modal content */
+                border-top: 1px solid #ddd;
+            }
+
+            .modal-body {
+                flex: 1;
+                padding: 0 20px;
+                overflow-y: auto;
+            }
+
+            /* Custom scrollbar styling */
+            .modal-content::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            .modal-content::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 4px;
+            }
+
+            .modal-content::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 4px;
+            }
+
+            .modal-content::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+            /* Add some spacing between form groups */
+            .modal-body .form-group {
+                margin-bottom: 25px;
+            }
+
+            /* Make sure the modal doesn't get too tall on smaller screens */
+            @media (max-height: 768px) {
+                .modal-content {
+                    max-height: 85vh;
+                }
+            }
+
+            /* Make sure the modal doesn't get too wide on smaller screens */
+            @media (max-width: 768px) {
+                .modal-content {
+                    width: 95%;
+                    margin: 10px auto;
+                }
+            }
+
+            /* Table header styling */
+            .thead-dark {
+                background-color: #343a40;
+                color: white;
+            }
+
+            .thead-dark th {
+                padding: 15px;
+                font-weight: 500;
+                text-align: left;
+                border-bottom: 2px solid #454d55;
+            }
+
+            .sortable {
+                cursor: pointer;
+                position: relative;
+                padding-right: 20px !important;
+            }
+
+            .sortable i {
+                position: absolute;
+                right: 5px;
+                top: 50%;
+                transform: translateY(-50%);
+                opacity: 0.3;
+                transition: opacity 0.2s;
+            }
+
+            .sortable:hover i {
+                opacity: 1;
+            }
+
+            /* Responsive table */
+            .table-responsive-wrapper {
+                overflow-x: auto;
+                margin: 0 -20px;
+                padding: 0 20px;
+            }
+
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .table td, .table th {
+                padding: 12px 15px;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .table tbody tr:hover {
+                background-color: #f8f9fa;
+            }
+
+            /* Column width control */
+            .table th, .table td {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* Description column special handling */
+            .table td:nth-child(5) {
+                white-space: normal;
+                min-width: 200px;
+                max-width: 300px;
+            }
         </style>
     </head>
 
@@ -167,25 +374,25 @@
                         <table class="table">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th onclick="sortTable('id')" class="sortable">
+                                    <th onclick="sortTable('id')" class="sortable" style="width: 5%;">
                                         ID <i class="fas fa-sort"></i>
                                     </th>
-                                    <th onclick="sortTable('type')" class="sortable">
+                                    <th onclick="sortTable('type')" class="sortable" style="width: 15%;">
                                         Type <i class="fas fa-sort"></i>
                                     </th>
-                                    <th onclick="sortTable('name')" class="sortable">
+                                    <th onclick="sortTable('name')" class="sortable" style="width: 20%;">
                                         Name <i class="fas fa-sort"></i>
                                     </th>
-                                    <th onclick="sortTable('value')" class="sortable">
+                                    <th onclick="sortTable('value')" class="sortable" style="width: 10%;">
                                         Value <i class="fas fa-sort"></i>
                                     </th>
-                                    <th onclick="sortTable('description')" class="sortable">
+                                    <th onclick="sortTable('description')" class="sortable" style="width: 30%;">
                                         Description <i class="fas fa-sort"></i>
                                     </th>
-                                    <th onclick="sortTable('status')" class="sortable">
+                                    <th onclick="sortTable('status')" class="sortable" style="width: 10%;">
                                         Status <i class="fas fa-sort"></i>
                                     </th>
-                                    <th>Actions</th>
+                                    <th style="width: 10%;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -277,7 +484,7 @@
                                 <option value="Service Category">Service Category</option>
                             </select>
                         </div>
-
+                        <br><br>
                         <div class="form-group">
                             <label class="required-field">Name</label>
                             <input type="text" name="name" required>
@@ -290,7 +497,7 @@
                                 <option value="0">Inactive</option>
                             </select>
                         </div>
-
+                        <br><br>
                         <div class="form-group">
                             <label class="required-field">Description</label>
                             <textarea name="description" rows="3" required></textarea>
@@ -320,10 +527,16 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="required-field">Type</label>
-                            <select name="type" id="editType" required>
-                                <option value="Post Category">Post Category</option>
-                                <option value="Service Category">Service Category</option>
-                            </select>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="type" value="Post Category" required>
+                                    <span>Post Category</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="type" value="Service Category" required>
+                                    <span>Service Category</span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -331,17 +544,20 @@
                             <input type="text" name="name" id="editName" required>
                         </div>
 
-                        <div class="form-group">
-                            <label class="required-field">Value</label>
-                            <input type="number" name="value" id="editValue" readonly>
-                        </div>
+                        <input type="hidden" name="value" id="editValue">
 
                         <div class="form-group">
                             <label class="required-field">Status</label>
-                            <select name="status" id="editStatus" required>
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
-                            </select>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="status" value="1" required>
+                                    <span>Active</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="status" value="0" required>
+                                    <span>Inactive</span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -409,11 +625,21 @@
 
             function showEditModalWithData(value, type, name, description, status) {
                 document.getElementById('editSettingId').value = value;
-                document.getElementById('editType').value = type;
                 document.getElementById('editName').value = name;
                 document.getElementById('editDescription').value = description || '';
                 document.getElementById('editValue').value = value;
-                document.getElementById('editStatus').value = status;
+                
+                // Set radio buttons for type
+                const typeRadios = document.querySelectorAll('#editSettingForm input[name="type"]');
+                typeRadios.forEach(radio => {
+                    radio.checked = radio.value === type;
+                });
+                
+                // Set radio buttons for status
+                const statusRadios = document.querySelectorAll('#editSettingForm input[name="status"]');
+                statusRadios.forEach(radio => {
+                    radio.checked = radio.value === status.toString();
+                });
                 
                 document.getElementById('editSettingModal').style.display = 'block';
             }
