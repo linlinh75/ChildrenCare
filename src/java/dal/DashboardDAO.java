@@ -1,3 +1,4 @@
+
 package dal;
 
 import java.math.BigDecimal;
@@ -10,50 +11,51 @@ import java.util.Map;
 import model.DashboardStats;
 
 public class DashboardDAO extends DBContext {
-    public DashboardStats getStats(LocalDate startDate, LocalDate endDate) {
+    public DashboardStats getDashboardStats(LocalDate startDate, LocalDate endDate) {
         DashboardStats stats = new DashboardStats();
         
         try {
-            // Get reservation statistics
+            // Get reservation stats for the current day
             String reservationSql = """
                 SELECT 
+                    COUNT(*) as total,
                     COUNT(CASE WHEN status = 'Successful' THEN 1 END) as successful,
                     COUNT(CASE WHEN status = 'Cancelled' THEN 1 END) as cancelled,
                     COUNT(CASE WHEN status = 'Submitted' THEN 1 END) as submitted
                 FROM reservation 
-                WHERE reservation_date BETWEEN ? AND ?
+                WHERE DATE(reservation_date) BETWEEN ? AND ?
                 """;
             
             PreparedStatement pstmt = connection.prepareStatement(reservationSql);
-            pstmt.setDate(1, java.sql.Date.valueOf(startDate));
-            pstmt.setDate(2, java.sql.Date.valueOf(endDate));
-            
+            pstmt.setString(1, startDate.toString());
+            pstmt.setString(2, endDate.toString());
             ResultSet rs = pstmt.executeQuery();
+            
             if (rs.next()) {
+                stats.setNewReservations(rs.getInt("total"));
                 stats.setSuccessfulReservations(rs.getInt("successful"));
                 stats.setCancelledReservations(rs.getInt("cancelled"));
                 stats.setSubmittedReservations(rs.getInt("submitted"));
             }
             
-            // Get revenue statistics
+            // Get revenue stats
             String revenueSql = """
                 SELECT 
                     sc.name as category,
-                    SUM(rs.quantity * rs.unit_price) as revenue
+                    SUM(rs.unit_price * rs.quantity) as revenue
                 FROM reservation_service rs
                 JOIN service s ON rs.service_id = s.id
                 JOIN service_category sc ON s.category_id = sc.id
                 JOIN reservation r ON rs.reservation_id = r.id
-                WHERE r.status = 'Successful'
-                AND r.reservation_date BETWEEN ? AND ?
+                WHERE r.status = 'Successful' and DATE(r.reservation_date) BETWEEN ? AND ?
                 GROUP BY sc.id, sc.name
                 """;
-            
+                
             pstmt = connection.prepareStatement(revenueSql);
-            pstmt.setDate(1, java.sql.Date.valueOf(startDate));
-            pstmt.setDate(2, java.sql.Date.valueOf(endDate));
-            
+            pstmt.setString(1, startDate.toString());
+            pstmt.setString(2, endDate.toString());
             rs = pstmt.executeQuery();
+            
             Map<String, BigDecimal> revenueByCategory = new HashMap<>();
             BigDecimal totalRevenue = BigDecimal.ZERO;
             
@@ -67,32 +69,24 @@ public class DashboardDAO extends DBContext {
             stats.setRevenueByCategory(revenueByCategory);
             stats.setTotalRevenue(totalRevenue);
             
-            // Get customer statistics
+            // Get customer stats for current day
             String customerSql = """
                 SELECT 
-                    COUNT(DISTINCT u.id) as new_customers,
-                    COUNT(DISTINCT r.customer_id) as new_reserving
-                FROM user u
-                LEFT JOIN reservation r ON u.id = r.customer_id 
-                    AND r.reservation_date BETWEEN ? AND ?
-                WHERE u.role_id = 4 
-                AND u.id IN (
-                    SELECT id FROM user 
-                    WHERE role_id = 4 
-                    AND id NOT IN (
+                    COUNT(DISTINCT CASE WHEN DATE(created_date) = CURRENT_DATE THEN id END) as new_customers,
+                    COUNT(DISTINCT CASE WHEN id IN (
                         SELECT DISTINCT customer_id 
                         FROM reservation 
-                        WHERE reservation_date < ?
-                    )
-                )
+                        WHERE DATE(reservation_date) BETWEEN ? AND ?
+                    ) THEN id END) as new_reserving
+                FROM user
+                WHERE role_id = 4
                 """;
-            
+                
             pstmt = connection.prepareStatement(customerSql);
-            pstmt.setDate(1, java.sql.Date.valueOf(startDate));
-            pstmt.setDate(2, java.sql.Date.valueOf(endDate));
-            pstmt.setDate(3, java.sql.Date.valueOf(startDate));
-            
+            pstmt.setString(1, startDate.toString());
+            pstmt.setString(2, endDate.toString());
             rs = pstmt.executeQuery();
+            
             if (rs.next()) {
                 stats.setNewCustomers(rs.getInt("new_customers"));
                 stats.setNewReservingCustomers(rs.getInt("new_reserving"));
@@ -104,4 +98,4 @@ public class DashboardDAO extends DBContext {
         
         return stats;
     }
-} 
+}

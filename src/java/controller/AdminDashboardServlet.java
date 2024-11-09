@@ -1,3 +1,4 @@
+
 package controller;
 
 import dal.DashboardDAO;
@@ -27,20 +28,25 @@ public class AdminDashboardServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("account");
         
-        // Check if user is admin
         if (user == null || user.getRoleId() != 1) {
             response.sendRedirect("login.jsp");
             return;
         }
         
-        // Get date range (default to last 30 days)
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusDays(30);
-        
-        // Get dashboard statistics
-        DashboardStats stats = dashboardDAO.getStats(startDate, endDate);
+        // Get today's stats
+        LocalDate startDate;
+        LocalDate endDate;
+        if (request.getParameter("startDate") != null && request.getParameter("endDate") != null) {
+            startDate = LocalDate.parse(request.getParameter("startDate"));
+            endDate = LocalDate.parse(request.getParameter("endDate"));
+        } else {
+            startDate = LocalDate.now().minusDays(30);
+            endDate = LocalDate.now();
+        }
+         DashboardStats stats = dashboardDAO.getDashboardStats(startDate, endDate);
         request.setAttribute("stats", stats);
         
         request.getRequestDispatcher("admin_dashboard.jsp").forward(request, response);
     }
-} 
+}
+ 

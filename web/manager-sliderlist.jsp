@@ -255,7 +255,7 @@
                                                         status: '${slider.getStatus()}',
                                                         note: '${slider.getNotes()}'
                                                     }))">Edit</button>
-                                            <a style="margin-bottom: 5px; width: 70px; border-radius: 4px; color: #fff; text-align: center" class="btn-delete" href="managerSliderList?action=delete&id=${slider.getId()}"  onclick="return confirmDelete()">Delete</a>
+                                            <a style="margin-bottom: 5px; width: 70px; border-radius: 4px; color: #fff; text-align: center" class="btn-delete" href="managerSliderList?action=delete&id=${slider.getId()}" id="slide-${slider.getId()}"  onclick="return confirmDelete()" >Delete</a>
                                             <input type="hidden" name="sliderId" value="${slider.getId()}">
                                         </form>
                                     </td>

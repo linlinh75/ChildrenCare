@@ -7,6 +7,15 @@ public class DashboardStats {
     private int successfulReservations;
     private int cancelledReservations;
     private int submittedReservations;
+    private int newReservations;
+
+    public int getNewReservations() {
+        return newReservations;
+    }
+
+    public void setNewReservations(int newReservations) {
+        this.newReservations = newReservations;
+    }
     private BigDecimal totalRevenue;
     private Map<String, BigDecimal> revenueByCategory;
     private int newCustomers;
