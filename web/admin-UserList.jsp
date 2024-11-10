@@ -309,7 +309,7 @@
                     opacity: 1;
                 }
             }
-            
+
             @keyframes slideOut {
                 from {
                     transform: translateX(0);
@@ -320,17 +320,17 @@
                     opacity: 0;
                 }
             }
-            
+
             .message-popup {
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             }
-            
+
             .alert-success {
                 background-color: #d4edda;
                 color: #155724;
                 border-color: #c3e6cb;
             }
-            
+
             .alert-danger {
                 background-color: #f8d7da;
                 color: #721c24;
@@ -382,368 +382,374 @@
     </head>
 
     <body>
-        <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
+        <div class="page-wrapper doctris-theme toggled">
+            <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
+                <main class="page-content bg-light">
+                <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
 
-            <div class="dashboard-container">
-                <!-- Sidebar -->
-                
-            <!-- Main Content -->
-            <div class="user-container">
-                <div class="user-list-container fade-in">
-                    <h1 class="user-container-table">User Management</h1>
+                    <div class="dashboard-container container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px;">
+                        <!-- Sidebar -->
 
-                    <!-- Success/Error Messages -->
-                    <c:if test="${not empty sessionScope.successMessage}">
-                        <div class="alert alert-success">
-                            <i class="fas fa-check-circle"></i>
-                            ${sessionScope.successMessage}
-                        </div>
-                        <%-- Remove message from session immediately after displaying --%>
-                        <% session.removeAttribute("successMessage"); %>
-                    </c:if>
-                    <c:if test="${not empty sessionScope.errorMessage}">
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle"></i>
-                            ${sessionScope.errorMessage}
-                        </div>
-                        <%-- Remove message from session immediately after displaying --%>
-                        <% session.removeAttribute("errorMessage"); %>
-                    </c:if>
+                        <!-- Main Content -->
+                        <div class="user-container container-fluid">
+                            <div class="user-list-container fade-in">
+                                <h1 class="user-container-table">User Management</h1>
 
-                    <!-- Search and Add User -->
-                    <div class="top-option">
-                        <form action="${pageContext.request.contextPath}/admin-manage-user" method="post"
-                              class="search-name-form">
-                            <input type="text" name="search" placeholder="Search by name, email or phone..."
-                                   value="${searchKeyword}">
-                            <button type="submit">
-                                <i class="fa-solid fa-magnifying-glass"></i> Search
-                            </button>
-                        </form>
-                        <button onclick="showAddModal()" class="btn btn-primary">
-                            <i class="fa-solid fa-user-plus"></i> Add New User
-                        </button>
-                    </div>
-
-                    <!-- Add filter section -->
-                    <div class="filter-section">
-                        <form action="${pageContext.request.contextPath}/admin-manage-user" method="get"
-                              class="filter-form">
-                            <!--                            <div class="filter-group">
-                                                            <label>Gender:</label>
-                                                            <select name="gender">
-                                                                <option value="">All</option>
-                                                                <option value="true" ${genderFilter=='true' ? 'selected' : '' }>Male
-                                                                </option>
-                                                                <option value="false" ${genderFilter=='false' ? 'selected' : '' }>Female
-                                                                </option>
-                                                            </select>
-                                                        </div>-->
-
-                            <div class="filter-group">
-                                <label>Role:</label>
-                                <select name="role">
-                                    <option value="">All</option>
-                                    <option value="1" ${roleFilter=='1' ? 'selected' : '' }>Admin</option>
-                                    <option value="2" ${roleFilter=='2' ? 'selected' : '' }>Manager</option>
-                                    <option value="3" ${roleFilter=='3' ? 'selected' : '' }>Staff</option>
-                                    <option value="4" ${roleFilter=='4' ? 'selected' : '' }>Customer</option>
-                                </select>
-                            </div>
-
-                            <div class="filter-group">
-                                <label>Status:</label>
-                                <select name="status">
-                                    <option value="">All</option>
-                                    <option value="Active" ${statusFilter=='Active' ? 'selected' : '' }>Active
-                                    </option>
-                                    <option value="Inactive" ${statusFilter=='Inactive' ? 'selected' : '' }>
-                                        Inactive</option>
-                                </select>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">Apply Filters</button>
-                        </form>
-                    </div>
-
-                    <!-- User Table -->
-                    <div class="table-responsive-wrapper">
-                        <table class="table">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th onclick="sortTable('id')" class="sortable">
-                                        ID <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th onclick="sortTable('full_name')" class="sortable">
-                                        Full Name <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th onclick="sortTable('gender')" class="sortable">
-                                        Gender <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th onclick="sortTable('email')" class="sortable">
-                                        Email <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th onclick="sortTable('mobile')" class="sortable">
-                                        Mobile <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th onclick="sortTable('role_id')" class="sortable">
-                                        Role <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th onclick="sortTable('status')" class="sortable">
-                                        Status <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:choose>
-                                    <c:when test="${empty listUser}">
-                                        <tr>
-                                            <td colspan="8" class="text-center">No users found</td>
-                                        </tr>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:forEach items="${listUser}" var="user">
-                                            <tr>
-                                                <td>${user.id}</td>
-                                                <td>${user.fullName}</td>
-                                                <td>${user.gender ? 'Male' : 'Female'}</td>
-                                                <td>${user.email}</td>
-                                                <td>${user.mobile}</td>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${user.roleId == 1}">Admin</c:when>
-                                                        <c:when test="${user.roleId == 2}">Manager</c:when>
-                                                        <c:when test="${user.roleId == 3}">Staff</c:when>
-                                                        <c:otherwise>Customer</c:otherwise>
-                                                    </c:choose>
-                                                </td>
-                                                <td>
-                                                    <span
-                                                        class="status-badge ${user.status == 'Active' ? 'active' : 'inactive'}">
-                                                        ${user.status}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        onclick="window.location.href = 'user-details?id=${user.id}'"
-                                                        class="btn btn-info">
-                                                        <i class="fa-solid fa-eye"></i>
-                                                    </button>
-                                                    <button onclick='showEditModal("${user.id}")'
-                                                            class="btn btn-primary">
-                                                        <i class="fa-solid fa-pen"></i>
-                                                    </button>
-
-                                                    <c:if test="${sessionScope.account.id ne user.id}">
-                                                        <button
-                                                            onclick='deleteUser("${user.id}", "${user.fullName}")'
-                                                            class="btn btn-danger">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </c:if>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Pagination -->
-                    <c:if test="${totalPages > 1}">
-                        <div class="pagination-wrapper">
-                            <ul class="pagination">
-                                <!-- Previous page -->
-                                <c:if test="${currentPage > 1}">
-                                    <li class="page-item">
-                                        <a class="page-link" href="admin-manage-user?page=${currentPage - 1}&sortBy=${sortBy}&sortOrder=${sortOrder}&gender=${genderFilter}&role=${roleFilter}&status=${statusFilter}&search=${searchKeyword}">Previous</a>
-                                    </li>
-                                </c:if>
-
-                                <!-- Page numbers -->
-                                <c:forEach begin="1" end="${totalPages}" var="i">
-                                    <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                        <a class="page-link" href="admin-manage-user?page=${i}&sortBy=${sortBy}&sortOrder=${sortOrder}&gender=${genderFilter}&role=${roleFilter}&status=${statusFilter}&search=${searchKeyword}">${i}</a>
-                                    </li>
-                                </c:forEach>
-
-                                <!-- Next page -->
-                                <c:if test="${currentPage < totalPages}">
-                                    <li class="page-item">
-                                        <a class="page-link" href="admin-manage-user?page=${currentPage + 1}&sortBy=${sortBy}&sortOrder=${sortOrder}&gender=${genderFilter}&role=${roleFilter}&status=${statusFilter}&search=${searchKeyword}">Next</a>
-                                    </li>
-                                </c:if>
-                            </ul>
-                        </div>
-
-                        <!-- Records info -->
-                        <div class="records-info text-center mt-2">
-                            <c:set var="startRecord" value="${(currentPage-1)*recordsPerPage + 1}" />
-                            <c:set var="endRecord" value="${currentPage*recordsPerPage}" />
-                            <c:if test="${endRecord > totalRecords}">
-                                <c:set var="endRecord" value="${totalRecords}" />
+                                <!-- Success/Error Messages -->
+                            <c:if test="${not empty sessionScope.successMessage}">
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle"></i>
+                                    ${sessionScope.successMessage}
+                                </div>
+                                <%-- Remove message from session immediately after displaying --%>
+                                <% session.removeAttribute("successMessage"); %>
                             </c:if>
-                            Showing ${startRecord} to ${endRecord} of ${totalRecords} records
-                        </div>
-                    </c:if>
-                </div>
-            </div>
-        </div>
+                            <c:if test="${not empty sessionScope.errorMessage}">
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    ${sessionScope.errorMessage}
+                                </div>
+                                <%-- Remove message from session immediately after displaying --%>
+                                <% session.removeAttribute("errorMessage"); %>
+                            </c:if>
 
-        <!-- Add User Modal -->
-        <div id="addUserModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Add New User</h2>
-                    <span class="close">&times;</span>
-                </div>
-                <form id="addUserForm" action="add-user" method="post">
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" name="fullName" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" name="email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" name="password" required>
-                    </div>
-
-                    <div class="form-row" style="display: flex; gap: 20px;">
-                        <div class="form-group" style="flex: 1;">
-                            <label>Gender</label>
-                            <div class="radio-group">
-                                <label class="radio-label">
-                                    <input type="radio" name="gender" value="true" required>
-                                    <span>Male</span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="gender" value="false" required>
-                                    <span>Female</span>
-                                </label>
+                            <!-- Search and Add User -->
+                            <div class="top-option">
+                                <form action="${pageContext.request.contextPath}/admin-manage-user" method="post"
+                                      class="search-name-form">
+                                    <input type="text" name="search" placeholder="Search by name, email or phone..."
+                                           value="${searchKeyword}">
+                                    <button type="submit">
+                                        <i class="fa-solid fa-magnifying-glass"></i> Search
+                                    </button>
+                                </form>
+                                <button onclick="showAddModal()" class="btn btn-primary">
+                                    <i class="fa-solid fa-user-plus"></i> Add New User
+                                </button>
                             </div>
+
+                            <!-- Add filter section -->
+                            <div class="filter-section">
+                                <form action="${pageContext.request.contextPath}/admin-manage-user" method="get"
+                                      class="filter-form">
+                                    <!--                            <div class="filter-group">
+                                                                    <label>Gender:</label>
+                                                                    <select name="gender">
+                                                                        <option value="">All</option>
+                                                                        <option value="true" ${genderFilter=='true' ? 'selected' : '' }>Male
+                                                                        </option>
+                                                                        <option value="false" ${genderFilter=='false' ? 'selected' : '' }>Female
+                                                                        </option>
+                                                                    </select>
+                                                                </div>-->
+
+                                    <div class="filter-group">
+                                        <label>Role:</label>
+                                        <select name="role">
+                                            <option value="">All</option>
+                                            <option value="1" ${roleFilter=='1' ? 'selected' : '' }>Admin</option>
+                                            <option value="2" ${roleFilter=='2' ? 'selected' : '' }>Manager</option>
+                                            <option value="3" ${roleFilter=='3' ? 'selected' : '' }>Staff</option>
+                                            <option value="4" ${roleFilter=='4' ? 'selected' : '' }>Customer</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="filter-group">
+                                        <label>Status:</label>
+                                        <select name="status">
+                                            <option value="">All</option>
+                                            <option value="Active" ${statusFilter=='Active' ? 'selected' : '' }>Active
+                                            </option>
+                                            <option value="Inactive" ${statusFilter=='Inactive' ? 'selected' : '' }>
+                                                Inactive</option>
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                </form>
+                            </div>
+
+                            <!-- User Table -->
+                            <div class="table-responsive-wrapper">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th onclick="sortTable('id')" class="sortable">
+                                                ID <i class="fas fa-sort"></i>
+                                            </th>
+                                            <th onclick="sortTable('full_name')" class="sortable">
+                                                Full Name <i class="fas fa-sort"></i>
+                                            </th>
+                                            <th onclick="sortTable('gender')" class="sortable">
+                                                Gender <i class="fas fa-sort"></i>
+                                            </th>
+                                            <th onclick="sortTable('email')" class="sortable">
+                                                Email <i class="fas fa-sort"></i>
+                                            </th>
+                                            <th onclick="sortTable('mobile')" class="sortable">
+                                                Mobile <i class="fas fa-sort"></i>
+                                            </th>
+                                            <th onclick="sortTable('role_id')" class="sortable">
+                                                Role <i class="fas fa-sort"></i>
+                                            </th>
+                                            <th onclick="sortTable('status')" class="sortable">
+                                                Status <i class="fas fa-sort"></i>
+                                            </th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:choose>
+                                            <c:when test="${empty listUser}">
+                                                <tr>
+                                                    <td colspan="8" class="text-center">No users found</td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach items="${listUser}" var="user">
+                                                    <tr>
+                                                        <td>${user.id}</td>
+                                                        <td>${user.fullName}</td>
+                                                        <td>${user.gender ? 'Male' : 'Female'}</td>
+                                                        <td>${user.email}</td>
+                                                        <td>${user.mobile}</td>
+                                                        <td>
+                                                            <c:choose>
+                                                                <c:when test="${user.roleId == 1}">Admin</c:when>
+                                                                <c:when test="${user.roleId == 2}">Manager</c:when>
+                                                                <c:when test="${user.roleId == 3}">Staff</c:when>
+                                                                <c:otherwise>Customer</c:otherwise>
+                                                            </c:choose>
+                                                        </td>
+                                                        <td>
+                                                            <span
+                                                                class="status-badge ${user.status == 'Active' ? 'active' : 'inactive'}">
+                                                                ${user.status}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <button
+                                                                onclick="window.location.href = 'user-details?id=${user.id}'"
+                                                                class="btn btn-info">
+                                                                <i class="fa-solid fa-eye"></i>
+                                                            </button>
+                                                            <button onclick='showEditModal("${user.id}")'
+                                                                    class="btn btn-primary">
+                                                                <i class="fa-solid fa-pen"></i>
+                                                            </button>
+
+                                                            <c:if test="${sessionScope.account.id ne user.id}">
+                                                                <button
+                                                                    onclick='deleteUser("${user.id}", "${user.fullName}")'
+                                                                    class="btn btn-danger">
+                                                                    <i class="fa-solid fa-trash"></i>
+                                                                </button>
+                                                            </c:if>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination -->
+                            <c:if test="${totalPages > 1}">
+                                <div class="pagination-wrapper">
+                                    <ul class="pagination">
+                                        <!-- Previous page -->
+                                        <c:if test="${currentPage > 1}">
+                                            <li class="page-item">
+                                                <a class="page-link" href="admin-manage-user?page=${currentPage - 1}&sortBy=${sortBy}&sortOrder=${sortOrder}&gender=${genderFilter}&role=${roleFilter}&status=${statusFilter}&search=${searchKeyword}">Previous</a>
+                                            </li>
+                                        </c:if>
+
+                                        <!-- Page numbers -->
+                                        <c:forEach begin="1" end="${totalPages}" var="i">
+                                            <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                                <a class="page-link" href="admin-manage-user?page=${i}&sortBy=${sortBy}&sortOrder=${sortOrder}&gender=${genderFilter}&role=${roleFilter}&status=${statusFilter}&search=${searchKeyword}">${i}</a>
+                                            </li>
+                                        </c:forEach>
+
+                                        <!-- Next page -->
+                                        <c:if test="${currentPage < totalPages}">
+                                            <li class="page-item">
+                                                <a class="page-link" href="admin-manage-user?page=${currentPage + 1}&sortBy=${sortBy}&sortOrder=${sortOrder}&gender=${genderFilter}&role=${roleFilter}&status=${statusFilter}&search=${searchKeyword}">Next</a>
+                                            </li>
+                                        </c:if>
+                                    </ul>
+                                </div>
+
+                                <!-- Records info -->
+                                <div class="records-info text-center mt-2">
+                                    <c:set var="startRecord" value="${(currentPage-1)*recordsPerPage + 1}" />
+                                    <c:set var="endRecord" value="${currentPage*recordsPerPage}" />
+                                    <c:if test="${endRecord > totalRecords}">
+                                        <c:set var="endRecord" value="${totalRecords}" />
+                                    </c:if>
+                                    Showing ${startRecord} to ${endRecord} of ${totalRecords} records
+                                </div>
+                            </c:if>
                         </div>
-
-                        <div class="form-group" style="flex: 1;">
-                            <label>Mobile</label>
-                            <input type="text" name="mobile" required>
-                        </div>
                     </div>
-
-                    <div class="form-group">
-                        <label>Address</label>
-                        <input type="text" name="address" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Role</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="roleId" value="1" required>
-                                <span>Admin</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="roleId" value="2" required>
-                                <span>Manager</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="roleId" value="3" required>
-                                <span>Staff</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="roleId" value="4" required checked>
-                                <span>Customer</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Add User</button>
-                        <button type="button" class="btn btn-secondary close-modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Edit User Modal -->
-        <div id="editUserModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Edit User</h2>
-                    <span class="close">&times;</span>
                 </div>
-                <form id="editUserForm" action="edit-user" method="post">
-                    <input type="hidden" name="id" id="editUserId">
 
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" name="fullName" id="editFullName" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" name="email" id="editEmail" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="gender" id="editGenderMale" value="true">
-                                <span>Male</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="gender" id="editGenderFemale" value="false">
-                                <span>Female</span>
-                            </label>
+                <!-- Add User Modal -->
+                <div id="addUserModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Add New User</h2>
+                            <span class="close">&times;</span>
                         </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Mobile</label>
-                        <input type="text" name="mobile" id="editMobile" required>
-                    </div>
+                        <form id="addUserForm" action="add-user" method="post">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" name="fullName" required>
+                            </div>
 
-                    <div class="form-group">
-                        <label>Address</label>
-                        <input type="text" name="address" id="editAddress" required>
-                    </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" name="email" required>
+                            </div>
 
-                    <!-- Role and Status in one line -->
-                    <div class="form-row" style="display: flex; gap: 20px;">
-                        <div class="form-group" style="flex: 1;">
-                            <label>Role</label>
-                            <select name="roleId" id="editRole">
-                                <option value="1">Admin</option>
-                                <option value="2">Manager</option>
-                                <option value="3">Staff</option>
-                                <option value="4">Customer</option>
-                            </select>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" name="password" required>
+                            </div>
+
+                            <div class="form-row" style="display: flex; gap: 20px;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Gender</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="gender" value="true" required>
+                                            <span>Male</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="gender" value="false" required>
+                                            <span>Female</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Mobile</label>
+                                    <input type="text" name="mobile" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" name="address" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Role</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="roleId" value="1" required>
+                                        <span>Admin</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="roleId" value="2" required>
+                                        <span>Manager</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="roleId" value="3" required>
+                                        <span>Staff</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="roleId" value="4" required checked>
+                                        <span>Customer</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Add User</button>
+                                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Edit User Modal -->
+                <div id="editUserModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Edit User</h2>
+                            <span class="close">&times;</span>
                         </div>
+                        <form id="editUserForm" action="edit-user" method="post">
+                            <input type="hidden" name="id" id="editUserId">
 
-                        <div class="form-group" style="flex: 1;">
-                            <label>Status</label>
-                            <select name="status" id="editStatus">
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
-                        </div>
-                    </div>
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" name="fullName" id="editFullName" required>
+                            </div>
 
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                        <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" name="email" id="editEmail" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="gender" id="editGenderMale" value="true">
+                                        <span>Male</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="gender" id="editGenderFemale" value="false">
+                                        <span>Female</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Mobile</label>
+                                <input type="text" name="mobile" id="editMobile" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" name="address" id="editAddress" required>
+                            </div>
+
+                            <!-- Role and Status in one line -->
+                            <div class="form-row" style="display: flex; gap: 20px;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Role</label>
+                                    <select name="roleId" id="editRole">
+                                        <option value="1">Admin</option>
+                                        <option value="2">Manager</option>
+                                        <option value="3">Staff</option>
+                                        <option value="4">Customer</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Status</label>
+                                    <select name="status" id="editStatus">
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
+                <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+                </main>
             </div>
-        </div>
-
+        </body>
         <script>
             // Define all functions first
             window.showAddModal = function () {
@@ -753,30 +759,30 @@
             window.showEditModal = function (userId) {
                 // Fetch user data
                 fetch('get-user-data?id=' + userId)
-                    .then(response => response.json())
-                    .then(user => {
-                        // Populate form fields
-                        document.getElementById('editUserId').value = user.id;
-                        document.getElementById('editFullName').value = user.fullName;
-                        document.getElementById('editEmail').value = user.email;
-                        // Set gender radio button
-                        if (user.gender) {
-                            document.getElementById('editGenderMale').checked = true;
-                        } else {
-                            document.getElementById('editGenderFemale').checked = true;
-                        }
-                        document.getElementById('editMobile').value = user.mobile;
-                        document.getElementById('editAddress').value = user.address;
-                        document.getElementById('editRole').value = user.roleId;
-                        document.getElementById('editStatus').value = user.status;
-                        
-                        // Show modal
-                        document.getElementById('editUserModal').style.display = 'block';
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error loading user data');
-                    });
+                        .then(response => response.json())
+                        .then(user => {
+                            // Populate form fields
+                            document.getElementById('editUserId').value = user.id;
+                            document.getElementById('editFullName').value = user.fullName;
+                            document.getElementById('editEmail').value = user.email;
+                            // Set gender radio button
+                            if (user.gender) {
+                                document.getElementById('editGenderMale').checked = true;
+                            } else {
+                                document.getElementById('editGenderFemale').checked = true;
+                            }
+                            document.getElementById('editMobile').value = user.mobile;
+                            document.getElementById('editAddress').value = user.address;
+                            document.getElementById('editRole').value = user.roleId;
+                            document.getElementById('editStatus').value = user.status;
+
+                            // Show modal
+                            document.getElementById('editUserModal').style.display = 'block';
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error loading user data');
+                        });
             }
 
             window.deleteUser = function (userId, userName) {
@@ -859,9 +865,9 @@
             }
 
             // Cập nhật validation cho form add user
-            document.getElementById('addUserForm').onsubmit = function(e) {
+            document.getElementById('addUserForm').onsubmit = function (e) {
                 const mobile = this.querySelector('[name="mobile"]').value.trim();
-                
+
                 if (!validatePhoneNumber(mobile)) {
                     e.preventDefault();
                     alert('Phone number must be 10 digits and start with 0');
@@ -871,9 +877,9 @@
             };
 
             // Cập nhật validation cho form edit user
-            document.getElementById('editUserForm').onsubmit = function(e) {
+            document.getElementById('editUserForm').onsubmit = function (e) {
                 const mobile = this.querySelector('[name="mobile"]').value.trim();
-                
+
                 if (!validatePhoneNumber(mobile)) {
                     e.preventDefault();
                     alert('Phone number must be 10 digits and start with 0');
@@ -884,7 +890,7 @@
 
             // Thêm real-time validation cho input mobile
             document.querySelectorAll('input[name="mobile"]').forEach(input => {
-                input.addEventListener('input', function() {
+                input.addEventListener('input', function () {
                     const mobile = this.value.trim();
                     if (mobile && !validatePhoneNumber(mobile)) {
                         this.style.borderColor = '#dc3545';
@@ -907,7 +913,7 @@
                 // Tạo element cho message
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `alert ${isSuccess ? 'alert-success' : 'alert-danger'}`;
-                
+
                 // Tùy chỉnh icon và message dựa trên loại thông báo
                 if (isSuccess) {
                     messageDiv.innerHTML = `
@@ -944,9 +950,9 @@
             }
 
             // Sửa lại phần xử lý response trong form submit
-            document.getElementById('editUserForm').addEventListener('submit', function(e) {
+            document.getElementById('editUserForm').addEventListener('submit', function (e) {
                 e.preventDefault();
-                
+
                 const formData = {
                     id: document.getElementById('editUserId').value,
                     fullName: document.getElementById('editFullName').value,
@@ -957,7 +963,7 @@
                     roleId: document.getElementById('editRole').value,
                     status: document.getElementById('editStatus').value
                 };
-                
+
                 fetch('edit-user', {
                     method: 'POST',
                     headers: {
@@ -965,32 +971,32 @@
                     },
                     body: new URLSearchParams(formData).toString()
                 })
-                .then(response => response.json())
-                .then(data => {
-                    // Đóng modal trước
-                    document.getElementById('editUserModal').style.display = 'none';
-                    
-                    if (data.success) {
-                        // Hiển thị message thành công
-                        showMessage(data.message, true);
-                        // Reload page sau 1.5 giây
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        // Hiển thị message lỗi
-                        showMessage(data.message, false);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showMessage('Error updating user', false);
-                });
+                        .then(response => response.json())
+                        .then(data => {
+                            // Đóng modal trước
+                            document.getElementById('editUserModal').style.display = 'none';
+
+                            if (data.success) {
+                                // Hiển thị message thành công
+                                showMessage(data.message, true);
+                                // Reload page sau 1.5 giây
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1500);
+                            } else {
+                                // Hiển thị message lỗi
+                                showMessage(data.message, false);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showMessage('Error updating user', false);
+                        });
             });
 
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 let originalFormData = {};
-                
+
                 // Hàm kiểm tra có thay đổi nào không
                 function hasFormChanged() {
                     const form = document.getElementById('editUserForm');
@@ -1005,11 +1011,11 @@
                     };
 
                     // So sánh từng trường
-                    return Object.keys(currentValues).some(key => 
+                    return Object.keys(currentValues).some(key =>
                         currentValues[key] !== originalFormData[key]
                     );
                 }
-                
+
                 // Cập nhật trạng thái nút Save Changes
                 function updateSaveButton() {
                     const saveButton = document.querySelector('#editUserForm button[type="submit"]');
@@ -1018,54 +1024,54 @@
                     saveButton.style.opacity = changed ? '1' : '0.5';
                     saveButton.style.cursor = changed ? 'pointer' : 'not-allowed';
                 }
-                
+
                 // Sửa lại hàm showEditModal
-                window.showEditModal = function(userId) {
+                window.showEditModal = function (userId) {
                     fetch('get-user-data?id=' + userId)
-                        .then(response => response.json())
-                        .then(user => {
-                            const form = document.getElementById('editUserForm');
-                            
-                            // Populate form fields
-                            form.querySelector('#editUserId').value = user.id;
-                            form.querySelector('#editFullName').value = user.fullName;
-                            form.querySelector('#editEmail').value = user.email;
-                            
-                            // Set gender radio button
-                            if (user.gender) {
-                                form.querySelector('#editGenderMale').checked = true;
-                            } else {
-                                form.querySelector('#editGenderFemale').checked = true;
-                            }
-                            
-                            form.querySelector('#editMobile').value = user.mobile;
-                            form.querySelector('#editAddress').value = user.address;
-                            form.querySelector('#editRole').value = user.roleId;
-                            form.querySelector('#editStatus').value = user.status;
-                            
-                            // Lưu trữ dữ liệu ban đầu
-                            originalFormData = {
-                                fullName: user.fullName,
-                                email: user.email,
-                                gender: user.gender.toString(),
-                                mobile: user.mobile,
-                                address: user.address,
-                                roleId: user.roleId.toString(),
-                                status: user.status
-                            };
-                            
-                            // Disable nút Save Changes ban đầu
-                            updateSaveButton();
-                            
-                            // Show modal
-                            document.getElementById('editUserModal').style.display = 'block';
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Error loading user data');
-                        });
+                            .then(response => response.json())
+                            .then(user => {
+                                const form = document.getElementById('editUserForm');
+
+                                // Populate form fields
+                                form.querySelector('#editUserId').value = user.id;
+                                form.querySelector('#editFullName').value = user.fullName;
+                                form.querySelector('#editEmail').value = user.email;
+
+                                // Set gender radio button
+                                if (user.gender) {
+                                    form.querySelector('#editGenderMale').checked = true;
+                                } else {
+                                    form.querySelector('#editGenderFemale').checked = true;
+                                }
+
+                                form.querySelector('#editMobile').value = user.mobile;
+                                form.querySelector('#editAddress').value = user.address;
+                                form.querySelector('#editRole').value = user.roleId;
+                                form.querySelector('#editStatus').value = user.status;
+
+                                // Lưu trữ dữ liệu ban đầu
+                                originalFormData = {
+                                    fullName: user.fullName,
+                                    email: user.email,
+                                    gender: user.gender.toString(),
+                                    mobile: user.mobile,
+                                    address: user.address,
+                                    roleId: user.roleId.toString(),
+                                    status: user.status
+                                };
+
+                                // Disable nút Save Changes ban đầu
+                                updateSaveButton();
+
+                                // Show modal
+                                document.getElementById('editUserModal').style.display = 'block';
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Error loading user data');
+                            });
                 }
-                
+
                 // Thêm event listeners cho tất cả các input trong form
                 const editForm = document.getElementById('editUserForm');
                 editForm.querySelectorAll('input, select').forEach(input => {
@@ -1073,12 +1079,12 @@
                         input.addEventListener(eventType, updateSaveButton);
                     });
                 });
-                
+
                 // Thêm event listener cho radio buttons
                 editForm.querySelectorAll('input[type="radio"]').forEach(radio => {
                     radio.addEventListener('change', updateSaveButton);
                 });
-                
+
                 // Reset form và originalFormData khi đóng modal
                 const closeButtons = document.querySelectorAll('#editUserModal .close, #editUserModal .close-modal');
                 closeButtons.forEach(button => {
@@ -1089,9 +1095,7 @@
                     });
                 });
             });
-        </script>
-        <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+    </script>
 
-    </body>
 
 </html>

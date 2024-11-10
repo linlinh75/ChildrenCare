@@ -156,6 +156,27 @@ public class SettingDAO extends DBContext {
     }
 
     public int updateSetting(Setting setting) {
+        // Get the current status before update
+        int currentStatus = -1;
+        String checkCurrentStatusSql = "";
+        if ("Post Category".equals(setting.getType())) {
+            checkCurrentStatusSql = "SELECT status FROM post_category WHERE id = ?";
+        } else if ("Service Category".equals(setting.getType())) {
+            checkCurrentStatusSql = "SELECT status FROM service_category WHERE id = ?";
+        }
+        
+        try {
+            PreparedStatement checkStmt = connection.prepareStatement(checkCurrentStatusSql);
+            checkStmt.setInt(1, setting.getValue());
+            ResultSet rs = checkStmt.executeQuery();
+            if (rs.next()) {
+                currentStatus = rs.getInt("status");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return -3;
+        }
+        
         // Kiểm tra trùng lặp trước khi cập nhật
         String checkSql;
         if ("Post Category".equals(setting.getType())) {
@@ -190,7 +211,14 @@ public class SettingDAO extends DBContext {
             updateStmt.setInt(3, setting.getStatus());
             updateStmt.setInt(4, setting.getValue());
             
-            return updateStmt.executeUpdate();
+            int result = updateStmt.executeUpdate();
+            
+            // If status has changed, update related posts/services
+            if (result > 0 && currentStatus != setting.getStatus()) {
+                updatePostStatusesForCategory(setting.getType(), setting.getValue(), setting.getStatus());
+            }
+            
+            return result;
             
         } catch (SQLException ex) {
             Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -311,5 +339,50 @@ public class SettingDAO extends DBContext {
             Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
+    }
+
+    // Update this method to handle status changes correctly
+    public void updatePostStatusesForCategory(String type, int categoryId, int newStatus) {
+        String tableName = "";
+        String statusColumn = "";
+        String categoryColumn = "";
+        
+        if ("Post Category".equals(type)) {
+            tableName = "post";
+            statusColumn = "status";
+            categoryColumn = "category_id";
+        } else if ("Service Category".equals(type)) {
+            tableName = "service";
+            statusColumn = "status";
+            categoryColumn = "category_id";
+        }
+        
+        if (!tableName.isEmpty()) {
+            // Convert status from 1/0 to boolean for service table
+            boolean newStatusValue = (newStatus == 1);
+            
+            String query = "UPDATE " + tableName + 
+                          " SET " + statusColumn + " = ? " +
+                          "WHERE " + categoryColumn + " = ?";
+                      
+            try {
+                PreparedStatement stmt = connection.prepareStatement(query);
+                
+                if ("service".equals(tableName)) {
+                    // For service table, use boolean
+                    stmt.setBoolean(1, newStatusValue);
+                } else {
+                    // For post table, use string "Published"/"Hidden"
+                    stmt.setString(1, newStatus == 1 ? "Published" : "Hidden");
+                }
+                
+                stmt.setInt(2, categoryId);
+                stmt.executeUpdate();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, 
+                    "Error updating " + tableName + " statuses for category " + categoryId, ex);
+            }
+        }
     }
 }
