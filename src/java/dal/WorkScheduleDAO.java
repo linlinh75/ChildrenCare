@@ -9,6 +9,8 @@ import java.lang.System.Logger.Level;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import model.Feedback;
@@ -16,7 +18,7 @@ import model.Feedback;
 import model.WorkSchedule;
 
 public class WorkScheduleDAO extends DBContext {
-
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public List<WorkSchedule> getWorkScheduleByDoctorId(int serviceId) {
         List<WorkSchedule> listWorkSchedules = new ArrayList<>();
         String sql = "SELECT * FROM swp.work_schedule WHERE doctor_id =? order by start_at desc;";
@@ -42,17 +44,18 @@ public class WorkScheduleDAO extends DBContext {
         WorkSchedule ws = new WorkSchedule(
                 rs.getInt("reservation_id"),
                 rs.getInt("doctor_id"),
-                rs.getTimestamp("start_at"),
-                rs.getTimestamp("end_at")
+                LocalDateTime.parse(rs.getString("start_at").trim(), formatter).toLocalDate(),
+                LocalDateTime.parse(rs.getString("end_at").trim(), formatter).toLocalDate()
         );
         return ws;
     }
 
     public static void main(String[] args) {
-        WorkScheduleDAO ws = new WorkScheduleDAO();
-        List<WorkSchedule> wlist = ws.getWorkScheduleByDoctorId(3);
-        for (WorkSchedule w : wlist) {
-            System.out.println(w.getReservation_id());
-        }
-    }
+//        WorkScheduleDAO ws = new WorkScheduleDAO();
+//        List<WorkSchedule> wlist = ws.getWorkScheduleByDoctorId(3);
+//        for (WorkSchedule w : wlist) {
+//            System.out.println(w.getReservation_id());
+//        }
+//    }
+}
 }

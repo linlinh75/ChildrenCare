@@ -19,10 +19,13 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import javax.mail.MessagingException;
 import model.Reservation;
 import model.User;
+import model.WorkSchedule;
 import util.EmailSender;
 
 /**
@@ -83,51 +86,23 @@ public class ReservationCompletionServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
+
             Reservation res = (Reservation) request.getAttribute("reservation");
-            String optionPayment = res.getPay_option();
-            System.out.println(optionPayment);
             HttpSession session = request.getSession(false);
             ReservationDAO reservationDao = new ReservationDAO();
             UserDAO userDao = new UserDAO();
             EmailSender e = new EmailSender();
-            Timestamp registeredTime = res.getCheckup_time();
-            int rid = (int) request.getAttribute("reservationId");
-            session.setAttribute("rid", rid);
-            System.out.println(rid);
-            int amount = reservationDao.getTotal(rid);
-            Random rand = new Random();
-            // Obtain a number between [0 - max id].
-            int countFreeDoctors = userDao.listDoctorFree(registeredTime).size();
-                System.out.println(countFreeDoctors);
-            int n;
-            if(countFreeDoctors==1){
-                n=0;
-            }else{
-                n = rand.nextInt(userDao.listDoctorFree(registeredTime).size() - 1);
-            }
-            User assignDoctor = userDao.listDoctorFree(registeredTime).get(n);
-            reservationDao.changeStaffReservation(rid, assignDoctor.getId());
-            reservationDao.assignWorkSchedule(rid,assignDoctor.getId() , registeredTime);
-            reservationDao.statusReservation(rid,"Submitted");
-            User user = userDao.getProfileById(res.getCustomer_id());
-            try {
-                String content = "<p>Your reservation has been approved. Your doctor is Dr. "
-                        + assignDoctor.getFullName() + ". Email: " + assignDoctor.getEmail()
-                        + ". Mobile: " + assignDoctor.getMobile()
-                        + ". Please complete the transaction by transfering the fees by VNPAY: </p>"
-                        + "<a href='http://localhost:8080/ChildrenCare/vnpay_pay.jsp?amount=" + amount + "'>Click this link to pay fees</a>";
-                String subject = "Reservation Completion and Payment Guide";
-                EmailSender.sendHtml(user.getEmail(), content, subject);
-                request.setAttribute("message", "Email sent");
-        request.getRequestDispatcher("/customer-reservationServiceCart.jsp").forward(request, response);
-            } catch (MessagingException ex) {
-                Logger.getLogger(ReservationCompletionServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(ReservationCompletionServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //   }
+            session.setAttribute("rid", res.getId());
+            session.setAttribute("res",res);
+            int amount = reservationDao.getTotal(res.getId());
+            if(res.getStatus().equals("Pending")){
+               request.setAttribute("res",res );
+               request.setAttribute("amount",amount );
+               request.setAttribute("reservationId",res.getId() );
+               request.getRequestDispatcher("rscompletion.jsp").forward(request, response);
+            }           
+
+
     }
 
     /**

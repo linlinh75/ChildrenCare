@@ -5,15 +5,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import static java.time.LocalDateTime.now;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
+import model.WorkSchedule;
 
 /**
  * Data Access Object (DAO) for User entity.
@@ -282,19 +285,19 @@ public class UserDAO extends DBContext {
             return false;
         }
     }
-    public List<User> listDoctorFree(Timestamp registeredTime){
-        List<User> freeDoctors = new ArrayList<>();
+    public List<WorkSchedule> listDoctorBusy(Timestamp registeredTime){
+        List<WorkSchedule> busyDoctors = new ArrayList<>();
         try {
-            String sql = "Select * from work_schedule where start_at>? or end_at<?";
+            String sql = "Select * from work_schedule where start_at< ? and end_at >?";
             stm = connection.prepareStatement(sql);
             stm.setTimestamp(1, registeredTime);
             stm.setTimestamp(2, registeredTime);
             rs = stm.executeQuery();
             while(rs.next()){
-                User doc = getProfileById(rs.getInt("doctor_id"));
-                freeDoctors.add(doc);
+                WorkSchedule w = new WorkSchedule(rs.getInt("reservation_id"), rs.getInt("doctor_id"), LocalDate.parse(rs.getString("start_at")), LocalDate.parse(rs.getString("end_at")));
+                busyDoctors.add(w);
             }
-            return freeDoctors;
+            return busyDoctors;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -339,9 +342,7 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             //        LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("registeredTime"), formatter);
             LocalDateTime dateTime = LocalDateTime.parse("2024-10-20 08:19:10", formatter);
             Timestamp registeredTime = Timestamp.valueOf(dateTime);
-             for(User d: userdao.listDoctorFree(registeredTime))   {
-                 System.out.println(d.toString());
-             }
+             
    }
             
 
@@ -663,15 +664,16 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             return -3; // Lỗi SQL
         }
     }
-
-    public User getUserById(int id) {
-        String sql = "SELECT * FROM user WHERE id = ?";
-        try {
+    public List<User> getUserByRoleId(int roleId){
+         String sql = "SELECT * FROM user WHERE role_id = ?";
+          try {
+               DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+              List<User> usersByRole = new ArrayList<>();
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, id);
+            stmt.setInt(1, roleId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new User(
+                usersByRole.add( new User(
                     rs.getInt("id"),
                     rs.getString("email"),
                     rs.getString("password"),
@@ -681,15 +683,46 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                     rs.getString("address"),
                     rs.getString("image_link"),
                     rs.getInt("role_id"),
-                    rs.getString("status")
-                );
+                    rs.getString("status"),
+                    LocalDateTime.parse(rs.getString("created_date").trim(), formatter).toLocalDate()
+                ));
             }
+            return usersByRole;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-
+    
+   public User getUserById(int id) {
+    String sql = "SELECT * FROM user WHERE id = ?";
+    try {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return new User(
+                rs.getInt("id"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getString("full_name"),
+                rs.getBoolean("gender"),
+                rs.getString("mobile"),
+                rs.getString("address"),
+                rs.getString("image_link"),
+                rs.getInt("role_id"),
+                rs.getString("status"),
+                LocalDateTime.parse(rs.getString("created_date").trim(), formatter).toLocalDate() // Ensure no extra spaces
+            );
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (DateTimeParseException ex) {
+        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Date parsing error: " + ex.getMessage(), ex);
+    }
+    return null;
+}
     public List<User> getFilteredAndSortedUsers(String genderFilter, String roleFilter, String statusFilter, 
                                           String searchKeyword, String sortBy, String sortOrder, 
                                           int page, int recordsPerPage) {
