@@ -20,14 +20,15 @@
             <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/controller/ReservationServiceCart.java</file>
         </group>
         <group>
-            <file>file:/D:/ChildrenCare/src/java/controller/SettingsListServlet.java</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/DeleteUserServlet.java</file>
-            <file>file:/D:/ChildrenCare/web/setting-details.jsp</file>
-            <file>file:/D:/ChildrenCare/web/common/admin/side_bar_admin.jsp</file>
-            <file>file:/D:/ChildrenCare/web/common/common-homepage-header.jsp</file>
+            <file>file:/D:/ChildrenCare/src/java/dal/UserDAO.java</file>
+            <file>file:/D:/ChildrenCare/web/user/profile.jsp</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/AddUserServlet.java</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/UserDetailsServlet.java</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/EditSettingServlet.java</file>
+            <file>file:/D:/ChildrenCare/web/WEB-INF/web.xml</file>
             <file>file:/D:/ChildrenCare/web/admin-SettingsList.jsp</file>
             <file>file:/D:/ChildrenCare/web/admin-UserList.jsp</file>
-            <file>file:/D:/ChildrenCare/web/customer-feedback.jsp</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/dashboard.java</file>
             <file>file:/D:/ChildrenCare/src/java/dal/SettingDAO.java</file>
         </group>
     </open-files>

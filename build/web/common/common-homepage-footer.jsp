@@ -138,3 +138,10 @@
 <!-- Main JS -->
 <script src="js/main.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="/ChildrenCare/assets/js/bootstrap.bundle.min.js"></script>
+<!-- simplebar -->
+<script src="/ChildrenCare/assets/js/simplebar.min.js"></script>
+<!-- Icons -->
+<script src="/ChildrenCare/assets/js/feather.min.js"></script>
+<!-- Main Js -->
+<script src="/ChildrenCare/assets/js/app.js"></script>

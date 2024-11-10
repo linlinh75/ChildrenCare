@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(name = "EditSettingServlet", urlPatterns = {"/edit-setting"})
@@ -16,35 +17,47 @@ public class EditSettingServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            HttpSession session = request.getSession();
+            
+            // Lấy thông tin từ form
             int id = Integer.parseInt(request.getParameter("id"));
             String type = request.getParameter("type");
             String name = request.getParameter("name");
             int value = Integer.parseInt(request.getParameter("value"));
             String description = request.getParameter("description");
-            String status = request.getParameter("status");
+            int status = Integer.parseInt(request.getParameter("status"));
             
-            Setting setting = new Setting();
-            setting.setId(id);
-            setting.setType(type);
-            setting.setName(name);
-            setting.setValue(value);
-            setting.setDescription(description);
-            setting.setStatus(status);
+            // Tạo đối tượng Setting với thông tin mới
+            Setting setting = new Setting(type, name, value, description, status);
             
+            // Cập nhật setting và xử lý kết quả
             SettingDAO settingDAO = new SettingDAO();
-            boolean success = settingDAO.updateSetting(setting);
+            int result = settingDAO.updateSetting(setting);
             
-            if (success) {
-                request.getSession().setAttribute("successMessage", "Setting updated successfully!");
-            } else {
-                request.getSession().setAttribute("errorMessage", "Failed to update setting.");
+            switch (result) {
+                case 1:
+                    session.setAttribute("successMessage", "Setting updated successfully!");
+                    break;
+                case -1:
+                    session.setAttribute("errorMessage", "Invalid setting type!");
+                    break;
+                case -2:
+                    session.setAttribute("errorMessage", 
+                        "A setting with this name or value already exists in " + type + "!");
+                    break;
+                case -3:
+                    session.setAttribute("errorMessage", "Database error occurred!");
+                    break;
+                default:
+                    session.setAttribute("errorMessage", "Failed to update setting!");
             }
             
-            response.sendRedirect("admin-manage-settings");
+            // Redirect về trang chi tiết setting
+            response.sendRedirect("setting-details?id=" + value);
             
         } catch (Exception e) {
             request.getSession().setAttribute("errorMessage", "Error updating setting: " + e.getMessage());
-            response.sendRedirect("admin-manage-settings");
+            response.sendRedirect(request.getHeader("Referer"));
         }
     }
 } 

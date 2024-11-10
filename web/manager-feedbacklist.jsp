@@ -6,6 +6,9 @@
         
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Feedback List</title>
+        <!-- favicon -->
+        <link rel="shortcut icon" href="img/favicon.png">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
         <style>
             .table-container {
                 width: 100%;
@@ -38,18 +41,18 @@
                 color: white;
             }
 
-            .slider-table {
+            .feedback-table {
                 width: 100%;
                 border-collapse: collapse;
             }
 
-            .slider-table th, .slider-table td {
+            .feedback-table th, .feedback-table td {
                 text-align: left;
                 padding: 12px;
                 border-bottom: 1px solid #ddd;
             }
 
-            .slider-table th {
+            .feedback-table th {
                 background-color: #f2f2f2;
             }
 
@@ -133,91 +136,100 @@
 
         </style>
     </head>
-    <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
-        <body>
-            <section class="container-fluid" style="width: 80%">
-                <div class="bread_crumb">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
-                            <li class="breadcrumb-item"><a href="./profile">Profile</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Feedback List</li>
-                        </ol>
-                    </nav>
-                </div>
-                <div class="feedback-list">
-                    <div class="table-container" >
-                        <div class="table-header">
-                            <div class="search-box">
-                                <input type="text" placeholder="Search by customer name, content" id="searchInput" onkeyup="applyFilters()">
-                                <button type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
+    <body>
+        <div class="page-wrapper doctris-theme toggled">
+            <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
+                <main class="page-content bg-light">
+                <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
+                    <section class="container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px;">
+                        <div class="bread_crumb">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb" style="background-color: white; box-shadow: 0 0 2px 2px rgba(128, 128, 128, 0.1);">
+                                    <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="./profile">Manager Dashboard</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Feedback List</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#" style="margin-bottom:20px">
+                            <i class="uil uil-bars"></i>
+                        </a>
+                        <div class="feedback-list" style="background-color: white; box-shadow: 0 0 2px 2px rgba(128, 128, 128, 0.1);">
+                            <div class="table-container" style="background-color: white;">
+                                <div class="table-header">
+                                    <div class="search-box" style="margin-bottom: 20px">
+                                        <input type="text" placeholder="Search by customer name, content" id="searchInput" onkeyup="applyFilters()">
+                                        <button type="button">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                    <div class="status-filter" style="display: flex; gap: 10px">
+                                        <div>Filter:</div>
+                                        <select id="statusFilter" onchange="applyFilters()">
+                                            <option value="" class="label">Status</option>
+                                            <option value="all">All</option>
+                                            <option value="Processed">Processed</option>
+                                            <option value="Processing">Processing</option>
+                                        </select>
+                                        <select id="serviceFilter" onchange="applyFilters()">
+                                            <option value="" class="label">Service</option>
+                                            <option value="all">All Services</option>
+                                        <c:forEach var="service" items="${service.getAllService()}">
+                                            <option value="${service.getFullname().trim()}">${service.getFullname()}</option>
+                                        </c:forEach>
+                                    </select>
+                                    <select id="starFilter" onchange="applyFilters()">
+                                        <option value="all">All Stars</option>
+                                        <c:forEach var="star" begin="0" end="5">
+                                            <option value="${star}">${star}</option>
+                                        </c:forEach>
+                                    </select>
+                                    <select id="displayStatusFilter" onchange="applyFilters()">
+                                        <option value="" class="label">Display Status</option>
+                                        <option value="all">All</option>
+                                        <option value="Public">Public</option>
+                                        <option value="Hidden">Hidden</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="status-filter" style="display: flex; gap: 10px">
-                                <div>Filter by status: </div>
-                                <select id="statusFilter" onchange="applyFilters()">
-                                    <option value="all">All</option>
-                                    <option value="Processed">Processed</option>
-                                    <option value="Processing">Processing</option>
-                                </select>
-                                <div>Service Name: </div>
-                                <select id="serviceFilter" onchange="applyFilters()">
-                                    <option value="all">All Services</option>
-                                <c:forEach var="service" items="${service.getAllService()}">
-                                    <option value="${service.getFullname().trim()}">${service.getFullname()}</option>
-                                </c:forEach>
-                            </select>
-                            <div>Rated Star: </div>
-                            <select id="starFilter" onchange="applyFilters()">
-                                <option value="all">All Stars</option>
-                                <c:forEach var="star" begin="0" end="5">
-                                    <option value="${star}">${star}</option>
-                                </c:forEach>
-                            </select>
-                            <div>Display Status:</div>
-                            <select id="displayStatusFilter" onchange="applyFilters()">
-                                <option value="all">All</option>
-                                <option value="Public">Public</option>
-                                <option value="Hidden">Hidden</option>
-                            </select>
+                            <table class="feedback-table">
+                                <thead>
+                                    <tr>
+                                        <th onclick="sortTable(0)">Feedback ID <i class="fa fa-sort"></i></th>
+                                        <th onclick="sortTable(1)">Customer Name<i class="fa fa-sort"></i></th>
+                                        <th onclick="sortTable(2)">Service Name</th>
+                                        <th onclick="sortTable(3)">Rated Star</th>
+                                        <th>Content</th>
+                                        <th onclick="sortTable(5)">Status</th>
+                                        <th onclick="sortTable(6)">Display Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="feedbackTableBody">
+                                    <c:forEach var="feedback" items="${feedback}">
+                                        <tr>
+                                            <td>${feedback.getId()}</td>
+                                            <td>${user.getProfileById(feedback.getUser_id()).getFullName()}</td>
+                                            <td>${service.getServiceById(feedback.getService_id()).getFullname()}</td>
+                                            <td>${feedback.getRated_star()}</td>
+                                            <td>${feedback.getContent()}</td>
+                                            <td>${feedback.getStatus()}</td>
+                                            <td>${feedback.isIsPublic()?'Public':'Hidden'}</td>
+                                            <td><a href="./managerFeedbackList?action=detail&&id=${feedback.getId()}" class="btn btn-view">View</a></td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                            <div id="pagination"></div>
                         </div>
                     </div>
-                    <table class="feedback-table table .table-striped">
-                        <thead>
-                            <tr>
-                                <th onclick="sortTable(0)">Feedback ID <i class="fa fa-sort"></i></th>
-                                <th onclick="sortTable(1)">Customer Name<i class="fa fa-sort"></i></th>
-                                <th onclick="sortTable(2)">Service Name</th>
-                                <th onclick="sortTable(3)">Rated Star</th>
-                                <th>Content</th>
-                                <th onclick="sortTable(5)">Status</th>
-                                <th onclick="sortTable(6)">Display Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="feedbackTableBody">
-                            <c:forEach var="feedback" items="${feedback}">
-                                <tr>
-                                    <td>${feedback.getId()}</td>
-                                    <td>${user.getProfileById(feedback.getUser_id()).getFullName()}</td>
-                                    <td>${service.getServiceById(feedback.getService_id()).getFullname()}</td>
-                                    <td>${feedback.getRated_star()}</td>
-                                    <td>${feedback.getContent()}</td>
-                                    <td>${feedback.getStatus()}</td>
-                                    <td>${feedback.isIsPublic()?'Public':'Hidden'}</td>
-                                    <td><a href="./managerFeedbackList?action=detail&&id=${feedback.getId()}" class="btn btn-view">View</a></td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                    <div id="pagination"></div>
-                </div>
-            </div>
-        </section>
-    </body>
-    <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+                </section>
 
+
+                <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+            </main>
+        </div>
+    </body>
     <script>
         let currentPage = 1;
         const rowsPerPage = 5;
@@ -236,8 +248,7 @@
             const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
             const serviceFilter = document.getElementById("serviceFilter").value.toLowerCase();
             const starFilter = document.getElementById("starFilter").value;
-            const displayStatusFilter = document.getElementById("displayStatusFilter").value.toLowerCase(); // Lấy giá trị lọc display status
-
+            const displayStatusFilter = document.getElementById("displayStatusFilter").value.toLowerCase();
             filteredRows = allRows.filter(row => {
                 const cells = row.getElementsByTagName("td");
                 const fullname = cells[1].innerText.toLowerCase();

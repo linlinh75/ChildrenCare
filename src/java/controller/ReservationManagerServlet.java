@@ -5,7 +5,11 @@
 package controller;
 
 import dal.ReservationDAO;
+<<<<<<< HEAD:src/java/controller/ReservationAdminServlet.java
 import dal.UserDAO;
+=======
+import dal.ServiceDAO;
+>>>>>>> d8692e10150601cca1e17380dcd62da5cdac0335:src/java/controller/ReservationManagerServlet.java
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,11 +27,15 @@ import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import model.Reservation;
 import model.User;
+<<<<<<< HEAD:src/java/controller/ReservationAdminServlet.java
 import model.WorkSchedule;
 import util.EmailSender;
+=======
+import dal.UserDAO;
+>>>>>>> d8692e10150601cca1e17380dcd62da5cdac0335:src/java/controller/ReservationManagerServlet.java
 
-@WebServlet(name = "ReservationAdminServlet", urlPatterns = {"/reservation-admin"})
-public class ReservationAdminServlet extends HttpServlet {
+@WebServlet(name = "ReservationManagerServlet", urlPatterns = {"/reservation-manager"})
+public class ReservationManagerServlet extends HttpServlet {
 
     private final ReservationDAO reservationDAO = new ReservationDAO();
 
@@ -36,7 +44,12 @@ public class ReservationAdminServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User loggedInUser = (User) session.getAttribute("account");
+        ServiceDAO sv = new ServiceDAO();
         List<Reservation> list_reservation = reservationDAO.getAllReservation();
+        UserDAO u = new UserDAO();
+        List<User> ulist= u.getAllUser();
+        request.setAttribute("service", sv);
+        request.setAttribute("users", ulist);
         request.setAttribute("reservation", list_reservation);
         request.getRequestDispatcher("admin/admin_reservation.jsp").forward(request, response);
     }
@@ -51,6 +64,7 @@ public class ReservationAdminServlet extends HttpServlet {
             case "approveReservation":
                 
                 reservationDAO.updateReservationStatus(reservationId, "Approved");
+<<<<<<< HEAD:src/java/controller/ReservationAdminServlet.java
                 UserDAO userDao = new UserDAO();
                 Reservation res = reservationDAO.getReservationById(reservationId);
                 int amount = reservationDAO.getTotal(res.getId());
@@ -102,10 +116,13 @@ public class ReservationAdminServlet extends HttpServlet {
                     
                 }
                 response.sendRedirect("reservation-admin");
+=======
+                response.sendRedirect("reservation-manager");
+>>>>>>> d8692e10150601cca1e17380dcd62da5cdac0335:src/java/controller/ReservationManagerServlet.java
                 break;
             case "cancelReservation":
-                reservationDAO.updateReservationStatus(reservationId, "Cancel");
-                response.sendRedirect("reservation-admin");
+                reservationDAO.updateReservationStatus(reservationId, "Cancelled");
+                response.sendRedirect("reservation-manager");
                 break;
         }
     }

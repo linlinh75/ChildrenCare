@@ -157,6 +157,7 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
+                            <li class="breadcrumb-item"><a href="./profile">Manager Dashboard</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Mananage Reservation</li>
                         </ol>
                     </nav>

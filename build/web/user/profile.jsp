@@ -6,7 +6,7 @@
 
     <head>
         <meta charset="utf-8" />
-        <title>Doctris - Doctor Appointment Booking System</title>
+        <title>Profile</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Premium Bootstrap 4 Landing Page Template" />
         <meta name="keywords" content="Appointment, Booking, System, Dashboard, Health" />
@@ -15,7 +15,7 @@
         <meta name="website" content="../../../index.html" />
         <meta name="Version" content="v1.2.0" />
         <!-- favicon -->
-        <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon.ico.png">
+        <link rel="shortcut icon" href="img/favicon.png">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
         <!-- Bootstrap -->
         <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -38,11 +38,11 @@
     <body>
         <div class="page-wrapper doctris-theme toggled">
             <jsp:include page="../common/admin/side_bar_admin.jsp"></jsp:include>
-            <!-- sidebar-wrapper  -->
+                <!-- sidebar-wrapper  -->
 
-            <!-- Start Page Content -->
-            <main class="page-content bg-light">
-                <div class="container-fluid">
+                <!-- Start Page Content -->
+                <main class="page-content bg-light">
+                    <div class="container-fluid">
                     <jsp:include page="../common/common-homepage-header.jsp"></jsp:include>
 
                         <div class="layout-specing">
@@ -50,40 +50,39 @@
                             <div class="alert alert-success text-center" >
                                 ${successChange}
                             </div></c:if>
-                        <div class="d-md-flex justify-content-between">
-                            <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#">
-                                <i class="uil uil-bars"></i>
-                            </a>
-                            <h5 class="mb-0">Profile</h5>
+                            <div class="d-md-flex justify-content-between">
+                                <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#">
+                                    <i class="uil uil-bars"></i>
+                                </a>
+                                <h5 class="mb-0">Profile</h5>
 
-                            <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
-                                <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
-                                    <li class="breadcrumb-item"><a href="HomeServlet">Children Care</a></li>
-                                    <li class="breadcrumb-item"><a href="#">Patients</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Profile</li>
-                                </ul>
-                            </nav>
-                        </div>
-
-                        <div class="row">
-                            <div class="mt-4">
-                                <div class="card border-0 shadow overflow-hidden">
-                                    <ul class="nav nav-pills nav-justified flex-column flex-sm-row rounded-0 shadow overflow-hidden bg-white mb-0" id="pills-tab" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link rounded-0 active" id="overview-tab" data-bs-toggle="pill" href="#pills-overview" role="tab" aria-controls="pills-overview" aria-selected="false">
-                                                <div class="text-center pt-1 pb-1">
-                                                    <h4 class="title fw-normal mb-0">Profile</h4>
-                                                </div>
-                                            </a><!--end nav link-->
-                                        </li><!--end nav item-->
+                                <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
+                                    <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
+                                        <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">Profile</li>
                                     </ul>
+                                </nav>
+                            </div>
 
-                                    <div class="tab-content p-4" id="pills-tabContent">
-                                        <div class="tab-pane show active fade" id="pills-experience" role="tabpanel" aria-labelledby="experience-tab">
-                                            <h5 class="mb-0">Personal Information :</h5>
-                                            <div class="row align-items-center mt-4">
-                                                <div class="col-lg-2 col-md-4">
-                                                    <img src="${pageContext.request.contextPath}${account.imageLink}" class="avatar avatar-md-md rounded-pill shadow mx-auto d-block" alt="">
+                            <div class="row">
+                                <div class="mt-4">
+                                    <div class="card border-0 shadow overflow-hidden">
+                                        <ul class="nav nav-pills nav-justified flex-column flex-sm-row rounded-0 shadow overflow-hidden bg-white mb-0" id="pills-tab" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link rounded-0 active" id="overview-tab" data-bs-toggle="pill" href="#pills-overview" role="tab" aria-controls="pills-overview" aria-selected="false">
+                                                    <div class="text-center pt-1 pb-1">
+                                                        <h4 class="title fw-normal mb-0">Profile</h4>
+                                                    </div>
+                                                </a><!--end nav link-->
+                                            </li><!--end nav item-->
+                                        </ul>
+
+                                        <div class="tab-content p-4" id="pills-tabContent">
+                                            <div class="tab-pane show active fade" id="pills-experience" role="tabpanel" aria-labelledby="experience-tab">
+                                                <h5 class="mb-0">Personal Information :</h5>
+                                                <div class="row align-items-center mt-4">
+                                                    <div class="col-lg-2 col-md-4">
+                                                        <img src="${pageContext.request.contextPath}${account.imageLink}" class="avatar avatar-md-md rounded-pill shadow mx-auto d-block" alt="">
                                                 </div><!--end col-->
 
                                                 <div class="col-lg-5 col-md-8 text-center text-md-start mt-4 mt-sm-0">
@@ -154,21 +153,13 @@
                     <jsp:include page="../common/common-homepage-footer.jsp"></jsp:include>
                     </div><!--end container-->
 
-            </main>
-            <!--End page-content" -->
-        </div>
-        <!-- page-wrapper -->
+                </main>
+                <!--End page-content" -->
+            </div>
+            <!-- page-wrapper -->
 
-        <!-- javascript -->
-        <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
-        <!-- simplebar -->
-        <script src="${pageContext.request.contextPath}/assets/js/simplebar.min.js"></script>
-        <!-- Icons -->
-        <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
-        <!-- Main Js -->
-        <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
-
-        
+            <!-- javascript -->
+         
         <script>
             document.getElementById('uploadButton').addEventListener('click', function (e) {
                 e.preventDefault();

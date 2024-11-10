@@ -198,7 +198,7 @@ public class ServiceServlet extends HttpServlet {
     public double getAverageRating(int serviceId) {
         double totalRating = 0;
         int totalFeedbacks = 0;
-        List<Feedback> listFeedbacks = feedbackDAO.getFeedbackByServiceId(serviceId);
+        List<Feedback> listFeedbacks = feedbackDAO.getAllFeedbackByServiceId(serviceId);
         for (Feedback feedback : listFeedbacks) {
             totalRating += feedback.getRated_star();
             totalFeedbacks++;

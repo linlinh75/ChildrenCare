@@ -50,7 +50,7 @@
                 <div class="col-md-3">
                     <div class="card bg-warning text-white">
                         <div class="card-body">
-                            <h5 class="card-title">Submitted</h5>
+                            <h5 class="card-title">Pending</h5>
                             <h2>${stats.submittedReservations}</h2>
                         </div>
                     </div>

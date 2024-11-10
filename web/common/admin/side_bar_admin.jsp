@@ -1,112 +1,68 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content" data-simplebar style="height: calc(100% - 60px);">
+<!-- favicon -->
+<link rel="shortcut icon" href="img/favicon.png">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+<!-- Bootstrap -->
+<link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<!-- simplebar -->
+<link href="${pageContext.request.contextPath}/assets/css/simplebar.css" rel="stylesheet" type="text/css" />
+<!-- Icons -->
+<link href="${pageContext.request.contextPath}/assets/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
+<link href="${pageContext.request.contextPath}/assets/css/remixicon.css" rel="stylesheet" type="text/css" />
+<link href="https://unicons.iconscout.com/release/v3.0.6/css/line.css"  rel="stylesheet">
+<!-- Css -->
+<link href="${pageContext.request.contextPath}/assets/css/style.min.css" rel="stylesheet" type="text/css" id="theme-opt" />
+
+<style>
+    .sidebar-menu li.active a {
+        background-color: #F8F9FA;
+        color: white !important;
+    }
+</style>
+<nav id="sidebar" class="sidebar-wrapper" style="position: fixed; z-index: 1">
+    <h3 style="padding: 15px; text-align: start;">Menu</h3> 
+    <div class="sidebar-content" data-simplebar style="height: calc(100% - 60px)">
         <ul class="sidebar-menu pt-3" >
-            <li><a href="admin-dashboard.jsp"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
-            
-            <%-- Only show User List and Setting List for Admin (roleId = 1) --%>
+            <li><a href="profile"><i class="uil uil-users-alt me-2 d-inline-block"></i>Profile</a></li>
+            <%-- Admin Side Bar --%>
             <c:if test="${sessionScope.account.roleId == 1}">
                 <li><a href="admin-manage-user"><i class="uil uil-users-alt me-2 d-inline-block"></i>User List</a></li>
                 <li><a href="admin-manage-settings"><i class="uil uil-setting me-2 d-inline-block"></i>Setting List</a></li>
-            </c:if>
-            
-            <c:if test="${user.roleId == '2'}">
+                </c:if>
+
+            <%--Manager Side Bar --%>
+            <c:if test="${sessionScope.account.roleId == 2}">
                 <li><a href="managerSliderList"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Slider</a></li>
                 <li><a href="managerFeedbackList"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Feedback</a></li>
-                <li><a href="reservation-admin"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Reservation</a></li>
-                <li><a href="service-list-admin"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Service</a></li>
+                <li><a href="reservation-manager"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Reservation</a></li>
+                <li><a href="service-list-manager"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Service</a></li>
+                <li class="">
+                    <a href="patients"><i class="uil uil-wheelchair me-2 d-inline-block"></i>Manage Customer</a>
+                </li>
+                <li class="">
+                    <a href="post-list-admin"><i class="uil uil-flip-h me-2 d-inline-block"></i>Manage Blogs</a>
+                </li>
             </c:if>
-            
+            <%--Staff Side Bar --%>
+            <c:if test="${sessionScope.account.roleId == 3}">
+                <li><a href="staff-work-schedule"><i class="uil uil-users-alt me-2 d-inline-block"></i>Work Schedule</a></li>
+                </c:if>
+                <%-- Common function --%>
             <li><a href="changePw.jsp"><i class="uil uil-user me-2 d-inline-block"></i>Change password</a></li>
-            
-            <!-- Rest of your existing menu items -->
-            <c:if test="${user.roleId == '1'}">
-                <li class="sidebar-dropdown">
-                    <a href="javascript:void(0)"><i class="uil uil-user me-2 d-inline-block"></i>Doctors</a>
-                    <div class="sidebar-submenu">
-                        <ul>
-                            <li><a href="doctors.html">Doctors</a></li>
-                            <li><a href="add-doctor.html">Add Doctor</a></li>
-                            <li><a href="dr-profile.html">Profile</a></li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="">
-                    <a href="patients"><i class="uil uil-wheelchair me-2 d-inline-block"></i>Customer</a>
-                </li>
-
-                <li class="sidebar-dropdown">
-                    <a href="javascript:void(0)"><i class="uil uil-apps me-2 d-inline-block"></i>Apps</a>
-                    <div class="sidebar-submenu">
-                        <ul>
-                            <li><a href="chat.html">Chat</a></li>
-                            <li><a href="email.html">Email</a></li>
-                            <li><a href="calendar.html">Calendar</a></li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="sidebar-dropdown">
-                    <a href="javascript:void(0)"><i class="uil uil-shopping-cart me-2 d-inline-block"></i>Pharmacy</a>
-                    <div class="sidebar-submenu">
-                        <ul>
-                            <li><a href="shop.html">Shop</a></li>
-                            <li><a href="product-detail.html">Shop Detail</a></li>
-                            <li><a href="shopcart.html">Shopcart</a></li>
-                            <li><a href="checkout.html">Checkout</a></li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="">
-                    <a href="post-list-admin"><i class="uil uil-flip-h me-2 d-inline-block"></i>Blogs</a>
-                </li>
-
-                <li class="sidebar-dropdown">
-                    <a href="javascript:void(0)"><i class="uil uil-file me-2 d-inline-block"></i>Pages</a>
-                    <div class="sidebar-submenu">
-                        <ul>
-                            <li><a href="faqs.html">FAQs</a></li>
-                            <li><a href="review.html">Reviews</a></li>
-                            <li><a href="invoice-list.html">Invoice List</a></li>
-                            <li><a href="invoice.html">Invoice</a></li>
-                            <li><a href="terms.html">Terms & Policy</a></li>
-                            <li><a href="privacy.html">Privacy Policy</a></li>
-                            <li><a href="error.html">404 !</a></li>
-                            <li><a href="blank-page.html">Blank Page</a></li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="sidebar-dropdown">
-                    <a href="javascript:void(0)"><i class="uil uil-sign-in-alt me-2 d-inline-block"></i>Authentication</a>
-                    <div class="sidebar-submenu">
-                        <ul>
-                            <li><a href="login.html">Login</a></li>
-                            <li><a href="signup.html">Signup</a></li>
-                            <li><a href="forgot-password.html">Forgot Password</a></li>
-                            <li><a href="lock-screen.html">Lock Screen</a></li>
-                            <li><a href="thankyou.html">Thank you...!</a></li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li><a href="components.html"><i class="uil uil-cube me-2 d-inline-block"></i>Components</a></li>
-
-                <li><a href="${pageContext.request.contextPath}/landing/index-two.html" target="_blank"><i class="uil uil-window me-2 d-inline-block"></i>Landing page</a></li>
-            </c:if>
         </ul>
-
-
-        <!-- sidebar-menu  -->
-    </div>
-    <!-- sidebar-content  -->
-    <ul class="sidebar-footer list-unstyled mb-0">
-        <li class="list-inline-item mb-0 ms-1">
-            <a href="#" class="btn btn-icon btn-pills btn-soft-primary">
-                <i class="uil uil-comment icons"></i>
-            </a>
-        </li>
-    </ul>
+    </div>  
 </nav>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const currentUrl = window.location.href;
+        const menuItems = document.querySelectorAll('.sidebar-menu li a');
+
+        menuItems.forEach(item => {
+            if (currentUrl.includes(item.getAttribute('href'))) {
+                item.parentElement.classList.add('active');
+            }
+        });
+    });
+
+</script>     

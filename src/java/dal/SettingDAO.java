@@ -13,70 +13,22 @@ public class SettingDAO extends DBContext {
 
     public List<Setting> getAllSettings() {
         List<Setting> settingsList = new ArrayList<>();
-        String query = "SELECT * FROM setting";
+        String query = "SELECT 'Post Category' as type, name, id as value, status FROM post_category " +
+                      "UNION ALL " +
+                      "SELECT 'Service Category' as type, name, id as value, status FROM service_category";
 
         try {
-            if (connection != null) {
-                PreparedStatement stm = connection.prepareStatement(query);
-                ResultSet rs = stm.executeQuery();
-                while (rs.next()) {
-                    Setting setting = new Setting(
-                            rs.getInt("id"),
-                            rs.getString("type"),
-                            rs.getString("name"),
-                            rs.getInt("value"),
-                            rs.getString("description"),
-                            rs.getString("status")
-                    );
-                    settingsList.add(setting);
-                }
-            } else {
-                System.out.println("Connection is null, cannot execute query.");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return settingsList;
-    }
-
-    public List<Setting> getRole() {
-        return getSettingsByType("Role");
-    }
-
-    public List<Setting> getPostCategory() {
-        return getSettingsByType("Post category");
-    }
-
-    public List<Setting> getServiceCategory() {
-        return getSettingsByType("Service Category");
-    }
-
-    public List<Setting> getUserStatus() {
-        return getSettingsByType("User Status");
-    }
-
-    private List<Setting> getSettingsByType(String type) {
-        List<Setting> settingsList = new ArrayList<>();
-        String query = "SELECT * FROM swp.setting WHERE type = ?";
-
-        try {
-            if (connection != null) {
-                PreparedStatement stm = connection.prepareStatement(query);
-                stm.setString(1, type);
-                ResultSet rs = stm.executeQuery();
-                while (rs.next()) {
-                    Setting setting = new Setting(
-                            rs.getInt("id"),
-                            rs.getString("type"),
-                            rs.getString("name"),
-                            rs.getInt("value"),
-                            rs.getString("description"),
-                            rs.getString("status")
-                    );
-                    settingsList.add(setting);
-                }
-            } else {
-                System.out.println("Connection is null, cannot execute query.");
+            PreparedStatement stm = connection.prepareStatement(query);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Setting setting = new Setting(
+                    rs.getString("type"),
+                    rs.getString("name"),
+                    rs.getInt("value"),
+                    "", 
+                    rs.getInt("status")
+                );
+                settingsList.add(setting);
             }
         } catch (SQLException ex) {
             Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -89,8 +41,15 @@ public class SettingDAO extends DBContext {
         List<Setting> settingList = new ArrayList<>();
         int start = (page - 1) * recordsPerPage;
         
-        StringBuilder sql = new StringBuilder("SELECT * FROM setting WHERE 1=1");
+        StringBuilder sql = new StringBuilder();
         List<Object> params = new ArrayList<>();
+        
+        // Base query with UNION
+        sql.append("SELECT * FROM (");
+        sql.append("  SELECT 'Post Category' as type, name, id as value, description, status FROM post_category");
+        sql.append("  UNION ALL");
+        sql.append("  SELECT 'Service Category' as type, name, id as value, description, status FROM service_category");
+        sql.append(") AS combined WHERE 1=1");
         
         // Add filters
         if (typeFilter != null && !typeFilter.isEmpty()) {
@@ -98,28 +57,48 @@ public class SettingDAO extends DBContext {
             params.add(typeFilter);
         }
         if (statusFilter != null && !statusFilter.isEmpty()) {
-            sql.append(" AND status = ?");
-            params.add(statusFilter);
+            if ("Active".equals(statusFilter)) {
+                sql.append(" AND status = 1");
+            } else if ("Inactive".equals(statusFilter)) {
+                sql.append(" AND status = 0");
+            }
         }
-        
-        // Add search
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
-            sql.append(" AND (name LIKE ? OR value LIKE ?)");
+            sql.append(" AND (name LIKE ? OR CAST(value AS CHAR) = ?)");
             String searchPattern = "%" + searchKeyword.trim() + "%";
             params.add(searchPattern);
-            params.add(searchPattern);
+            params.add(searchKeyword.trim());
         }
         
         // Add sorting
         if (sortBy != null && !sortBy.isEmpty()) {
-            sql.append(" ORDER BY ").append(sortBy);
+            sql.append(" ORDER BY ");
+            switch (sortBy.toLowerCase()) {
+                case "type":
+                    sql.append("type");
+                    break;
+                case "name":
+                    sql.append("name");
+                    break;
+                case "value":
+                    sql.append("value");
+                    break;
+                case "description":
+                    sql.append("description");
+                    break;
+                case "status":
+                    sql.append("status");
+                    break;
+                default:
+                    sql.append("value");
+            }
             if ("desc".equalsIgnoreCase(sortOrder)) {
                 sql.append(" DESC");
             } else {
                 sql.append(" ASC");
             }
         } else {
-            sql.append(" ORDER BY id ASC");
+            sql.append(" ORDER BY value ASC");
         }
         
         // Add pagination
@@ -136,12 +115,11 @@ public class SettingDAO extends DBContext {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Setting setting = new Setting(
-                    rs.getInt("id"),
                     rs.getString("type"),
                     rs.getString("name"),
                     rs.getInt("value"),
                     rs.getString("description"),
-                    rs.getString("status")
+                    rs.getInt("status")
                 );
                 settingList.add(setting);
             }
@@ -151,24 +129,173 @@ public class SettingDAO extends DBContext {
         return settingList;
     }
 
+    public Setting getSettingById(int value) {
+        String sql = "SELECT * FROM (" +
+                    "  SELECT 'Post Category' as type, name, id as value, description, status FROM post_category WHERE id = ? " +
+                    "  UNION ALL " +
+                    "  SELECT 'Service Category' as type, name, id as value, description, status FROM service_category WHERE id = ?" +
+                    ") AS combined";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, value);
+            stmt.setInt(2, value);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Setting(
+                    rs.getString("type"),
+                    rs.getString("name"),
+                    rs.getInt("value"),
+                    rs.getString("description"),
+                    rs.getInt("status")
+                );
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public int updateSetting(Setting setting) {
+        // Kiểm tra trùng lặp trước khi cập nhật
+        String checkSql;
+        if ("Post Category".equals(setting.getType())) {
+            checkSql = "SELECT COUNT(*) FROM post_category WHERE name = ? AND id != ?";
+        } else if ("Service Category".equals(setting.getType())) {
+            checkSql = "SELECT COUNT(*) FROM service_category WHERE name = ? AND id != ?";
+        } else {
+            return -1; // Invalid type
+        }
+        
+        try {
+            // Kiểm tra trùng lặp tên
+            PreparedStatement checkStmt = connection.prepareStatement(checkSql);
+            checkStmt.setString(1, setting.getName());
+            checkStmt.setInt(2, setting.getValue());
+            ResultSet rs = checkStmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return -2; // Duplicate name
+            }
+            
+            // Thực hiện cập nhật
+            String updateSql;
+            if ("Post Category".equals(setting.getType())) {
+                updateSql = "UPDATE post_category SET name=?, description=?, status=? WHERE id=?";
+            } else {
+                updateSql = "UPDATE service_category SET name=?, description=?, status=? WHERE id=?";
+            }
+            
+            PreparedStatement updateStmt = connection.prepareStatement(updateSql);
+            updateStmt.setString(1, setting.getName());
+            updateStmt.setString(2, setting.getDescription());
+            updateStmt.setInt(3, setting.getStatus());
+            updateStmt.setInt(4, setting.getValue());
+            
+            return updateStmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return -3; // Database error
+        }
+    }
+
+    // Thêm phương thức để lấy ID tiếp theo cho từng loại
+    private int getNextId(String type) {
+        String tableName = "Post Category".equals(type) ? "post_category" : "service_category";
+        String sql = "SELECT MAX(id) FROM " + tableName;
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) + 1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 1; // Nếu bảng trống, bắt đầu từ 1
+    }
+
+    public int addSetting(Setting setting) {
+        // Kiểm tra trùng lặp trước khi thêm
+        String checkSql;
+        if ("Post Category".equals(setting.getType())) {
+            checkSql = "SELECT COUNT(*) FROM post_category WHERE name = ?";
+        } else if ("Service Category".equals(setting.getType())) {
+            checkSql = "SELECT COUNT(*) FROM service_category WHERE name = ?";
+        } else {
+            return -1; // Invalid type
+        }
+        
+        try {
+            // Kiểm tra trùng lặp tên
+            PreparedStatement checkStmt = connection.prepareStatement(checkSql);
+            checkStmt.setString(1, setting.getName());
+            ResultSet rs = checkStmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return -2; // Duplicate name
+            }
+            
+            // Lấy ID tiếp theo
+            int nextId = getNextId(setting.getType());
+            
+            // Thực hiện thêm mới
+            String insertSql;
+            if ("Post Category".equals(setting.getType())) {
+                insertSql = "INSERT INTO post_category (id, name, description, status) VALUES (?, ?, ?, ?)";
+            } else {
+                insertSql = "INSERT INTO service_category (id, name, description, status) VALUES (?, ?, ?, ?)";
+            }
+            
+            PreparedStatement insertStmt = connection.prepareStatement(insertSql);
+            insertStmt.setInt(1, nextId);
+            insertStmt.setString(2, setting.getName());
+            insertStmt.setString(3, setting.getDescription());
+            insertStmt.setInt(4, setting.getStatus());
+            
+            int result = insertStmt.executeUpdate();
+            if (result > 0) {
+                setting.setValue(nextId); // Cập nhật value cho setting object
+            }
+            return result;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return -3; // Database error
+        }
+    }
+
+    public List<String> getUniqueSettingTypes() {
+        List<String> types = new ArrayList<>();
+        types.add("Post Category");
+        types.add("Service Category");
+        return types;
+    }
+
     public int getTotalFilteredSettings(String typeFilter, String statusFilter, String searchKeyword) {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM setting WHERE 1=1");
+        StringBuilder sql = new StringBuilder();
         List<Object> params = new ArrayList<>();
+        
+        sql.append("SELECT COUNT(*) FROM (");
+        sql.append("  SELECT 'Post Category' as type, name, id as value, description, status FROM post_category");
+        sql.append("  UNION ALL");
+        sql.append("  SELECT 'Service Category' as type, name, id as value, description, status FROM service_category");
+        sql.append(") AS combined WHERE 1=1");
         
         if (typeFilter != null && !typeFilter.isEmpty()) {
             sql.append(" AND type = ?");
             params.add(typeFilter);
         }
         if (statusFilter != null && !statusFilter.isEmpty()) {
-            sql.append(" AND status = ?");
-            params.add(statusFilter);
+            if ("Active".equals(statusFilter)) {
+                sql.append(" AND status = 1");
+            } else if ("Inactive".equals(statusFilter)) {
+                sql.append(" AND status = 0");
+            }
         }
-        
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
-            sql.append(" AND (name LIKE ? OR value LIKE ?)");
+            sql.append(" AND (name LIKE ? OR CAST(value AS CHAR) = ?)");
             String searchPattern = "%" + searchKeyword.trim() + "%";
             params.add(searchPattern);
-            params.add(searchPattern);
+            params.add(searchKeyword.trim());
         }
         
         try {
@@ -184,105 +311,5 @@ public class SettingDAO extends DBContext {
             Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
-    }
-
-    public List<String> getUniqueSettingTypes() {
-        List<String> types = new ArrayList<>();
-        String sql = "SELECT DISTINCT type FROM setting ORDER BY type";
-        
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                types.add(rs.getString("type"));
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return types;
-    }
-
-    public Setting getSettingById(int id) {
-        String sql = "SELECT * FROM setting WHERE id = ?";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new Setting(
-                    rs.getInt("id"),
-                    rs.getString("type"),
-                    rs.getString("name"),
-                    rs.getInt("value"),
-                    rs.getString("description"),
-                    rs.getString("status")
-                );
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public boolean addSetting(Setting setting) {
-        String sql = "INSERT INTO setting (type, name, value, description, status) VALUES (?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, setting.getType());
-            stmt.setString(2, setting.getName());
-            stmt.setInt(3, setting.getValue());
-            stmt.setString(4, setting.getDescription());
-            stmt.setString(5, setting.getStatus());
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        }
-    }
-
-    public boolean updateSetting(Setting setting) {
-        String sql = "UPDATE setting SET type=?, name=?, value=?, description=?, status=? WHERE id=?";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, setting.getType());
-            stmt.setString(2, setting.getName());
-            stmt.setInt(3, setting.getValue());
-            stmt.setString(4, setting.getDescription());
-            stmt.setString(5, setting.getStatus());
-            stmt.setInt(6, setting.getId());
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        }
-    }
-
-    public static void main(String[] args) {
-        SettingDAO settingDAO = new SettingDAO();
-
-        // Kiểm tra các phương thức
-        List<Setting> roles = settingDAO.getRole();
-        System.out.println("Roles:");
-        for (Setting role : roles) {
-            System.out.println(role.getName());
-        }
-
-        List<Setting> postCategories = settingDAO.getPostCategory();
-        System.out.println("\nPost Categories:");
-        for (Setting category : postCategories) {
-            System.out.println(category.getName());
-        }
-
-        List<Setting> serviceCategories = settingDAO.getServiceCategory();
-        System.out.println("\nService Categories:");
-        for (Setting category : serviceCategories) {
-            System.out.println(category.getName());
-        }
-
-        List<Setting> userStatuses = settingDAO.getUserStatus();
-        System.out.println("\nUser Statuses:");
-        for (Setting status : userStatuses) {
-            System.out.println(status.getName());
-        }
     }
 }

@@ -24,7 +24,7 @@
         <meta name="website" content="../../../index.html" />
         <meta name="Version" content="v1.2.0" />
         <!-- favicon -->
-        <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon.ico.png">
+        <link rel="shortcut icon" href="img/favicon.png">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
         <!-- Bootstrap -->
         <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -125,7 +125,7 @@
                         <div class="layout-specing">
                             <div class="d-md-flex justify-content-between mb-3">
                                 <div class="mt-4 mt-sm-0 ms-auto">
-                                    <a href="service-list-admin?action=add" class="btn btn-primary">Add Service</a>
+                                    <a href="service-list-manager?action=add" class="btn btn-primary">Add Service</a>
                                 </div>
                             </div>
 
@@ -138,13 +138,13 @@
                                         <div class="d-flex align-items-center">
                                             <span class="me-2">Filter by status:</span>
                                             <div class="btn-group" role="group">
-                                                <a href="service-list-admin?status=all" class="btn btn-sm ${param.status == null || param.status == 'all' ? 'btn-primary' : 'btn-outline-primary'}">
+                                                <a href="service-list-manager?status=all" class="btn btn-sm ${param.status == null || param.status == 'all' ? 'btn-primary' : 'btn-outline-primary'}">
                                                 All
                                             </a>
-                                            <a href="service-list-admin?status=active" class="btn btn-sm ${param.status == 'active' ? 'btn-primary' : 'btn-outline-success'}">
+                                            <a href="service-list-manager?status=active" class="btn btn-sm ${param.status == 'active' ? 'btn-primary' : 'btn-outline-success'}">
                                                 Active
                                             </a>
-                                            <a href="service-list-admin?status=inactive" class="btn btn-sm ${param.status == 'inactive' ? 'btn-primary' : 'btn-outline-secondary'}">
+                                            <a href="service-list-manager?status=inactive" class="btn btn-sm ${param.status == 'inactive' ? 'btn-primary' : 'btn-outline-secondary'}">
                                                 Inactive
                                             </a>
                                         </div>
@@ -193,7 +193,7 @@
                                                     <span class="badge bg-soft-warning rounded-pill">Featured</span>
                                                 </c:if>
                                             </div>
-                                            <a href="service-list-admin?action=edit&id=${service.id}" class="text-dark title h5 post-title">
+                                            <a href="service-list-manager?action=edit&id=${service.id}" class="text-dark title h5 post-title">
                                                 ${service.fullname}
                                             </a>
                                             <!-- <h5 class="service-title"></h5> -->
@@ -208,11 +208,11 @@
                                             </div>
 
                                             <div class="mt-3 d-flex justify-content-between">
-                                                <a href="service-list-admin?action=edit&id=${service.id}" 
+                                                <a href="service-list-manager?action=edit&id=${service.id}" 
                                                    class="btn btn-sm btn-soft-warning">
                                                     <i class="uil uil-edit"></i> Edit
                                                 </a>
-                                                <a href="service-list-admin?action=toggle&id=${service.id}"
+                                                <a href="service-list-manager?action=toggle&id=${service.id}"
                                                    class="btn btn-sm ${service.status ? 'btn-soft-danger' : 'btn-soft-success'}">
                                                     <i class="uil ${service.status ? 'uil-times' : 'uil-check'}"></i>
                                                     ${service.status ? 'Deactivate' : 'Activate'}
@@ -231,7 +231,7 @@
                                     <ul class="pagination justify-content-end mb-0">
                                         <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                                             <a class="page-link" 
-                                               href="service-list-admin?page=${currentPage - 1}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.searchQuery ? '&searchQuery='.concat(param.searchQuery) : ''}" 
+                                               href="service-list-manager?page=${currentPage - 1}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.searchQuery ? '&searchQuery='.concat(param.searchQuery) : ''}" 
                                                aria-label="Previous" ${currentPage == 1 ? 'tabindex="-1"' : ''}>
                                                 Prev
                                             </a>
@@ -240,13 +240,13 @@
                                         <c:forEach begin="1" end="${totalPages}" var="i">
                                             <li class="page-item ${currentPage == i ? 'active' : ''}">
                                                 <a class="page-link" 
-                                                   href="service-list-admin?page=${i}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.searchQuery ? '&searchQuery='.concat(param.searchQuery) : ''}">${i}</a>
+                                                   href="service-list-manager?page=${i}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.searchQuery ? '&searchQuery='.concat(param.searchQuery) : ''}">${i}</a>
                                             </li>
                                         </c:forEach>
 
                                         <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
                                             <a class="page-link" 
-                                               href="service-list-admin?page=${currentPage + 1}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.searchQuery ? '&searchQuery='.concat(param.searchQuery) : ''}" 
+                                               href="service-list-manager?page=${currentPage + 1}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.searchQuery ? '&searchQuery='.concat(param.searchQuery) : ''}" 
                                                aria-label="Next" ${currentPage == totalPages ? 'tabindex="-1"' : ''}>
                                                 Next
                                             </a>
@@ -259,14 +259,8 @@
 
                     <!-- Footer -->
                     <jsp:include page="../common/common-homepage-footer.jsp"></jsp:include>
-                    </div>
-                </main>
-            </div>
-
-            <!-- JavaScript -->
-            <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
-        <script src="${pageContext.request.contextPath}/assets/js/simplebar.min.js"></script>
-        <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
-        <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
+                </div>
+            </main>
+        </div>
     </body>
 </html>
