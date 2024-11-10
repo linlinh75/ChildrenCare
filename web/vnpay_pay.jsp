@@ -17,6 +17,9 @@
         <link href="assets/jumbotron-narrow.css" rel="stylesheet">      
         <script src="assets/jquery-1.11.3.min.js"></script>
     </head>
+    <%
+    session.setAttribute("rid", request.getAttribute("rid"));
+    %>
     <jsp:include page="/common/common-homepage-header.jsp"></jsp:include>
     <body>
          <div class="container ">

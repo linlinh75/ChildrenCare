@@ -206,6 +206,7 @@ public class ReservationServiceCart extends HttpServlet {
             // Save reservation to database
             ReservationDAO reservationDAO = new ReservationDAO();
             int reservationId = reservationDAO.insertReservation(reservation);
+            reservation.setId(reservationId);
             request.setAttribute("reservation", reservation);
 request.setAttribute("reservationId", reservationId);
             if (reservationId > 0) {
@@ -213,7 +214,7 @@ request.setAttribute("reservationId", reservationId);
                 clearCart(cart);
 
                 // Set success message
-                session.setAttribute("success", "Appointment booked successfully! Your reservation ID is: " + reservationId);
+                session.setAttribute("book-success", "Appointment booked successfully! Your reservation ID is: " + reservationId);
 
                 // Redirect to appropriate page
                request.getRequestDispatcher("reservecompletion").forward(request, response);

@@ -19,6 +19,22 @@ public class User {
     private String status;
     private LocalDate created_date;
 
+    public User(int id, String email, String password, String fullName, boolean gender, String mobile, String address, String imageLink, int roleId, String status, LocalDate created_date) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+        this.gender = gender;
+        this.mobile = mobile;
+        this.address = address;
+        this.imageLink = imageLink;
+        this.roleId = roleId;
+        this.status = status;
+        this.created_date = created_date;
+    }
+
+    
+
     public LocalDate getCreated_date() {
         return created_date;
     }
