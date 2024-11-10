@@ -5,11 +5,8 @@
 package controller;
 
 import dal.ReservationDAO;
-<<<<<<< HEAD:src/java/controller/ReservationAdminServlet.java
 import dal.UserDAO;
-=======
 import dal.ServiceDAO;
->>>>>>> d8692e10150601cca1e17380dcd62da5cdac0335:src/java/controller/ReservationManagerServlet.java
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -27,12 +24,10 @@ import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import model.Reservation;
 import model.User;
-<<<<<<< HEAD:src/java/controller/ReservationAdminServlet.java
 import model.WorkSchedule;
 import util.EmailSender;
-=======
-import dal.UserDAO;
->>>>>>> d8692e10150601cca1e17380dcd62da5cdac0335:src/java/controller/ReservationManagerServlet.java
+
+
 
 @WebServlet(name = "ReservationManagerServlet", urlPatterns = {"/reservation-manager"})
 public class ReservationManagerServlet extends HttpServlet {
@@ -64,7 +59,6 @@ public class ReservationManagerServlet extends HttpServlet {
             case "approveReservation":
                 
                 reservationDAO.updateReservationStatus(reservationId, "Approved");
-<<<<<<< HEAD:src/java/controller/ReservationAdminServlet.java
                 UserDAO userDao = new UserDAO();
                 Reservation res = reservationDAO.getReservationById(reservationId);
                 int amount = reservationDAO.getTotal(res.getId());
@@ -109,16 +103,13 @@ public class ReservationManagerServlet extends HttpServlet {
                             Logger.getLogger(ReservationCompletionServlet.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } catch (SQLException ex) {
-                        Logger.getLogger(ReservationAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ReservationManagerServlet.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
                     System.out.println("No available doctors at this time.");
                     
                 }
-                response.sendRedirect("reservation-admin");
-=======
                 response.sendRedirect("reservation-manager");
->>>>>>> d8692e10150601cca1e17380dcd62da5cdac0335:src/java/controller/ReservationManagerServlet.java
                 break;
             case "cancelReservation":
                 reservationDAO.updateReservationStatus(reservationId, "Cancelled");
