@@ -156,9 +156,11 @@
                                                                         <i class="fa fa-trash"></i> Clear Cart
                                                                     </button>
                                                                 </form>
-                                                                <button type="button" class="btn btn-primary col-md-6" data-toggle="modal" data-target="#appointmentModal">
-                                                                    <i class="fa fa-calendar"></i> Book Appointment
-                                                                </button>
+                                                                <c:if test="${sessionScope.account.roleId == 4}">
+                                                                    <button type="button" class="btn btn-primary col-md-6" data-toggle="modal" data-target="#appointmentModal">
+                                                                        <i class="fa fa-calendar"></i> Book Appointment
+                                                                    </button>
+                                                                </c:if>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -257,14 +259,17 @@
                                             <div class="form-group">
                                                 <label for="email">Email</label>
                                                 <input type="email" class="form-control" id="email" name="email" 
-                                                       value="${sessionScope.account.email}" required>
+                                                       value="${sessionScope.account.email}" readonly>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="phone">Phone Number</label>
-                                                <input type="tel" class="form-control" id="phone" name="phone" value="${sessionScope.account.mobile}" required>
-                                                <span id="phoneError" style="color:red; display: none; font-size: 10px; position: absolute">Phone must have between 10-11 numbers and start with '0'.</span>
+                                                <input type="tel" class="form-control" id="phone" name="phone" 
+                                                       value="${sessionScope.account.mobile}" required>
+                                                <small id="phoneError" class="text-danger" style="display: none;">
+                                                    Phone number must be 10 digits and start with 0
+                                                </small>
                                             </div>
                                         </div>
                                     </div>
@@ -275,15 +280,11 @@
                                                   rows="2" required>${sessionScope.account.address}</textarea>
                                     </div>
 
+                                    <!-- Replace the hidden payment method with a readonly display -->
                                     <div class="form-group">
                                         <label for="paymentMethod" class="form-label">Payment Method</label>
-                                        <div class="position-relative">
-                                            <select class="form-control" name="paymentMethod" required>
-                                                <option value="" selected disabled>Select payment method</option>
-                                                <option value="cash">Cash</option>
-                                                <option value="vnpay">VNPAY</option>
-                                            </select>
-                                        </div>
+                                        <input type="text" class="form-control" value="VNPAY" readonly>
+                                        <input type="hidden" name="paymentMethod" value="vnpay">
                                     </div>
 
                                     <div class="form-group">
@@ -355,41 +356,85 @@
             
         </script>
         <script>
-                                                                    document.addEventListener('DOMContentLoaded', function () {
-                                                                        // Set minimum date to tomorrow for checkup time
-                                                                        var checkupTimeInput = document.getElementById('checkupTime');
-                                                                        if (checkupTimeInput) {
-                                                                            var tomorrow = new Date();
-                                                                            tomorrow.setDate(tomorrow.getDate() + 1);
-                                                                            tomorrow.setHours(0, 0, 0, 0);
-                                                                            checkupTimeInput.min = tomorrow.toISOString().slice(0, 16);
+            document.addEventListener('DOMContentLoaded', function () {
+                // Phone validation
+                const phoneInput = document.getElementById('phone');
+                const phoneError = document.getElementById('phoneError');
+                const form = document.getElementById('appointmentForm');
+                
+                // Function to validate phone number
+                function validatePhone(phone) {
+                    return /^0\d{9}$/.test(phone);
+                }
+                
+                // Phone input validation
+                phoneInput.addEventListener('input', function() {
+                    const isValid = validatePhone(this.value);
+                    if (!isValid) {
+                        phoneError.style.display = 'block';
+                        this.classList.add('is-invalid');
+                        this.classList.remove('is-valid');
+                    } else {
+                        phoneError.style.display = 'none';
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    }
+                });
+                
+                // Checkup time validation
+                const checkupTimeInput = document.getElementById('checkupTime');
+                if (checkupTimeInput) {
+                    // Set minimum date to tomorrow
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    tomorrow.setHours(8, 0, 0, 0);
 
-                                                                            // Set maximum date to 3 months from now
-                                                                            var maxDate = new Date();
-                                                                            maxDate.setMonth(maxDate.getMonth() + 3);
-                                                                            checkupTimeInput.max = maxDate.toISOString().slice(0, 16);
-                                                                        }
-                                                                    });
-        </script>
-        <!--phone number check-->
-        <script>
-            document.getElementById("phone").addEventListener('input', function () {
-            const phoneInput = this;
-            const phoneError = document.getElementById('phoneError');
-            const phone = phoneInput.value;
-            const isValidLength = phone.length >= 10 && phone.length <= 11;
-            const isNumeric = /^\d+$/.test(phone);
-            if (!phoneInput.value.startsWith('0') || !isValidLength || !isNumeric) {
-                phoneError.style.display = 'block';
-                phoneInput.style.borderColor = 'red';
-                isFormValid = false;
-            } else {
-                phoneError.style.display = 'none';
-                phoneInput.style.borderColor = 'green';
-                isFormValid = true;
-            }
-            submitButton.disabled = !isFormValid;
-        });
+                    // Set maximum date to 3 months from now
+                    const maxDate = new Date();
+                    maxDate.setMonth(maxDate.getMonth() + 3);
+
+                    checkupTimeInput.addEventListener('input', function() {
+                        const selectedDate = new Date(this.value);
+                        const hours = selectedDate.getHours();
+                        const isValidTime = hours >= 8 && hours < 20;
+                        const isValidDate = selectedDate >= tomorrow && selectedDate <= maxDate;
+
+                        if (!isValidTime) {
+                            alert('Please select a time between 8:00 AM and 8:00 PM');
+                            this.value = '';
+                        } else if (!isValidDate) {
+                            alert('Please select a date between tomorrow and 3 months from now');
+                            this.value = '';
+                        }
+                    });
+                }
+                
+                // Form submission validation
+                form.addEventListener('submit', function(event) {
+                    // Phone validation
+                    const isValidPhone = validatePhone(phoneInput.value);
+                    if (!isValidPhone) {
+                        event.preventDefault();
+                        phoneError.style.display = 'block';
+                        phoneInput.classList.add('is-invalid');
+                        phoneInput.focus();
+                        return false;
+                    }
+
+                    // Checkup time validation
+                    const selectedDate = new Date(checkupTimeInput.value);
+                    const hours = selectedDate.getHours();
+                    const isValidTime = hours >= 8 && hours < 20;
+                    const isValidDate = selectedDate >= tomorrow && selectedDate <= maxDate;
+
+                    if (!isValidTime || !isValidDate) {
+                        event.preventDefault();
+                        alert('Please select a valid appointment time (8:00 AM - 8:00 PM, between tomorrow and 3 months from now)');
+                        checkupTimeInput.focus();
+                        return false;
+                    }
+                });
+            });
         </script>
     </body>
 </html>
