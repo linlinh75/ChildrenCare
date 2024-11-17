@@ -120,7 +120,7 @@ public class PostDAO extends DBContext {
         List<Post> posts = new ArrayList<>();
         try (
                 PreparedStatement statement = connection.prepareStatement(
-                        "SELECT * FROM post WHERE title LIKE ? OR content LIKE ? ORDER BY updated_date DESC LIMIT ?, ?")) {
+                        "SELECT * FROM post WHERE (title LIKE ? OR content LIKE ?) AND status = 'Published'  ORDER BY updated_date DESC LIMIT ?, ?")) {
             statement.setString(1, "%" + query + "%");
             statement.setString(2, "%" + query + "%");
             statement.setInt(3, (pageNumber - 1) * pageSize);
@@ -161,7 +161,7 @@ public class PostDAO extends DBContext {
 
     public List<Post> getNewest() {
         List<Post> posts = new ArrayList<>();
-        String query = "SELECT * FROM post ORDER BY updated_date DESC LIMIT 3";
+        String query = "SELECT * FROM post WHERE status = 'Published' ORDER BY updated_date DESC LIMIT 3";
 
         try {
             PreparedStatement stm = connection.prepareStatement(query);
@@ -196,7 +196,7 @@ public class PostDAO extends DBContext {
 
     public List<Post> getPostsWithPagination(int page, int postsPerPage) {
         List<Post> posts = new ArrayList<>();
-        String query = "SELECT * FROM post ORDER BY updated_date DESC LIMIT ? OFFSET ?";
+        String query = "SELECT * FROM post WHERE status = 'Published' ORDER BY updated_date DESC LIMIT ? OFFSET ?";;
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, postsPerPage);
@@ -216,7 +216,7 @@ public class PostDAO extends DBContext {
 
     public int getTotalPosts() {
         int count = 0;
-        String query = "SELECT COUNT(*) FROM post";
+        String query = "SELECT COUNT(*) FROM post WHERE status = 'Published' ";
 
         try (PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {

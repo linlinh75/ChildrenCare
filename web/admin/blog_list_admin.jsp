@@ -106,16 +106,6 @@
                                 <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#">
                                     <i class="uil uil-bars"></i>
                                 </a>
-                                <div class="search-bar p-0 d-none d-lg-block ms-2">
-                                    <div id="search" class="menu-search mb-0">
-                                        <form role="search" method="get" id="searchform" class="searchform">
-                                            <div>
-                                                <input type="text" class="form-control border rounded-pill" name="s" id="s" placeholder="Search Keywords...">
-                                                <input type="submit" id="searchsubmit" value="Search">
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
                             </div>
 
                             <!--                            <ul class="list-unstyled mb-0">
@@ -326,23 +316,27 @@
                             <div class="col-12 mt-4">
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination justify-content-end mb-0">
+                                        <!-- Previous Button -->
                                         <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                            <a class="page-link" href="?page=${currentPage - 1}" aria-label="Previous">Prev</a>
+                                            <a class="page-link" href="?page=${currentPage - 1}&status=${param.status}&searchQuery=${param.searchQuery}" aria-label="Previous">Prev</a>
                                         </li>
 
+                                        <!-- Page Numbers -->
                                         <c:forEach begin="1" end="${totalPages}" var="i">
                                             <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                                <a class="page-link" href="?page=${i}">${i}</a>
+                                                <a class="page-link" href="?page=${i}&status=${param.status}&searchQuery=${param.searchQuery}">${i}</a>
                                             </li>
                                         </c:forEach>
 
+                                        <!-- Next Button -->
                                         <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                            <a class="page-link" href="?page=${currentPage + 1}" aria-label="Next">Next</a>
+                                            <a class="page-link" href="?page=${currentPage + 1}&status=${param.status}&searchQuery=${param.searchQuery}" aria-label="Next">Next</a>
                                         </li>
                                     </ul>
                                 </nav>
                             </div>
                         </div>
+
                     </div>
 
                     <!--Footer-->
@@ -436,6 +430,7 @@
         <script src="js/owl-carousel.js"></script>
         <!-- counterup JS -->
         <script src="js/jquery.counterup.min.js"></script>
+        <script src="js/waypoints.min.js"></script>
         <!-- Steller JS -->
         <script src="js/steller.js"></script>
         <!-- Wow JS -->

@@ -13,7 +13,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!-- Title -->
-        <title>Mediplus - Free Medical and Doctor Directory HTML Template.</title>
+        <title>Mediplus</title>
 
         <!-- Favicon -->
         <link rel="icon" href="img/favicon.png">
@@ -189,33 +189,7 @@
                             <!--/ End Single Widget -->
                         </div>
                     </div>
-                    <div class="col-12">
-                        <div class="blog-comments">
-                            <h2>All Comments</h2>
-                            <div class="comments-body">
-                                <c:forEach var="comment" items="${comments}">
-                                    <!-- Single Comments -->
-                                    <div class="single-comments">
-                                        <div class="main">
-                                            <div class="head">
-                                                <img src="img/author1.jpg" alt="#"/>
-                                            </div>
-                                            <div class="body">
-                                                <h4>${postServlet.getUserName(comment.userId)}</h4>
-                                                <div class="comment-meta">
-                                                    <span class="meta"><i class="fa fa-calendar"></i>${comment.createdAt}</span>
-                                                </div>
-                                                <p>${comment.content}</p>
-                                                <a href="#"><i class="fa fa-reply"></i>reply</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--/ End Single Comments -->
-                                </c:forEach>
-                            </div>
-                        </div>
-                    </div>
-
+                    
                 </div>
             </div>
         </section>
@@ -225,6 +199,5 @@
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
         <!--/ End Footer Area -->
 
-        
     </body>
 </html>

@@ -16,7 +16,7 @@
 
     <head>
         <meta charset="utf-8" />
-        <title>Add New Service - Doctris</title>
+        <title>Add New Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Premium Bootstrap 4 Landing Page Template" />
         <meta name="keywords" content="Appointment, Booking, System, Dashboard, Health" />
@@ -25,7 +25,7 @@
         <meta name="website" content="../../../index.html" />
         <meta name="Version" content="v1.2.0" />
         <!-- favicon -->
-        <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon.ico.png">
+        <link rel="shortcut icon" href="img/favicon.png">
         <!-- Bootstrap -->
         <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <!-- simplebar -->
@@ -53,16 +53,16 @@
         <div class="page-wrapper doctris-theme toggled">
             <jsp:include page="../common/admin/side_bar_admin.jsp"></jsp:include>
 
-            <!-- Start Page Content -->
-            <main class="page-content bg-light">
-                <div class="container-fluid">
-                    <div class="layout-specing">
-                        <div class="d-md-flex justify-content-between">
-                            <h5 class="mb-0">Add New Service</h5>
+                <!-- Start Page Content -->
+                <main class="page-content bg-light">
+                    <div class="container-fluid">
+                        <div class="layout-specing">
+                            <div class="d-md-flex justify-content-between">
+                                <h5 class="mb-0">Add New Service</h5>
 
-                            <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
-                                <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
-                                    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/HomeServlet">ChildrenCare</a></li>
+                                <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
+                                    <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
+                                        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/HomeServlet">ChildrenCare</a></li>
                                     <li class="breadcrumb-item"><a href="service-list-admin">Services</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Add Service</li>
                                 </ul>

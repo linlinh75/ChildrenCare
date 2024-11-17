@@ -186,7 +186,7 @@
 
             <!-- Profile View Modal -->
             <div class="modal fade" id="viewprofile" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header border-bottom p-3">
                             <h5 class="modal-title" id="exampleModalLabel1">Customer Profile</h5>
@@ -219,10 +219,6 @@
                                         <li class="d-flex">
                                             <h6>Address:</h6>
                                             <p id="viewProfileAddress" class="text-muted ms-2"></p>
-                                        </li>
-                                        <li class="d-flex">
-                                            <h6>Status:</h6>
-                                            <p id="viewProfileStatus" class="text-muted ms-2"></p>
                                         </li>
                                     </ul>
                                 </li>

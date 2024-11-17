@@ -90,10 +90,11 @@
                                 <th>Transaction Status:</th>
                                 <td>
                                     <%
+                                        int rid = Integer.parseInt(session.getAttribute("rid").toString());
                                         ReservationDAO rdao = new ReservationDAO();
                                         if (signValue.equals(vnp_SecureHash)) {
                                             if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
-                                                rdao.statusReservation((int)session.getAttribute("rid"), "Successful");
+                                                rdao.statusReservation(rid, "Successful");
                                                 String content = "<p>You have been successfully transfer, please notice your schedule and come to our hospital</p>"
                                                 + "<p>Thanks for chosing our service</p>"
                                                 + "<strong>Children Care System</strong>"
@@ -102,7 +103,7 @@
                 EmailSender.sendHtml(((User)session.getAttribute("account")).getEmail(), content, subject);
                                                 out.print("<span class='badge bg-success'>Successful</span>");
                                             } else {
-                                                rdao.statusReservation((int)session.getAttribute("rid"), "Unsuccessful");
+                                                rdao.statusReservation(rid, "Unsuccessful");
                                                 String content = "<p>Your transfer have been falied, please re-order</p>"
                                                 + "<p>Thanks for chosing our service</p>"
                                                 + "<strong>Children Care System</strong>"

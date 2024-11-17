@@ -28,8 +28,7 @@ import model.Service;
 import model.Slider;
 import model.User;
 
-@MultipartConfig(
-        fileSizeThreshold = 1024 * 1024, // 1 MB
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1 MB
         maxFileSize = 1024 * 1024 * 5, // 5 MB
         maxRequestSize = 1024 * 1024 * 10 // 10 MB
 )
@@ -41,6 +40,7 @@ public class ProfileUserServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         User loggedInUser = (User) session.getAttribute("account");
+        request.setAttribute("userDAO", new UserDAO());
         // bo sung message (na)
         if (loggedInUser != null) {
             request.setAttribute("user", loggedInUser);
@@ -57,6 +57,7 @@ public class ProfileUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setAttribute("userDAO", new UserDAO());
         HttpSession session = request.getSession();
         User loggedInUser = (User) session.getAttribute("account");
 
@@ -95,26 +96,58 @@ public class ProfileUserServlet extends HttpServlet {
                 String gender = request.getParameter("gender");
                 String address = request.getParameter("address");
 
+                // Kiểm tra các trường không được bỏ trống
+                if (fullName == null || fullName.trim().isEmpty()
+                        || mobile == null || mobile.trim().isEmpty()
+                        || gender == null || gender.trim().isEmpty()
+                        || address == null || address.trim().isEmpty()) {
+
+                    request.setAttribute("error", "All fields are required.");
+                    request.setAttribute("user", loggedInUser);
+                    request.getRequestDispatcher("user/profile.jsp").forward(request, response);
+                    return;
+                }
+
+                if (!mobile.trim().matches("[0][0-9]{9}")) {
+                    request.setAttribute("error", "Number must be 10 digit and start with 0");
+                    request.setAttribute("user", loggedInUser);
+                    request.getRequestDispatcher("user/profile.jsp").forward(request, response);
+                    return;
+                }
+
+                // Kiểm tra số điện thoại có tồn tại trong DB
+                UserDAO userDAO = new UserDAO();
+                try {
+                    User user = userDAO.getUserByPhoneNumber(mobile);
+                    if (user != null && !mobile.equals(loggedInUser.getMobile())) {
+                        request.setAttribute("user", loggedInUser);
+                        request.setAttribute("error", "Mobile number already exists.");
+                        request.getRequestDispatcher("user/profile.jsp").forward(request, response);
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 // Cập nhật thông tin user
                 loggedInUser.setFullName(fullName);
                 loggedInUser.setMobile(mobile);
                 loggedInUser.setGender("Male".equalsIgnoreCase(gender));
                 loggedInUser.setAddress(address);
 
-                // Lưu thông tin vào database
-                UserDAO userDAO = new UserDAO();
                 boolean updateSuccess = userDAO.updateProfile(loggedInUser);
 
                 if (updateSuccess) {
-                    // Cập nhật session với thông tin mới
+                    request.setAttribute("user", loggedInUser);
                     session.setAttribute("account", loggedInUser);
                     request.setAttribute("message", "Profile updated successfully!");
                 } else {
+                    request.setAttribute("user", loggedInUser);
+                    session.setAttribute("account", loggedInUser);
                     request.setAttribute("error", "Failed to update profile. Please try again.");
                 }
 
-                request.setAttribute("user", loggedInUser);
-                response.sendRedirect(request.getContextPath() + "/profile");
+                request.getRequestDispatcher("user/profile.jsp").forward(request, response);
             }
         } else {
             response.sendRedirect("login.jsp");

@@ -20,10 +20,19 @@
     <jsp:include page="/common/common-homepage-header.jsp"></jsp:include>
     <%
         ReservationDAO rdao = new ReservationDAO();
-    Reservation res =  rdao.getReservationById((int)request.getAttribute("reservationId"));
-    User staff = rdao.getStaffByReservationID((int)request.getAttribute("reservationId"));
+        if(request.getAttribute("reservationId")!=null){
+        Reservation res =  rdao.getReservationById((int)request.getAttribute("reservationId"));
+        User staff = rdao.getStaffByReservationID((int)request.getAttribute("reservationId"));
     request.setAttribute("staff", staff);
     request.setAttribute("res", res);
+        }else if(session.getAttribute("rid")!=null){
+        Reservation res =  rdao.getReservationById((int)session.getAttribute("reservationId"));
+        User staff = rdao.getStaffByReservationID((int)session.getAttribute("reservationId"));
+        request.setAttribute("staff", staff);
+    request.setAttribute("res", res);
+        }
+    ;
+    
     %>
     <body>
         <section class="vh-100" >
@@ -66,14 +75,13 @@
                                                     <div class="tab-content ml-1" id="myTabContent" style="">
                                                         <div class="row" style="text-align: start; margin-bottom: 1%">
                                                             <h2 style="margin-top:5%; font-size: 30px">Reservation Details</h2>
-                                                            <c:if test="${requestScope.res.getStatus()}">
-                                                              <h2 style="margin-top:2%; font-size: 20px" class="mb-1">Your reservation has been submitted</h2>  
-                                                            </c:if>
+                                                            <c:if test="${requestScope.res.status eq 'Pending'}">
+    <h2 style="margin-top:2%; font-size: 20px" class="mb-1">Your reservation has been submitted</h2>  
+</c:if>
                                                             
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%; text-success">Reservation ID: ${requestScope.res.getId()}</div>
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%; text-success">Reserved Date: ${requestScope.res.getReservation_date()}</div>
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%; text-success">Reserved Status: ${requestScope.res.getStatus()}</div>
-                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%; text-success">Reserved Total: ${requestScope.amount} $</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Reservation ID: ${requestScope.res.getId()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Reserved Date: ${requestScope.res.getReservation_date()}</div>
+                                                            <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Reserved Status: ${requestScope.res.getStatus()}</div>
                                                             <c:if test="${requestScope.staff!=null}">
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Assigned Staff: ${requestScope.staff.getFullName()}</div>
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10% text-success">Staff Contact Email: ${requestScope.staff.getEmail()}</div>

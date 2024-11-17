@@ -288,13 +288,14 @@ public class UserDAO extends DBContext {
     public List<WorkSchedule> listDoctorBusy(Timestamp registeredTime){
         List<WorkSchedule> busyDoctors = new ArrayList<>();
         try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String sql = "Select * from work_schedule where start_at< ? and end_at >?";
             stm = connection.prepareStatement(sql);
             stm.setTimestamp(1, registeredTime);
             stm.setTimestamp(2, registeredTime);
             rs = stm.executeQuery();
             while(rs.next()){
-                WorkSchedule w = new WorkSchedule(rs.getInt("reservation_id"), rs.getInt("doctor_id"), LocalDate.parse(rs.getString("start_at")), LocalDate.parse(rs.getString("end_at")));
+                WorkSchedule w = new WorkSchedule(rs.getInt("reservation_id"), rs.getInt("doctor_id"), LocalDate.parse(rs.getString("start_at"),formatter), LocalDate.parse(rs.getString("end_at"),formatter));
                 busyDoctors.add(w);
             }
             return busyDoctors;

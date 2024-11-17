@@ -15,7 +15,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Edit Blog Post - Doctris</title>
+        <title>Edit Blog Post</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Include the same CSS files as in add_post_admin.jsp -->
         <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon.ico.png">
@@ -67,17 +67,17 @@
                                             <div class="row">
                                                 <div class="col-12 mb-3">
                                                     <label class="form-label">Post Title <span class="text-danger">*</span></label>
-                                                    <input name="title" id="title" type="text" class="form-control" value="${post.title}" required>
+                                                    <input name="title" id="title" type="text" class="form-control" style="display: block" value="${post.title}">
                                                 </div>
 
                                                 <div class="col-12 mb-3">
-                                                    <label class="form-label">Description <span class="text-danger">*</span></label>
-                                                    <textarea name="description" id="description" rows="3" class="form-control tinymce" required>${post.description}</textarea>
+                                                    <label class="form-label">Description</label>
+                                                    <textarea name="description" id="description" rows="3" class="form-control tinymce">${post.description}</textarea>
                                                 </div>
 
                                                 <div class="col-12 mb-3">
-                                                    <label class="form-label">Content <span class="text-danger">*</span></label>
-                                                    <textarea name="content" id="content" rows="10" class="form-control tinymce" required>${post.content}</textarea>
+                                                    <label class="form-label">Content</label>
+                                                    <textarea name="content" id="content" rows="10" class="form-control tinymce">${post.content}</textarea>
                                                 </div>
 
                                                 <div class="col-md-6 mb-3">
@@ -124,12 +124,18 @@
             tinymce.init({
                 selector: '.tinymce',
                 plugins: [
-                    'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-                ],
-                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat'
-            });
+                        'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                    setup: function (editor) {
+                        editor.on('init', function () {
+                            // Ensure the TinyMCE editor UI is fully loaded and active
+                            editor.getBody().setAttribute('contenteditable', true);
+                        });
+                    }
+                });
         </script>
-        <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
+         <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/simplebar.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>

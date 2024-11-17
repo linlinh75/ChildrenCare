@@ -192,12 +192,12 @@
                             <h1><i class="fas fa-user-circle"></i> User Details</h1>
                             <div>
                                 <a href="${pageContext.request.contextPath}/admin-manage-user" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left"></i> Back to Users List
-                                </a>
-                            </div>
+                                <i class="fas fa-arrow-left"></i> Back to Users List
+                            </a>
                         </div>
+                    </div>
 
-                        <!-- Success/Error Messages -->
+                    <!-- Success/Error Messages -->
                     <c:if test="${not empty sessionScope.successMessage}">
                         <div class="alert alert-success">
                             ${sessionScope.successMessage}
@@ -212,79 +212,55 @@
                     </c:if>
 
                     <!-- Separate image upload form -->
-                    <div class="image-upload">
-                        <form id="imageUploadForm" action="user-details" method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="id" value="${user.id}">
-                            <img src="${pageContext.request.contextPath}${user.imageLink}" alt="Profile Image">
-                            <input type="file" name="profileImage" id="profileImage" accept="image/*">
-                            <label for="profileImage">
-                                <i class="fas fa-camera"></i> Change Photo
-                            </label>
-                        </form>
-                    </div>
+
 
                     <!-- Main form for user details -->
-                    <form id="userDetailsForm" action="user-details" method="POST">
+                    <form id="userDetailsForm" action="user-details" method="POST" >
                         <input type="hidden" name="id" value="${user.id}">
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><i class="fas fa-user"></i> Full Name</label>
-                                <input type="text" name="fullName" value="${user.fullName}"
-                                       ${sessionScope.account.roleId==1 ? '' : 'readonly' }>
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-envelope"></i> Email</label>
-                                <input type="email" name="email" value="${user.email}" readonly>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><i class="fas fa-venus-mars"></i> Gender</label>
-                                <select name="gender" ${sessionScope.account.roleId==1 ? '' : 'disabled' }>
-                                    <option value="true" ${user.gender ? 'selected' : '' }>Male</option>
-                                    <option value="false" ${!user.gender ? 'selected' : '' }>Female</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-phone"></i> Mobile</label>
-                                <input type="text" name="mobile" value="${user.mobile}" ${sessionScope.account.roleId==1
-                                                                          ? '' : 'readonly' }>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><i class="fas fa-map-marker-alt"></i> Address</label>
-                                <input type="text" name="address" value="${user.address}"
-                                       ${sessionScope.account.roleId==1 ? '' : 'readonly' }>
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-user-tag"></i> Role</label>
-                                <select name="roleId" ${(sessionScope.account.roleId==1 && user.roleId !=1) ? ''
-                                                        : 'disabled' }>
-                                    <option value="1" ${user.roleId==1 ? 'selected' : '' }>Admin</option>
-                                    <option value="2" ${user.roleId==2 ? 'selected' : '' }>Manager</option>
-                                    <option value="3" ${user.roleId==3 ? 'selected' : '' }>Staff</option>
-                                    <option value="4" ${user.roleId==4 ? 'selected' : '' }>Customer</option>
-                                </select>
-                                <c:if test="${user.roleId == 1}">
-                                    <small class="text-muted">Admin role cannot be modified</small>
-                                </c:if>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-toggle-on"></i> Status</label>
-                            <select name="status" ${sessionScope.account.roleId==1 ? '' : 'disabled' }>
-                                <option value="Active" ${user.status=='Active' ? 'selected' : '' }>Active</option>
-                                <option value="Inactive" ${user.status=='Inactive' ? 'selected' : '' }>Inactive</option>
-                            </select>
-                        </div>
+                        <table class="table" style="height: 580px;">
+                            <tr>
+                                <td><label><i class="fas fa-user"></i> Full Name</label></td>
+                                <td><input type="text" name="fullName" value="${user.fullName}" ${sessionScope.account.roleId==1 ? '' : 'readonly' }></td>
+                                <td><label><i class="fas fa-envelope"></i> Email</label></td>
+                                <td><input type="email" name="email" value="${user.email}" readonly></td>
+                            </tr>
+                            <tr>
+                                <td><label><i class="fas fa-venus-mars"></i> Gender</label></td>
+                                <td>
+                                    <select name="gender" ${sessionScope.account.roleId==1 ? '' : 'disabled' }>
+                                        <option value="true" ${user.gender ? 'selected' : '' }>Male</option>
+                                        <option value="false" ${!user.gender ? 'selected' : '' }>Female</option>
+                                    </select>
+                                </td>
+                                <td><label><i class="fas fa-phone"></i> Mobile</label></td>
+                                <td><input type="text" name="mobile" value="${user.mobile}" ${sessionScope.account.roleId==1 ? '' : 'readonly' }></td>
+                            </tr>
+                            <tr>
+                                <td><label><i class="fas fa-map-marker-alt"></i> Address</label></td>
+                                <td><input type="text" name="address" value="${user.address}" ${sessionScope.account.roleId==1 ? '' : 'readonly' }></td>
+                                <td><label><i class="fas fa-user-tag"></i> Role</label></td>
+                                <td>
+                                    <select name="roleId" ${(sessionScope.account.roleId==1 && user.roleId !=1) ? '' : 'disabled' }>
+                                        <option value="1" ${user.roleId==1 ? 'selected' : '' }>Admin</option><option value="2" ${user.roleId==2 ? 'selected' : '' }>Manager</option>
+                                        <option value="3" ${user.roleId==3 ? 'selected' : '' }>Staff</option>
+                                        <option value="4" ${user.roleId==4 ? 'selected' : '' }>Customer</option>
+                                    </select>
+                                    <c:if test="${user.roleId == 1}">
+                                        <small class="text-muted">Admin role cannot be modified</small>
+                                    </c:if>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label><i class="fas fa-toggle-on"></i> Status</label></td>
+                                <td>
+                                    <select name="status" ${sessionScope.account.roleId==1 ? '' : 'disabled' }>
+                                        <option value="Active" ${user.status=='Active' ? 'selected' : '' }>Active</option>
+                                        <option value="Inactive" ${user.status=='Inactive' ? 'selected' : '' }>Inactive</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">

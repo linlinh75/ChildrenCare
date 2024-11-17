@@ -76,7 +76,6 @@
                                             </td>
                                             <td>
                                                 <input style="width: 90%;" type="url" name="sliderBacklink" id="sliderBacklink" required>
-                                                <small id="backlinkError" style="color: red; display: none;">Please enter a valid URL.</small>
                                             </td>
                                         </tr>
                                         <tr style="padding-bottom: 15px;">
@@ -135,24 +134,14 @@
                 imageError.style.display = "none";
             }
 
-            const backlink = document.getElementById("sliderBacklink").value.trim();
-            const backlinkError = document.getElementById("backlinkError");
-            if (!isValidURL(backlink)) {
-                backlinkError.style.display = "block";
-                isValid = false;
-            } else {
-                backlinkError.style.display = "none";
-            }
-
+     
+            
             if (!isValid) {
                 alert("Please input correct information in the form.");
             }
             return isValid;
         }
 
-        function isValidURL(url) {
-            const urlPattern = /^(http|https):\/\/[^\s$.?#].[^\s]*$/gm;
-            return urlPattern.test(url);
-        }
+
     </script>
 </html>
