@@ -21,16 +21,16 @@
         <div class="card" style="border-radius: 1rem;">
             <div class="col-md-6 col-lg-7 d-flex align-items-center">
               <div class="card-body p-4 p-lg-5 text-black">
-                  <c:if test="${erChange!=null}">
-                            <div class="container-fluid bg-danger text-center">
-                                ${erChange}
-                            </div>
-                        </c:if>
+                 
                 <form action = "login" method="get">
                   <div class="d-flex align-items-center mb-3 pb-1">
                     <span class="h1 fw-bold mb-0">Password for login by Google</span>
                   </div>
-                  
+                   <c:if test="${erChange!=null}">
+                            <div class="alert alert-danger">
+                                ${erChange}
+                            </div>
+                        </c:if>
                 <div data-mdb-input-init class="form-outline mb-4">
                     <input type="password" name="ggpass" id="form2Example17"  class="form-control form-control-lg" required/>
                     <label class="form-label" for="form2Example17">Password</label>

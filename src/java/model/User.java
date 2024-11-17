@@ -1,5 +1,7 @@
 package model;
 
+import java.time.LocalDate;
+
 /**
  * Represents a user of the application.
  */
@@ -14,12 +16,36 @@ public class User {
     private String address;
     private String imageLink;
     private int roleId;
-    private int status;
+    private String status;
+    private LocalDate created_date;
 
+    public User(int id, String email, String password, String fullName, boolean gender, String mobile, String address, String imageLink, int roleId, String status, LocalDate created_date) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+        this.gender = gender;
+        this.mobile = mobile;
+        this.address = address;
+        this.imageLink = imageLink;
+        this.roleId = roleId;
+        this.status = status;
+        this.created_date = created_date;
+    }
+
+    
+
+    public LocalDate getCreated_date() {
+        return created_date;
+    }
+
+    public void setCreated_date(LocalDate created_date) {
+        this.created_date = created_date;
+    }
     public User() {
     }
 
-    public User(int id, String email, String password, String fullName, boolean gender, String mobile, String address, String imageLink, int roleId, int status) {
+    public User(int id, String email, String password, String fullName, boolean gender, String mobile, String address, String imageLink, int roleId, String status) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -96,6 +122,11 @@ public class User {
         this.imageLink = imageLink;
     }
 
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", email=" + email + ", password=" + password + ", fullName=" + fullName + ", gender=" + gender + ", mobile=" + mobile + ", address=" + address + ", imageLink=" + imageLink + ", roleId=" + roleId + ", status=" + status + '}';
+    }
+
     public int getRoleId() {
         return roleId;
     }
@@ -104,11 +135,11 @@ public class User {
         this.roleId = roleId;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

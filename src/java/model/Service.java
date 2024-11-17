@@ -113,7 +113,6 @@ public class Service {
         this.updatedDate = updatedDate;
     }
 
-
     public boolean isFeatured() {
         return featured;
     }

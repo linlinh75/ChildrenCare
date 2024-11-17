@@ -17,16 +17,16 @@
         <section class="vh-100" style="background-color: #1A76D1;">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col col-xl-10">
+      <div class="col col-xl-8">
         <div class="card" style="border-radius: 1rem;">
-            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+            <div class="col-md-12 d-flex align-items-center">
               <div class="card-body p-4 p-lg-5 text-black">
-                <form action = "newPassword" method="post">
+                <form action = "newPassword?token=${token}" method="post">
                   <div class="d-flex align-items-center mb-3 pb-1">
                     <span class="h1 fw-bold mb-0">Enter New Password</span>
                   </div>           
                     <c:if test="${erChange!=null}">
-                            <div class="container-fluid bg-danger text-center">
+                            <div class="alert alert-danger mb-3" role="alert">
                                 ${erChange}
                             </div>
                         </c:if>

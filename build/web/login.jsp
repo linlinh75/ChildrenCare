@@ -31,19 +31,18 @@
               <div class="card-body p-3 text-black">
                 <form action = "login" method="post">
                   <div class="d-flex align-items-center mb-3 pb-1">
-                    <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
                     <span class="h1 fw-bold mb-0">Login</span>
                   </div>
 
                   <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="text" name="email" id="form2Example17"  class="form-control form-control-lg" />
-                    <label class="form-label" for="form2Example17">Email</label>
+                    <input type="email" name="email" id="email"  class="form-control form-control-lg" required />
+                    <label class="form-label" for="email">Email</label>
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="password" id="form2Example27"  class="form-control form-control-lg" />
-                    <label class="form-label" for="form2Example27">Password</label>
+                    <input type="password" name="password" id="password"  class="form-control form-control-lg" required/>
+                    <label class="form-label" for="password">Password</label>
                   </div>
                    <c:if test="${ms!=null}">
             <div class="alert alert-danger" role="alert">
@@ -61,13 +60,13 @@
                     </div>
                   </c:if>
                   <div class="pt-1 mb-4">
-                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" name="submit" value="submit">Login</button>
+                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark  btn-block" id="loginButtonId" type="submit" name="submit" value="submit">Login</button>
                       </div>
                    <div class="row">
             <div class="col-12">
               <p class="mt-3 mb-2">Or sign in with</p>
-              <div class="d-flex gap-3 flex-column flex-md-row">
-                <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid
+              <div class="d-flex gap-3 flex-column flex-md-row mb-5">
+               <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid
 
 &redirect_uri=http://localhost:8080/ChildrenCare/login
 
@@ -83,8 +82,8 @@
                 </a>
                
               </div>
-                  <a class="small text-muted" href="forgotPw.jsp">Forgot password?</a>
-                  <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="register.jsp"
+                  <a class="text-muted" href="forgotPw.jsp">Forgot password?</a>
+                  <p class=" pb-lg-2" style="color: #393f81;">Don't have an account? <a href="register.jsp"
                       style="color: #393f81;">Register here</a></p>
                 </form>
 
@@ -98,4 +97,14 @@
 </section>
     </body>
     <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>
+    <% 
+                    String activationMessage = (String) session.getAttribute("activationMessage");
+                    if (activationMessage != null) { 
+                    %>
+                    <script>
+                        alert("<%= activationMessage %>");
+                    </script>
+                    <% 
+                    } 
+                    %>
 </html>

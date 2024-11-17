@@ -4,9 +4,9 @@
  */
 package controller;
 
+import dal.MedicalExaminationDAO;
 import dal.PostDAO;
 import dal.ServiceDAO;
-import dal.SettingDAO;
 import dal.SliderDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,11 +15,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Post;
 import model.Service;
-import model.Setting;
 import model.Slider;
+import dal.ServiceCategoryDAO;
+import model.ServiceCategory;
+import model.PostCategory;
+import dal.PostCategoryDAO;
+import model.MedicalExamination;
+import model.User;
 
 /**
  *
@@ -41,17 +47,26 @@ public class DataServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            HttpSession session = request.getSession(false);
             ServiceDAO s = new ServiceDAO();
             List<Service> list_service = s.getAllService();
             PostDAO p = new PostDAO();
             List<Post> list_post = p.getAllPosts();
             List<Post> new_post = p.getNewest();
-            SettingDAO st = new SettingDAO();
-            List<Setting> s_category = st.getServiceCategory();
-            List<Setting> p_category = st.getPostCategory();
+            ServiceCategoryDAO sc = new ServiceCategoryDAO();
+            List<ServiceCategory> s_category=sc.getAll();
+            PostCategoryDAO pc = new PostCategoryDAO();
+            List<PostCategory> p_category= pc.getAll();
             SliderDAO sliderDAO = new SliderDAO();
             List<Slider> list_sliders = sliderDAO.getAllSliders();
             request.setAttribute("list_sliders", list_sliders);
+
+//               MedicalExaminationDAO medDAO = new MedicalExaminationDAO();
+//            List<MedicalExamination> list_examination = medDAO.getAllExaminationByAuthor(((User)session.getAttribute("account")).getId());
+//            
+//            request.setAttribute("list_examination", list_examination); 
+
+            
             if (s_category == null || s_category.isEmpty()) {
             } else {
                 request.setAttribute("list_sc", s_category);
@@ -74,22 +89,43 @@ public class DataServlet extends HttpServlet {
             } else {
                 switch (action) {
                     case "register": {
-                        request.getRequestDispatcher("register.jsp").forward(request, response);
+                        HttpSession ses = request.getSession(false);
+                        if (ses.getAttribute("account") != null) {
+                            response.sendRedirect("/ChildrenCare/HomeServlet");
+                        } else {
+                            request.getRequestDispatcher("register.jsp").forward(request, response);
+                        }
                         break;
                     }
                     case "login": {
-                        request.getRequestDispatcher("login.jsp").forward(request, response);
+                        HttpSession ses = request.getSession(false);
+
+                    if (ses.getAttribute("account") != null) {
+                            response.sendRedirect("/ChildrenCare/HomeServlet");
+                        } else {
+                            request.getRequestDispatcher("login.jsp").forward(request, response);
+                        
+                        }
                         break;
                     }
-                    case "service":
-                    {
+                    case "service": {
                         request.getRequestDispatcher("./service").forward(request, response);
                         break;
                     }
-                    case "post":
-                    {
+                    case "post": {
                         request.getRequestDispatcher("./post").forward(request, response);
                         break;
+                    }
+                    case "verify": {
+                        request.getRequestDispatcher("verify.jsp").forward(request, response);
+                        break;
+                    }
+                    case "med": {
+                        request.getRequestDispatcher("staff-exam").forward(request, response);
+                        break;
+                    }
+                    case "profile": {
+                        request.getRequestDispatcher("./profile").forward(request, response);
                     }
                     default:
                         break;

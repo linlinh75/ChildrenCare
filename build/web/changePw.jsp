@@ -19,31 +19,43 @@
         <section class="vh-100" style="background-color: #1A76D1;">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col col-xl-10">
+      <div class="col col-xl-8">
         <div class="card" style="border-radius: 1rem;">
-            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+            <div class=" d-flex align-items-center">
               <div class="card-body p-4 p-lg-5 text-black">
                 <form action = "change" method="post">
                    
                   <div class="d-flex align-items-center mb-3 pb-1">
-                    <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
-                    <span class="h1 fw-bold mb-0">Enter New Password</span>
+                    <span class="h1 fw-bold mb-0">Change Password</span>
                   </div>
+                    
+                        <c:if test="${erChange!=null}">
+                            <div class="alert alert-danger mb-3" role="alert">
+                                ${erChange}
+                            </div>
+                        </c:if>
                     <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="Old password" id="form2Example17"  class="form-control form-control-lg" />
-                    <label class="form-label" for="form2Example17">Old Password</label>
+                    <input type="password" name="Old password" id="oldPassword"  class="form-control form-control-lg" required/>
+                    <label class="form-label" for="oldPassword">Old Password</label>
                   </div>
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="New password" id="form2Example17"  class="form-control form-control-lg" />
-                    <label class="form-label" for="form2Example17">New Password</label>
+                    <input type="password" name="New password" id="newPassword"  class="form-control form-control-lg" required />
+                    <label class="form-label" for="newPassword">New Password</label>
                   </div>
                     <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" name="confPassword" id="form2Example17"  class="form-control form-control-lg" />
-                    <label class="form-label" for="form2Example17">Re-Enter Password</label>
+                    <input type="password" name="confPassword" id="confirmPassword"  class="form-control form-control-lg" required />
+                    <label class="form-label" for="confirmPassword">Re-Enter Password</label>
                   </div>
-                  <div class="pt-1 mb-4 row">
-                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" name="submit" value="submit">Change Password</button>
+                    <div class="row d-flex">
+                  <div class="pt-1 mb-4 col-md-6">
+                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" name="submit" value="submit" id="changePasswordButton">Change Password</button>
                   </div>
+                    <div class="pt-1 mb-4 col-md-6">
+                        <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="button" name="undo" value="undo">
+                            <a href="profile">Un-do Change Password</a>
+                        </button>
+                  </div>
+                    </div>
                 </form>
 
               </div>

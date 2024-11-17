@@ -20,13 +20,13 @@ public class Post {
     private String thumbnailLink;
     private int authorId;
     private int categoryId;
-    private int statusId;
+    private String statusId;
     private String title;
 
     public Post() {
     }
 
-    public Post(int id, String content, String description, Date updatedDate, boolean featured, String thumbnailLink, int authorId, int categoryId, int statusId, String title) {
+    public Post(int id, String content, String description, Date updatedDate, boolean featured, String thumbnailLink, int authorId, int categoryId, String statusId, String title) {
         this.id = id;
         this.content = content;
         this.description = description;
@@ -103,14 +103,14 @@ public class Post {
         this.categoryId = categoryId;
     }
 
-    public int getStatusId() {
+    public String getStatusId() {
         return statusId;
     }
 
-    public void setStatusId(int statusId) {
+    public void setStatusId(String statusId) {
         this.statusId = statusId;
     }
-
+    
     public String getTitle() {
         return title;
     }
@@ -118,6 +118,5 @@ public class Post {
     public void setTitle(String title) {
         this.title = title;
     }
-
     
 }

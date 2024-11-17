@@ -6,12 +6,10 @@
 package controller;
 
 import dal.PostDAO;
-import dal.ServiceDAO;
-import dal.SettingDAO;
-import dal.SliderDAO;
+
 import dal.UserDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +22,7 @@ import java.util.logging.Logger;
 import model.GoogleAccount;
 import model.User;
 import util.EncodePassword;
+import util.VerifyPassword;
 
 /**
  *
@@ -47,6 +46,7 @@ public class LoginServlet extends HttpServlet {
             UserDAO userdao = new UserDAO();
             HttpSession session = request.getSession(false);
             String code = request.getParameter("code");
+            VerifyPassword ver = new VerifyPassword();
             if (code != null) {
                 String accessToken = GoogleLogin.getToken(code);
                 GoogleAccount acc = GoogleLogin.getUserInfo(accessToken);
@@ -57,8 +57,14 @@ public class LoginServlet extends HttpServlet {
                 if (request.getParameter("ggpass") == null) {
                     request.getRequestDispatcher("ggPw.jsp").forward(request, response);
                 } else {
+                    System.out.println(ggAcc.toString());
                     String password = request.getParameter("ggpass");
                     String confPassword = request.getParameter("confPassword");
+                    if(!ver.verify(password)){
+                        String erChange = "Password must be between 8-24 characters, include at least one uppercase letter and one number";
+                        request.setAttribute("erChange", erChange);
+                        request.getRequestDispatcher("ggPw.jsp").forward(request, response);
+                    }else{
                     if (!password.equals(confPassword)) {
                         String erChange = "Wrong Confirm Password";
                         request.setAttribute("erChange", erChange);
@@ -71,15 +77,18 @@ public class LoginServlet extends HttpServlet {
                         newUser.setFullName(ggAcc.getName());
                         newUser.setImageLink(ggAcc.getPicture());
                         newUser.setRoleId(4);
-                        newUser.setStatus(17);
+                        newUser.setStatus("Active");
+                        
                         userdao.addUser(newUser);
                         session.setAttribute("account", newUser);
+                        session.setAttribute("email", ggAcc.getEmail());
                         response.sendRedirect("/ChildrenCare/HomeServlet");
                     }
 
                 }
 
-            } else {
+            }} else {
+                session.setAttribute("email", ggAcc.getEmail());
                 session.setAttribute("account", userdao.getUserByEmail(ggAcc.getEmail()));
                 response.sendRedirect("/ChildrenCare/HomeServlet");
             }

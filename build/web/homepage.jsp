@@ -38,6 +38,45 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="./css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
+        <style>
+            .see-more-button {
+                display: inline-flex;
+                background-color: white;
+                color: #ff4d4d !important;
+                border: 2px solid #ff4d4d;
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+                align-items: center;
+                gap: 5px;
+                text-decoration: none;
+                transition: background-color 0.3s, color 0.3s;
+                border-radius: 20px;
+            }
+
+            .see-more-button:hover {
+                background-color: #ff4d4d;
+                color: white !important;
+            }
+            .see-more-button i {
+                font-size: 1.5em;
+            }
+            .sticky-cart-button {
+                position: fixed;
+                bottom: 100px;
+                right: 20px;
+                z-index: 1000;
+            }
+            .sticky-cart-button .btn {
+                padding: 10px 20px;
+                font-size: 16px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease-in-out;
+            }
+            .sticky-cart-button .btn:hover {
+                transform: scale(1.05);
+            }
+        </style>
     </head>
     <body>
         <!-- Preloader -->
@@ -72,7 +111,7 @@
                             <!-- Top Contact -->
                             <ul class="top-contact">
                                 <li><i class="fa fa-phone"></i>+880 1234 56789</li>
-                                <li><i class="fa fa-envelope"></i><a href="mailto:support@yourmail.com">support@yourmail.com</a></li>
+                                <li><i class="fa fa-envelope"></i><a href="mailto:support@yourmail.com">childrencaresystemse1874@gmail.com</a></li>
                             </ul>
                             <!-- End Top Contact -->
                         </div>
@@ -93,7 +132,6 @@
                                 <!-- End Logo -->
                                 <!-- Mobile Nav -->
                                 <div class="mobile-nav"></div>
-                                <!-- End Mobile Nav -->
                             </div>
                             <div class="col-lg-6 col-md-9 col-12">
                                 <!-- Main Menu -->
@@ -118,6 +156,23 @@
                                                         </c:forEach>
                                                 </ul>
                                             </li>
+                                            <c:if test="${sessionScope.account.roleId == 3}">
+                                                <li class="${active == 'med' ? 'active' : ''}" >
+                                                    <a href="DataServlet?action=med">Medical Examination</i></a>
+                                                </li>
+                                            </c:if>
+                                            <c:if test="${sessionScope.account.roleId == 1}">
+                                                <li class="${active == 'dashboard' ? 'active' : ''}">
+                                                    <a href="admin-dashboard">Dashboard</a>
+                                                </li>
+                                            </c:if>
+
+                                            <c:if test="${account.roleId == 2}">
+                                                <li class="nav-item">
+                                                    <a class="nav-link ${active == 'dashboard' ? 'active' : ''}" 
+                                                       href="profile">Manager Dashboard</a>
+                                                </li>
+                                            </c:if>
                                         </ul>
                                     </nav>
                                 </div>
@@ -134,9 +189,10 @@
                                                         <img src="./${account.getImageLink()}" alt="Avatar" class="rounded-circle" style="width: 60px; height: 50px;">
                                                     </div>
                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                                                        <a class="dropdown-item" href="/ChildrenCare/profile">Profile</a>
-                                                        <a class="dropdown-item" href="#">Reservation</a>
-                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href="DataServlet?action=profile">Profile</a>
+                                                        <c:if test="${sessionScope.account.roleId == 4}">
+                                                            <a class="dropdown-item" href="/ChildrenCare/ReservationServlet">My Reservation</a>
+                                                        </c:if>                                                        <div class="dropdown-divider"></div>
                                                         <a class="dropdown-item" href="LogoutServlet">Logout</a>
                                                     </div>
                                                 </div>
@@ -317,6 +373,13 @@
                         </div>
                     </c:forEach>
                 </div>
+                <div class="row">
+                    <div class="col-lg-12 text-center" style="margin-top: 20px;">
+                        <a href="DataServlet?action=service" class="see-more-button">
+                            See More <i class="icofont-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
         <!--/ End service -->
@@ -357,8 +420,14 @@
             </div>
         </section>
         <!-- End Blog Area -->
-
-
+        <!--Button Cart - Only show for customers -->
+        <c:if test="${sessionScope.account.roleId == 4}">
+            <div class="sticky-cart-button">
+                <a href="./customer-reservation-service-cart" class="btn btn-primary">
+                    <i class="fa fa-shopping-cart"></i> View Cart
+                </a>
+            </div>
+        </c:if>
         <!-- Footer Area -->
         <footer id="footer" class="footer ">
             <!-- Footer Top -->

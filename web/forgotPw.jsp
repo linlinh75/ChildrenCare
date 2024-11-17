@@ -38,7 +38,7 @@
                   <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Enter email to let us help you out</h5>
 
                     <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="email" name="email" id="form2Example17"  class="form-control form-control-lg" />
+                        <input type="email" name="email" id="form2Example17"  class="form-control form-control-lg" value="${email}" />
                     <label class="form-label" for="form2Example17">Email</label>
                   </div>
                   <div class="pt-1 mb-4 row">

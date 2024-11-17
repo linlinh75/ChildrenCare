@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="model.User"%>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Children Care System</title>
@@ -48,7 +49,7 @@
                     <!-- Top Contact -->
                     <ul class="top-contact">
                         <li><i class="fa fa-phone"></i>+880 1234 56789</li>
-                        <li><i class="fa fa-envelope"></i><a href="mailto:support@yourmail.com">support@yourmail.com</a></li>
+                        <li><i class="fa fa-envelope"></i><a href="mailto:support@yourmail.com">childrencaresystemse1874@gmail.com</a></li>
                     </ul>
                     <!-- End Top Contact -->
                 </div>
@@ -57,14 +58,14 @@
     </div>
     <!-- End Topbar -->
     <!-- Header Inner -->
-    <div class="header-inner">
+    <div class="header-inner" >
         <div class="container">
             <div class="inner">
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-12">
                         <!-- Start Logo -->
-                        <div class="logo">
-                            <a href="http://localhost:8080/ChildrenCare/HomeServlet"><img src="http://localhost:8080/ChildrenCare/img/logo.png" alt="#"></a>
+                        <div class="logo" >
+                            <a href="HomeServlet"><img src="img/logo.png" alt="#"></a>
                         </div>
                         <!-- End Logo -->
                         <!-- Mobile Nav -->
@@ -92,14 +93,37 @@
                                         <ul class="dropdown">
                                             <c:forEach var="post" items="${list_pc}">
                                                 <li><a href="#">${post.getName()}</a></li>
-                                            </c:forEach>
+                                                </c:forEach>
                                         </ul>
-                                    </li>                                    
+                                    </li> 
+
+
+                                    <c:if test="${sessionScope.account.roleId == 3}">
+                                        <li class="${active == 'med' ? 'active' : ''}" >
+                                            <a href="DataServlet?action=med">Medical Examination</i></a>
+                                            <!--                                        <ul class="dropdown">
+                                                                                        <li><a href=""></a></li>
+                                                                                    </ul>-->
+                                        </li>
+                                    </c:if>
+                                    <c:if test="${account.roleId == 1}">
+                                        <li class="nav-item">
+                                            <a class="nav-link ${active == 'dashboard' ? 'active' : ''}" 
+                                               href="admin-dashboard">Dashboard</a>
+                                        </li>
+                                    </c:if>
+                                    <c:if test="${account.roleId == 2}">
+                                        <li class="nav-item">
+                                            <a class="nav-link ${active == 'dashboard' ? 'active' : ''}" 
+                                               href="/profile">Manager Dashboard</a>
+                                        </li>
+                                    </c:if>
                                 </ul>
                             </nav>
                         </div>
                         <!--/ End Main Menu -->
                     </div>
+                     <!-- User Avatar -->                   
                     <div class="col-lg-3 col-12">
                         <div class="get-quote">
                             <c:choose>
@@ -112,14 +136,17 @@
                                             </div>
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                                                 <a class="dropdown-item" href="/ChildrenCare/profile">Profile</a>
-                                                <a class="dropdown-item" href="#">Reservation</a>
+                                                <c:if test="${sessionScope.account.roleId == 4}">
+                                                    <a class="dropdown-item" href="/ChildrenCare/ReservationServlet">My Reservation</a>
+                                                </c:if>
+                                                <c:if test="${sessionScope.account.roleId == 3}">
+                                                    <a class="dropdown-item" href="/ChildrenCare//staff-work-schedule">My Work Schedule</a>
+                                                </c:if>
                                                 <div class="dropdown-divider"></div>
                                                 <a class="dropdown-item" href="LogoutServlet">Logout</a>
                                             </div>
                                         </div>
                                     </div>
-
-
                                 </c:when>
                                 <c:otherwise>
                                     <a href="register.jsp" class="btn" style="background-color: orange;">Register</a>
@@ -128,6 +155,7 @@
                             </c:choose>
                         </div>
                     </div>
+                     <!--/ End User Avatar -->
                 </div>
             </div>
         </div>

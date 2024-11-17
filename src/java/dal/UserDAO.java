@@ -5,14 +5,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import static java.time.LocalDateTime.now;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
+import model.WorkSchedule;
 
 /**
  * Data Access Object (DAO) for User entity.
@@ -61,13 +65,13 @@ public class UserDAO extends DBContext {
                             rs.getInt("id"),
                             rs.getString("email"),
                             rs.getString("password"),
-                            rs.getString("fullName"),
+                            rs.getString("full_name"),
                             rs.getBoolean("gender"),
                             rs.getString("mobile"),
                             rs.getString("address"),
-                            rs.getString("imageLink"),
-                            rs.getInt("roleId"),
-                            rs.getInt("status")
+                            rs.getString("image_link"),
+                            rs.getInt("role_id"),
+                            rs.getString("status")
                     );
                 }
             }
@@ -93,14 +97,37 @@ public class UserDAO extends DBContext {
                             rs.getString("address"),
                             rs.getString("image_link"),
                             rs.getInt("role_id"),
-                            rs.getInt("status")
+                            rs.getString("status")
                     );
                 }
             }
         }
         return null;
     }
+    public User getUserByPhoneNumber(String phone) throws SQLException {
+        String sql = "SELECT * FROM user WHERE mobile = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, phone);
 
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                            rs.getInt("id"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            rs.getString("full_name"),
+                            rs.getBoolean("gender"),
+                            rs.getString("mobile"),
+                            rs.getString("address"),
+                            rs.getString("image_link"),
+                            rs.getInt("role_id"),
+                            rs.getString("status")
+                    );
+                }
+            }
+        }
+        return null;
+    }
     public void updateToken(String email, String token) {
         String s = "Update password_reset_tokens set token";
     }
@@ -117,7 +144,7 @@ public class UserDAO extends DBContext {
         }
         String token = buffer.toString();
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expiresAt = now.plusHours(1); // Token valid for 1 hour
+        LocalDateTime expiresAt = now.plusMinutes(10); // Token valid for 10 minutes
 
         try {
             stm = connection.prepareStatement("INSERT INTO password_reset_tokens (token, email, created_at, expires_at, user_id) VALUES (?, ?, ?, ?,?)");
@@ -174,21 +201,43 @@ public class UserDAO extends DBContext {
 
     public List<User> getAllUser() {
         List<User> ulist = new ArrayList<>();
-        String s = "Select * from user";
+        String sql = "SELECT * FROM user";
         try {
-            stm = connection.prepareStatement(s);
-            rs = stm.executeQuery();
+            System.out.println("Executing getAllUser query");
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-                User u = new User(rs.getInt("id"), rs.getString("email"), rs.getString("password"), rs.getString("full_name"), rs.getBoolean("gender"), rs.getString("mobile"), rs.getString("address"), rs.getString("image_link"), rs.getInt("role_id"), rs.getInt("status"));
+                User u = new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),
+                    rs.getBoolean("gender"),
+                    rs.getString("mobile"),
+                    rs.getString("address"),
+                    rs.getString("image_link"),
+                    rs.getInt("role_id"),
+                    rs.getString("status")
+                );
                 ulist.add(u);
             }
+            System.out.println("Found " + ulist.size() + " users");
         } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error in getAllUser: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return ulist;
     }
 
     public int addUser(User user) throws SQLException {
+        // Kiểm tra email và số điện thoại đã tồn tại chưa
+        if (isEmailExistsExceptUser(user.getEmail(), 0)) {
+            return -1; // Email đã tồn tại
+        }
+        if (isMobileExistsExceptUser(user.getMobile(), 0)) {
+            return -2; // Số điện thoại đã tồn tại
+        }
+        
         String sql = "INSERT INTO user (email, password, full_name, gender, mobile, address, image_link, role_id, status) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -201,14 +250,14 @@ public class UserDAO extends DBContext {
             stmt.setString(6, user.getAddress());
             stmt.setString(7, user.getImageLink());
             stmt.setInt(8, user.getRoleId());
-            stmt.setInt(9, user.getStatus());
+            stmt.setString(9, user.getStatus());
 
-            return stmt.executeUpdate();
+            return stmt.executeUpdate(); // Trả về số dòng được thêm
         }
     }
 
     public String getRoleString(int role) {
-        String sql = "SELECT name FROM setting\n"
+        String sql = "SELECT role_name FROM role\n"
                 + "where id = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -236,27 +285,46 @@ public class UserDAO extends DBContext {
             return false;
         }
     }
-
+    public List<WorkSchedule> listDoctorBusy(Timestamp registeredTime){
+        List<WorkSchedule> busyDoctors = new ArrayList<>();
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String sql = "Select * from work_schedule where start_at< ? and end_at >?";
+            stm = connection.prepareStatement(sql);
+            stm.setTimestamp(1, registeredTime);
+            stm.setTimestamp(2, registeredTime);
+            rs = stm.executeQuery();
+            while(rs.next()){
+                WorkSchedule w = new WorkSchedule(rs.getInt("reservation_id"), rs.getInt("doctor_id"), LocalDate.parse(rs.getString("start_at"),formatter), LocalDate.parse(rs.getString("end_at"),formatter));
+                busyDoctors.add(w);
+            }
+            return busyDoctors;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        
+        
+    }
     public static void main(String[] args) {
         UserDAO userdao = new UserDAO();
-        List<User> ulist = userdao.getAllUser();
+//        List<User> ulist = userdao.getAllUser();
 //        for (User u : ulist) {
 //            System.out.println(u.getId());
 //            //System.out.println(u.getId());
 //        }
 //        User newUser = new User();
-//            newUser.setEmail("giangtthe153299@fpt.edu.vn");
-//            newUser.setPassword("password123");
-//            newUser.setFullName("Test User");
-//            newUser.setGender(true);
-//            newUser.setMobile("1234567890");
+//            newUser.setEmail("thanhthanh16102004@gmail.com");
+//            newUser.setPassword("Thanhcute16");
+//            newUser.setFullName("Thanhne");
+//            newUser.setGender(false);
+//            newUser.setMobile("0902004117");
 //            newUser.setAddress("123 Test Street");
-//            newUser.setImageLink("default.jpg");
+//            newUser.setImageLink("assets/images/default.png");
 //            newUser.setRoleId(4);
-//            newUser.setStatus(17);
-
+//            newUser.setStatus("Activate");
+//
 //            try {
-//            // Gọi phương thức addUser để thêm người dùng mới
 //            int result = userdao.addUser(newUser);
 //            if (result > 0) {
 //            System.out.println("User added successfully!");
@@ -266,11 +334,512 @@ public class UserDAO extends DBContext {
 //            } catch (SQLException ex) {
 //            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
 //            }
+//        try {
+//            System.out.println(userdao.getUserByEmail("thanhthanh16102004@gmail.com"));
+//        } catch (SQLException ex) {
+//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            //        LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("registeredTime"), formatter);
+            LocalDateTime dateTime = LocalDateTime.parse("2024-10-20 08:19:10", formatter);
+            Timestamp registeredTime = Timestamp.valueOf(dateTime);
+             
+   }
+            
+
+    public List<User> searchUsersByName(String name) {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM user WHERE full_name LIKE ?";
+        
         try {
-            System.out.println(userdao.getUserByEmail("thanhthanh16102004@gmail.com"));
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, "%" + name + "%");
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                User user = new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),
+                    rs.getBoolean("gender"),
+                    rs.getString("mobile"),
+                    rs.getString("address"),
+                    rs.getString("image_link"),
+                    rs.getInt("role_id"),
+                    rs.getString("status")
+                );
+                userList.add(user);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return userList;
+    }
+
+    public boolean deleteUser(int userId) {
+        String sql = "delete from swp.user where id= ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    public List<User> getUsersWithPagination(int offset, int recordsPerPage) {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM user LIMIT ? OFFSET ?";
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, recordsPerPage);
+            stmt.setInt(2, offset);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                User user = new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),
+                    rs.getBoolean("gender"),
+                    rs.getString("mobile"),
+                    rs.getString("address"),
+                    rs.getString("image_link"),
+                    rs.getInt("role_id"),
+                    rs.getString("status")
+                );
+                userList.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userList;
+    }
+
+    public List<User> getAllUsersWithPagination(int page, int recordsPerPage) {
+        List<User> userList = new ArrayList<>();
+        int start = (page - 1) * recordsPerPage;
+        
+        String sql = "SELECT u.*, r.role_name FROM user u "
+                + "LEFT JOIN role r ON u.role_id = r.id "
+                + "ORDER BY u.id "
+                + "LIMIT ? OFFSET ?";
+                
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, recordsPerPage);
+            stmt.setInt(2, start);
+            
+            System.out.println("Executing query with recordsPerPage=" + recordsPerPage + ", start=" + start); // Debug log
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setFullName(rs.getString("full_name"));
+                user.setGender(rs.getBoolean("gender"));
+                user.setMobile(rs.getString("mobile"));
+                user.setAddress(rs.getString("address"));
+                user.setImageLink(rs.getString("image_link"));
+                user.setRoleId(rs.getInt("role_id"));
+                user.setStatus(rs.getString("status"));
+                userList.add(user);
+            }
+            
+            System.out.println("Found " + userList.size() + " users"); // Debug log
+            
+        } catch (SQLException ex) {
+            System.out.println("Error in getAllUsersWithPagination: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        return userList;
+    }
+
+    public int getTotalUsers() {
+        String sql = "SELECT COUNT(*) FROM user";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public List<User> searchUsers(String keyword) {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT u.*, r.role_name FROM user u "
+                + "JOIN role r ON u.role_id = r.id "
+                + "WHERE u.full_name LIKE ? OR u.email LIKE ? OR u.mobile LIKE ?";
+                
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            String searchPattern = "%" + keyword + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            stmt.setString(3, searchPattern);
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setFullName(rs.getString("full_name"));
+                user.setGender(rs.getBoolean("gender"));
+                user.setMobile(rs.getString("mobile"));
+                user.setAddress(rs.getString("address"));
+                user.setImageLink(rs.getString("image_link"));
+                user.setRoleId(rs.getInt("role_id"));
+                user.setStatus(rs.getString("status"));
+                userList.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userList;
+    }
+
+    public boolean updateUserStatus(int userId, String status) {
+        String sql = "UPDATE user SET status = ? WHERE id = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, status);
+            stmt.setInt(2, userId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    public List<User> getFilteredUsers(String roleFilter, String statusFilter, int page, int recordsPerPage) {
+        List<User> userList = new ArrayList<>();
+        int start = (page - 1) * recordsPerPage;
+        
+        StringBuilder sql = new StringBuilder("SELECT u.*, r.role_name FROM user u "
+                + "JOIN role r ON u.role_id = r.id WHERE 1=1");
+        
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND u.role_id = ?");
+        }
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql.append(" AND u.status = ?");
+        }
+        
+        sql.append(" ORDER BY u.id LIMIT ? OFFSET ?");
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            
+            if (roleFilter != null && !roleFilter.isEmpty()) {
+                stmt.setInt(paramIndex++, Integer.parseInt(roleFilter));
+            }
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                stmt.setString(paramIndex++, statusFilter);
+            }
+            
+            stmt.setInt(paramIndex++, recordsPerPage);
+            stmt.setInt(paramIndex, start);
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setFullName(rs.getString("full_name"));
+                user.setGender(rs.getBoolean("gender"));
+                user.setMobile(rs.getString("mobile"));
+                user.setAddress(rs.getString("address"));
+                user.setImageLink(rs.getString("image_link"));
+                user.setRoleId(rs.getInt("role_id"));
+                user.setStatus(rs.getString("status"));
+                userList.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userList;
+    }
+
+    public int getTotalFilteredUsers(String roleFilter, String statusFilter) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM user WHERE 1=1");
+        
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND role_id = ?");
+        }
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql.append(" AND status = ?");
+        }
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            
+            if (roleFilter != null && !roleFilter.isEmpty()) {
+                stmt.setInt(paramIndex++, Integer.parseInt(roleFilter));
+            }
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                stmt.setString(paramIndex, statusFilter);
+            }
+            
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    // Thêm phương thức kiểm tra email tồn tại (trừ user hiện tại)
+    private boolean isEmailExistsExceptUser(String email, int userId) {
+        String sql = "SELECT COUNT(*) FROM user WHERE email = ? AND id != ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, email);
+            stmt.setInt(2, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    // Thêm phương thức kiểm tra số điện thoại tồn tại (trừ user hiện tại)
+    private boolean isMobileExistsExceptUser(String mobile, int userId) {
+        String sql = "SELECT COUNT(*) FROM user WHERE mobile = ? AND id != ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, mobile);
+            stmt.setInt(2, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    // Sửa lại phương thức updateUser
+    public int updateUser(User user) {
+        // Kiểm tra email và số điện thoại đã tồn tại với user khác chưa
+        if (isEmailExistsExceptUser(user.getEmail(), user.getId())) {
+            return -1; // Email đã tồn tại
+        }
+        if (isMobileExistsExceptUser(user.getMobile(), user.getId())) {
+            return -2; // Số điện thoại đã tồn tại
+        }
+        
+        String sql = "UPDATE user SET email=?, full_name=?, gender=?, mobile=?, " +
+                    "address=?, role_id=?, status=? WHERE id=?";
+                    
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, user.getEmail());
+            stmt.setString(2, user.getFullName());
+            stmt.setBoolean(3, user.isGender());
+            stmt.setString(4, user.getMobile());
+            stmt.setString(5, user.getAddress());
+            stmt.setInt(6, user.getRoleId());
+            stmt.setString(7, user.getStatus());
+            stmt.setInt(8, user.getId());
+            
+            return stmt.executeUpdate(); // Trả về số dòng được cập nhật
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return -3; // Lỗi SQL
+        }
+    }
+    public List<User> getUserByRoleId(int roleId){
+         String sql = "SELECT * FROM user WHERE role_id = ?";
+          try {
+               DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+              List<User> usersByRole = new ArrayList<>();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, roleId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                usersByRole.add( new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),
+                    rs.getBoolean("gender"),
+                    rs.getString("mobile"),
+                    rs.getString("address"),
+                    rs.getString("image_link"),
+                    rs.getInt("role_id"),
+                    rs.getString("status"),
+                    LocalDateTime.parse(rs.getString("created_date").trim(), formatter).toLocalDate()
+                ));
+            }
+            return usersByRole;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+   public User getUserById(int id) {
+    String sql = "SELECT * FROM user WHERE id = ?";
+    try {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return new User(
+                rs.getInt("id"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getString("full_name"),
+                rs.getBoolean("gender"),
+                rs.getString("mobile"),
+                rs.getString("address"),
+                rs.getString("image_link"),
+                rs.getInt("role_id"),
+                rs.getString("status"),
+                LocalDateTime.parse(rs.getString("created_date").trim(), formatter).toLocalDate() // Ensure no extra spaces
+            );
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (DateTimeParseException ex) {
+        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Date parsing error: " + ex.getMessage(), ex);
+    }
+    return null;
+}
+    public List<User> getFilteredAndSortedUsers(String genderFilter, String roleFilter, String statusFilter, 
+                                          String searchKeyword, String sortBy, String sortOrder, 
+                                          int page, int recordsPerPage) {
+        List<User> userList = new ArrayList<>();
+        int start = (page - 1) * recordsPerPage;
+        
+        StringBuilder sql = new StringBuilder("SELECT * FROM user WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        
+        // Add filters
+        if (genderFilter != null && !genderFilter.isEmpty()) {
+            sql.append(" AND gender = ?");
+            params.add(Boolean.parseBoolean(genderFilter));
+        }
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND role_id = ?");
+            params.add(Integer.parseInt(roleFilter));
+        }
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql.append(" AND status = ?");
+            params.add(statusFilter);
+        }
+        
+        // Add search
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            sql.append(" AND (full_name LIKE ? OR email LIKE ? OR mobile LIKE ?)");
+            String searchPattern = "%" + searchKeyword.trim() + "%";
+            params.add(searchPattern);
+            params.add(searchPattern);
+            params.add(searchPattern);
+        }
+        
+        // Add sorting
+        if (sortBy != null && !sortBy.isEmpty()) {
+            sql.append(" ORDER BY ").append(sortBy);
+            if ("desc".equalsIgnoreCase(sortOrder)) {
+                sql.append(" DESC");
+            } else {
+                sql.append(" ASC");
+            }
+        } else {
+            sql.append(" ORDER BY id ASC");
+        }
+        
+        // Add pagination
+        sql.append(" LIMIT ? OFFSET ?");
+        params.add(recordsPerPage);
+        params.add(start);
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            // Set parameters
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                User user = new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),
+                    rs.getBoolean("gender"),
+                    rs.getString("mobile"),
+                    rs.getString("address"),
+                    rs.getString("image_link"),
+                    rs.getInt("role_id"),
+                    rs.getString("status")
+                );
+                userList.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userList;
+    }
+
+    public int getTotalFilteredUsers(String genderFilter, String roleFilter, String statusFilter, String searchKeyword) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM user WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        
+        if (genderFilter != null && !genderFilter.isEmpty()) {
+            sql.append(" AND gender = ?");
+            params.add(Boolean.parseBoolean(genderFilter));
+        }
+        if (roleFilter != null && !roleFilter.isEmpty()) {
+            sql.append(" AND role_id = ?");
+            params.add(Integer.parseInt(roleFilter));
+        }
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql.append(" AND status = ?");
+            params.add(statusFilter);
+        }
+        
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            sql.append(" AND (full_name LIKE ? OR email LIKE ? OR mobile LIKE ?)");
+            String searchPattern = "%" + searchKeyword.trim() + "%";
+            params.add(searchPattern);
+            params.add(searchPattern);
+            params.add(searchPattern);
+        }
+        
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 
 }

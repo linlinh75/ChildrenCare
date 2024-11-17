@@ -15,9 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import static java.lang.System.out;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -55,15 +53,16 @@ public class RegisterServlet extends HttpServlet {
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "465");
         Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("nguyetanh0945@gmail.com", "nmyz rizo oqri ihat");
+                return new PasswordAuthentication("childrencaresystemse1874@gmail.com", "cgcu vqdd whlf cdiw");
                 // id and
                 // password here
             }
         });
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("nguyetanh0945@gmail.com"));
+            message.setFrom(new InternetAddress("childrencaresystemse1874@gmail.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject(subject);
             message.setText(content);
@@ -108,8 +107,26 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        Random rand = new Random();
+        String action = request.getParameter("action");
+        if ("resend".equals(action)) {
+            String newVerificationCode = String.format("%06d", rand.nextInt(1000000));
+
+            HttpSession session = request.getSession();
+            if (session.getAttribute("activationMessage") != null) {
+                response.sendRedirect("DataServlet?action=login");
+            } else {
+                session.setAttribute("verificationCode", newVerificationCode);
+
+                String email = (String) session.getAttribute("userEmail");
+                sendVerificationEmail(email, newVerificationCode);
+
+                session.setAttribute("resendMessage", "A new verification code has been sent to your email.");
+                request.getRequestDispatcher("verify.jsp").forward(request, response);
+            }
+            return;
+        }
         UserDAO userdao = new UserDAO();
-        String submit = request.getParameter("submit");
         String fullname = request.getParameter("fullname");
         String address = request.getParameter("address");
         Boolean gender = "true".equalsIgnoreCase(request.getParameter("gender"));
@@ -118,15 +135,29 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try {
-            if (userdao.getUserByEmail(email)!=null) {
+            if (userdao.getUserByEmail(email) != null) {
                 request.setAttribute("error", "Email is exist. Please enter new email.");
-                request.getRequestDispatcher("register.jsp").forward(request, response);
+                request.setAttribute("fullname", fullname);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", gender);
+                request.setAttribute("mobile", mobile);
+                request.setAttribute("password", password);
+                request.getRequestDispatcher("DataServlet?action=register").forward(request, response);
+                return;
+            }
+            if (userdao.getUserByPhoneNumber(mobile) != null) {
+                request.setAttribute("error", "Phone number is exist. Please enter new phone number.");
+                request.setAttribute("fullname", fullname);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", gender);
+                request.setAttribute("email", email);
+                request.setAttribute("password", password);
+                request.getRequestDispatcher("DataServlet?action=register").forward(request, response);
                 return;
             }
         } catch (SQLException ex) {
             Logger.getLogger(RegisterServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Random rand = new Random();
         String verificationCode = String.format("%06d", rand.nextInt(1000000));
         password=EncodePassword.encodeToSHA1(password);
         User newUser = new User();
@@ -138,13 +169,14 @@ public class RegisterServlet extends HttpServlet {
         newUser.setAddress(address);
         newUser.setImageLink("assets/images/default.png");
         newUser.setRoleId(4);
-        newUser.setStatus(17);
+        newUser.setStatus("Inactive");
 
         HttpSession session = request.getSession();
         session.setAttribute("verificationCode", verificationCode);
+        session.setAttribute("userEmail", email);
         session.setAttribute("user", newUser);
         sendVerificationEmail(email, verificationCode);
-        response.getWriter().println("Verification email sent! Please check your inbox.");
+        request.getRequestDispatcher("DataServlet?action=verify").forward(request, response);
     }
 
     /**
