@@ -50,39 +50,49 @@
                             <div class="alert alert-success text-center" >
                                 ${successChange}
                             </div></c:if>
-                            <div class="d-md-flex justify-content-between">
-                                <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#">
-                                    <i class="uil uil-bars"></i>
-                                </a>
-                                <h5 class="mb-0">Profile</h5>
-
-                                <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
-                                    <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
-                                        <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">Profile</li>
-                                    </ul>
-                                </nav>
+                        <c:if test="${not empty error}">
+                            <div class="alert alert-danger text-center">
+                                ${error}
                             </div>
+                        </c:if>
+                        <c:if test="${not empty message}">
+                            <div class="alert alert-success text-center">
+                                ${message}
+                            </div>
+                        </c:if>
+                        <div class="d-md-flex justify-content-between">
+                            <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#">
+                                <i class="uil uil-bars"></i>
+                            </a>
+                            <h5 class="mb-0">Profile</h5>
 
-                            <div class="row">
-                                <div class="mt-4">
-                                    <div class="card border-0 shadow overflow-hidden">
-                                        <ul class="nav nav-pills nav-justified flex-column flex-sm-row rounded-0 shadow overflow-hidden bg-white mb-0" id="pills-tab" role="tablist">
-                                            <li class="nav-item">
-                                                <a class="nav-link rounded-0 active" id="overview-tab" data-bs-toggle="pill" href="#pills-overview" role="tab" aria-controls="pills-overview" aria-selected="false">
-                                                    <div class="text-center pt-1 pb-1">
-                                                        <h4 class="title fw-normal mb-0">Profile</h4>
-                                                    </div>
-                                                </a><!--end nav link-->
-                                            </li><!--end nav item-->
-                                        </ul>
+                            <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
+                                <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
+                                    <li class="breadcrumb-item"><a href="HomeServlet">Home</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                                </ul>
+                            </nav>
+                        </div>
 
-                                        <div class="tab-content p-4" id="pills-tabContent">
-                                            <div class="tab-pane show active fade" id="pills-experience" role="tabpanel" aria-labelledby="experience-tab">
-                                                <h5 class="mb-0">Personal Information :</h5>
-                                                <div class="row align-items-center mt-4">
-                                                    <div class="col-lg-2 col-md-4">
-                                                        <img src="${pageContext.request.contextPath}${account.imageLink}" class="avatar avatar-md-md rounded-pill shadow mx-auto d-block" alt="">
+                        <div class="row">
+                            <div class="mt-4">
+                                <div class="card border-0 shadow overflow-hidden">
+                                    <ul class="nav nav-pills nav-justified flex-column flex-sm-row rounded-0 shadow overflow-hidden bg-white mb-0" id="pills-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link rounded-0 active" id="overview-tab" data-bs-toggle="pill" href="#pills-overview" role="tab" aria-controls="pills-overview" aria-selected="false">
+                                                <div class="text-center pt-1 pb-1">
+                                                    <h4 class="title fw-normal mb-0">Profile</h4>
+                                                </div>
+                                            </a><!--end nav link-->
+                                        </li><!--end nav item-->
+                                    </ul>
+
+                                    <div class="tab-content p-4" id="pills-tabContent">
+                                        <div class="tab-pane show active fade" id="pills-experience" role="tabpanel" aria-labelledby="experience-tab">
+                                            <h5 class="mb-0">Personal Information :</h5>
+                                            <div class="row align-items-center mt-4">
+                                                <div class="col-lg-2 col-md-4">
+                                                    <img src="${pageContext.request.contextPath}${account.imageLink}" class="avatar avatar-md-md rounded-pill shadow mx-auto d-block" alt="">
                                                 </div><!--end col-->
 
                                                 <div class="col-lg-5 col-md-8 text-center text-md-start mt-4 mt-sm-0">
@@ -151,15 +161,15 @@
                         </div><!--end row-->
                     </div>
                     <jsp:include page="../common/common-homepage-footer.jsp"></jsp:include>
-                    </div><!--end container-->
+                </div><!--end container-->
 
-                </main>
-                <!--End page-content" -->
-            </div>
-            <!-- page-wrapper -->
+            </main>
+            <!--End page-content" -->
+        </div>
+        <!-- page-wrapper -->
 
-            <!-- javascript -->
-         
+        <!-- javascript -->
+
         <script>
             document.getElementById('uploadButton').addEventListener('click', function (e) {
                 e.preventDefault();

@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
-        <file>
-            <url>src/java/controller/DeleteUserServlet.java</url>
-            <bookmark id="1">
-                <name/>
-                <line>23</line>
-                <key/>
-            </bookmark>
-        </file>
-    </editor-bookmarks>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group name="SWP391">
             <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/model/ReservationService.java</file>
@@ -21,14 +12,10 @@
         </group>
         <group>
             <file>file:/D:/ChildrenCare/src/java/dal/UserDAO.java</file>
-            <file>file:/D:/ChildrenCare/web/user/profile.jsp</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/AddUserServlet.java</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/UserDetailsServlet.java</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/EditSettingServlet.java</file>
-            <file>file:/D:/ChildrenCare/web/WEB-INF/web.xml</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/SliderServlet.java</file>
             <file>file:/D:/ChildrenCare/web/admin-SettingsList.jsp</file>
             <file>file:/D:/ChildrenCare/web/admin-UserList.jsp</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/dashboard.java</file>
+            <file>file:/D:/ChildrenCare/src/java/util/EncodePassword.java</file>
             <file>file:/D:/ChildrenCare/src/java/dal/SettingDAO.java</file>
         </group>
     </open-files>

@@ -10,7 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!-- Title -->
-        <title>Blog Grid - Medical and Doctor HTML Template</title>
+        <title>Blog Grid</title>
 
         <!-- Favicon -->
         <link rel="icon" href="img/favicon.png">
@@ -134,14 +134,14 @@
                             <!--/ End Single Widget -->
 
                             <!-- Single Widget -->
-<!--                            <div class="single-widget category">
-                                <h3 class="title">Blog Categories</h3>
-                                <ul class="categor-list">
-                                    <c:forEach items="${categories}" var="category">
-                                        <li><a href="#">${category}</a></li>
-                                        </c:forEach>
-                                </ul>
-                            </div>-->
+                            <!--                            <div class="single-widget category">
+                                                            <h3 class="title">Blog Categories</h3>
+                                                            <ul class="categor-list">
+                            <c:forEach items="${categories}" var="category">
+                                <li><a href="#">${category}</a></li>
+                            </c:forEach>
+                    </ul>
+                </div>-->
                             <!--/ End Single Widget -->
 
                             <!-- Single Widget -->
@@ -175,6 +175,14 @@
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
         <!--/ End Footer Area -->
 
-    
+        <!-- jquery Min JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRgZ5gEq8M1Q1D6c1ZxVsmRn5z1EZy1DTq4U3k+37" crossorigin="anonymous"></script>
+
+        <!-- Popper.js (Bootstrap Dependency) -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybS4e6j6xMw5l8e4B+3Mj7JY6fqq6pBSw1lp3Kf02IC5qPRm+" crossorigin="anonymous"></script>
+
+        <!-- Bootstrap JS -->
+
+      
     </body>
 </html>
