@@ -7,7 +7,25 @@
         <title>Settings Management</title>
         <link rel="stylesheet" href="./css/adminDashboard_style.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- favicon -->
+        <link rel="shortcut icon" href="img/favicon.png">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+        <!-- Bootstrap -->
+        <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- simplebar -->
+        <link href="${pageContext.request.contextPath}/assets/css/simplebar.css" rel="stylesheet" type="text/css" />
+        <!-- Icons -->
+        <link href="${pageContext.request.contextPath}/assets/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
+        <link href="${pageContext.request.contextPath}/assets/css/remixicon.css" rel="stylesheet" type="text/css" />
+        <link href="https://unicons.iconscout.com/release/v3.0.6/css/line.css"  rel="stylesheet">
+        <!-- Css -->
+        <link href="${pageContext.request.contextPath}/assets/css/style.min.css" rel="stylesheet" type="text/css" id="theme-opt" />
+        <style>
+            .logo img {
+                width: 80%;
+            }
 
+        </style>
         <style>
             /* Pagination styling */
             .pagination-wrapper {
@@ -304,12 +322,19 @@
     </head>
 
     <body>
+<<<<<<< HEAD
         <div class="page-wrapper doctris-theme toggled">
             <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
                 <main class="page-content bg-light">
                 <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
                     <div class="dashboard-container container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px;">
                         <!--Sidebar-->
+=======
+        <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
+        <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
+            <div class="dashboard-container">
+                <!--Sidebar-->
+>>>>>>> 6f7a46a34f5211dd9e6716d0fc79c3d34d16a1c5
 
                         <div class="user-container container-fluid">
                             <div class="user-list-container fade-in container-fluid">

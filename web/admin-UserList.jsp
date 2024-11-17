@@ -386,6 +386,7 @@
             <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
                 <main class="page-content bg-light">
                 <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
+<<<<<<< HEAD
                     <div class="dashboard-container container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px;">
                         <!-- Sidebar -->
 
@@ -394,6 +395,17 @@
                             <div class="user-list-container fade-in">
                                 <h1 class="user-container-table">User Management</h1>
 
+=======
+
+                    <div class="dashboard-container container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px;">
+                        <!-- Sidebar -->
+
+                        <!-- Main Content -->
+                        <div class="user-container container-fluid">
+                            <div class="user-list-container fade-in">
+                                <h1 class="user-container-table">User Management</h1>
+
+>>>>>>> 6f7a46a34f5211dd9e6716d0fc79c3d34d16a1c5
                                 <!-- Success/Error Messages -->
                             <c:if test="${not empty sessionScope.successMessage}">
                                 <div class="alert alert-success">

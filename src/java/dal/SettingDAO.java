@@ -214,13 +214,15 @@ public class SettingDAO extends DBContext {
 
             int result = updateStmt.executeUpdate();
 
+
             // If status has changed, update related posts/services
             if (result > 0 && currentStatus != setting.getStatus()) {
                 updatePostStatusesForCategory(setting.getType(), setting.getValue(), setting.getStatus());
             }
 
+            
             return result;
-
+            
         } catch (SQLException ex) {
             Logger
                     .getLogger(SettingDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -359,16 +361,19 @@ public class SettingDAO extends DBContext {
             categoryColumn = "category_id";
         }
 
+        
         if (!tableName.isEmpty()) {
             // Convert status from 1/0 to boolean for service table
             boolean newStatusValue = (newStatus == 1);
-
-            String query = "UPDATE " + tableName
-                    + " SET " + statusColumn + " = ? "
-                    + "WHERE " + categoryColumn + " = ?";
-
+            
+            String query = "UPDATE " + tableName + 
+                          " SET " + statusColumn + " = ? " +
+                          "WHERE " + categoryColumn + " = ?";
+                      
             try {
                 PreparedStatement stmt = connection.prepareStatement(query);
+                
+
                 if ("service".equals(tableName)) {
                     // For service table, use boolean
                     stmt.setBoolean(1, newStatusValue);
@@ -377,12 +382,13 @@ public class SettingDAO extends DBContext {
                     stmt.setString(1, newStatus == 1 ? "Published" : "Hidden");
                 }
 
+                
                 stmt.setInt(2, categoryId);
                 stmt.executeUpdate();
-
+                
             } catch (SQLException ex) {
-                Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE,
-                        "Error updating " + tableName + " statuses for category " + categoryId, ex);
+                Logger.getLogger(SettingDAO.class.getName()).log(Level.SEVERE, 
+                    "Error updating " + tableName + " statuses for category " + categoryId, ex);
             }
         }
     }

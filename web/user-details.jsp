@@ -242,7 +242,12 @@
                                 <td><label><i class="fas fa-user-tag"></i> Role</label></td>
                                 <td>
                                     <select name="roleId" ${(sessionScope.account.roleId==1 && user.roleId !=1) ? '' : 'disabled' }>
+<<<<<<< HEAD
                                         <option value="1" ${user.roleId==1 ? 'selected' : '' }>Admin</option><option value="2" ${user.roleId==2 ? 'selected' : '' }>Manager</option>
+=======
+                                        <option value="1" ${user.roleId==1 ? 'selected' : '' }>Admin</option>
+                                        <option value="2" ${user.roleId==2 ? 'selected' : '' }>Manager</option>
+>>>>>>> 6f7a46a34f5211dd9e6716d0fc79c3d34d16a1c5
                                         <option value="3" ${user.roleId==3 ? 'selected' : '' }>Staff</option>
                                         <option value="4" ${user.roleId==4 ? 'selected' : '' }>Customer</option>
                                     </select>
@@ -268,6 +273,7 @@
                             </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
