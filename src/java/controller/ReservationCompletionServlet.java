@@ -91,7 +91,7 @@ public class ReservationCompletionServlet extends HttpServlet {
             HttpSession session = request.getSession(false);
             ReservationDAO reservationDao = new ReservationDAO();
             UserDAO userDao = new UserDAO();
-            EmailSender e = new EmailSender();
+            
             session.setAttribute("rid", res.getId());
             session.setAttribute("res",res);
             int amount = reservationDao.getTotal(res.getId());

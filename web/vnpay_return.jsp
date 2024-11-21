@@ -123,7 +123,7 @@
 
                     <!-- Footer -->
                     <div class="text-center mt-4">
-                        <a href="http://localhost:8080/ChildrenCare/rscompletion.jsp?reservationId=<%=(int)session.getAttribute("rid")%>" class="btn btn-primary">Back to System</a>
+                        <a href="http://localhost:8080/ChildrenCare/rscompletion.jsp?reservationId=<%=Integer.parseInt(session.getAttribute("rid").toString())%>" class="btn btn-primary">Back to System</a>
                     </div>
                 </div>
                 <div class="card-footer text-center">

@@ -2,25 +2,14 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group name="SWP391">
-            <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/model/ReservationService.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/model/Reservation.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/web/service-details.jsp</file>
-            <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/dal/DBContext.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/controller/ReservationServlet.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive%20-%20vinhdeptrai/Code%20Thue/SWP391/FA24/SWP391%20-%20Children%20Care/ver%2002/02.6/ChildrenCare/src/java/controller/ReservationServiceCart.java</file>
-        </group>
         <group>
-<<<<<<< HEAD
-            <file>file:/D:/ChildrenCare/src/java/dal/UserDAO.java</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/SliderServlet.java</file>
-            <file>file:/D:/ChildrenCare/web/admin-SettingsList.jsp</file>
-            <file>file:/D:/ChildrenCare/web/admin-UserList.jsp</file>
-            <file>file:/D:/ChildrenCare/src/java/util/EncodePassword.java</file>
-            <file>file:/D:/ChildrenCare/src/java/dal/SettingDAO.java</file>
-=======
-            <file>file:/D:/swp/ChildrenCare/src/java/controller/ReservationStatsServlet.java</file>
->>>>>>> 6f7a46a34f5211dd9e6716d0fc79c3d34d16a1c5
+            <file>file:/D:/ChildrenCare/src/java/controller/vnpay/Config.java</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/ReservationServiceCart.java</file>
+            <file>file:/D:/ChildrenCare/web/vnpay_return.jsp</file>
+            <file>file:/D:/ChildrenCare/web/vnpay_pay.jsp</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/ReservationCompletionServlet.java</file>
+            <file>file:/D:/ChildrenCare/src/java/controller/vnpay/ajaxServlet.java</file>
+            <file>file:/D:/ChildrenCare/web/rscompletion.jsp</file>
         </group>
     </open-files>
 </project-private>
