@@ -322,19 +322,12 @@
     </head>
 
     <body>
-<<<<<<< HEAD
-        <div class="page-wrapper doctris-theme toggled">
-            <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
-                <main class="page-content bg-light">
-                <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
-                    <div class="dashboard-container container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px;">
-                        <!--Sidebar-->
-=======
+
         <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
         <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
             <div class="dashboard-container">
                 <!--Sidebar-->
->>>>>>> 6f7a46a34f5211dd9e6716d0fc79c3d34d16a1c5
+
 
                         <div class="user-container container-fluid">
                             <div class="user-list-container fade-in container-fluid">
