@@ -1,22 +1,43 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import dal.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.User;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import model.User;
-
 @WebServlet(name = "CustomerAdminServlet", urlPatterns = {"/patients"})
 public class CustomerAdminServlet extends HttpServlet {
+
+    private static class LocalDateAdapter extends TypeAdapter<LocalDate> {
+        private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+        @Override
+        public void write(JsonWriter out, LocalDate value) throws IOException {
+            out.value(value != null ? formatter.format(value) : null);
+        }
+
+        @Override
+        public LocalDate read(JsonReader in) throws IOException {
+            String dateString = in.nextString();
+            return dateString != null ? LocalDate.parse(dateString, formatter) : null;
+        }
+    }
 
     private UserDAO userDAO;
 
@@ -266,8 +287,12 @@ public class CustomerAdminServlet extends HttpServlet {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
 
+                // Create a custom Gson instance with LocalDate TypeAdapter
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                        .create();
+
                 // Convert customer to JSON
-                Gson gson = new Gson();
                 String jsonCustomer = gson.toJson(customer);
 
                 // Write the JSON response

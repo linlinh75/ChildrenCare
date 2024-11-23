@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import model.Service;
 
 public class ServiceDAO extends DBContext {
@@ -156,19 +157,18 @@ public class ServiceDAO extends DBContext {
         return 0;
     }
 
-    public List<Service> searchServices(String query, int page, int servicesPerPage) {
+    public List<Service> searchServicesStatusOne(String query, int offset, int servicesPerPage) {
         List<Service> services = new ArrayList<>();
-        int offset = (page - 1) * servicesPerPage;
-        
+
         String sql = "SELECT * FROM service WHERE (fullname LIKE ? OR description LIKE ?) AND status = 1 " +
-                     "LIMIT ?, ?";
-    
+                "LIMIT ?, ?";
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
             ps.setInt(3, offset);
             ps.setInt(4, servicesPerPage);
-            
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Service service = getFromResultSet(rs);
@@ -177,24 +177,48 @@ public class ServiceDAO extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return services;
     }
-    
+
+    public List<Service> searchServices(String query, int offset, int servicesPerPage) {
+        List<Service> services = new ArrayList<>();
+
+        String sql = "SELECT * FROM service WHERE (fullname LIKE ? OR description LIKE ?) " +
+                "LIMIT ?, ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, "%" + query + "%");
+            ps.setString(2, "%" + query + "%");
+            ps.setInt(3, offset);
+            ps.setInt(4, servicesPerPage);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Service service = getFromResultSet(rs);
+                services.add(service);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return services;
+    }
+
     public List<Service> searchServicesWithStatus(String query, int page, int servicesPerPage, boolean status) {
         List<Service> services = new ArrayList<>();
         int offset = (page - 1) * servicesPerPage;
-        
+
         String sql = "SELECT * FROM service WHERE (fullname LIKE ? OR description LIKE ?) " +
-                     "AND status = ? LIMIT ?, ?";
-    
+                "AND status = ? LIMIT ?, ?";
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
             ps.setBoolean(3, status);
             ps.setInt(4, offset);
             ps.setInt(5, servicesPerPage);
-            
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Service service = getFromResultSet(rs);
@@ -203,17 +227,17 @@ public class ServiceDAO extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return services;
     }
-    
+
     public int getTotalSearchCount(String query) {
         String sql = "SELECT COUNT(*) FROM service WHERE fullname LIKE ? OR description LIKE ?";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
-            
+
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -223,16 +247,16 @@ public class ServiceDAO extends DBContext {
         }
         return 0;
     }
-    
+
     public int getTotalSearchCountWithStatus(String query, boolean status) {
         String sql = "SELECT COUNT(*) FROM service WHERE (fullname LIKE ? OR description LIKE ?) " +
-                     "AND status = ?";
-        
+                "AND status = ?";
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
             ps.setBoolean(3, status);
-            
+
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -386,7 +410,7 @@ public class ServiceDAO extends DBContext {
         }
     }
 
-// Helper method to get total count for pagination
+    // Helper method to get total count for pagination
     public int getTotalServicesCount() {
         String sql = "SELECT COUNT(*) FROM service";
 
@@ -402,7 +426,7 @@ public class ServiceDAO extends DBContext {
         return 0;
     }
 
-// Helper method to get total count with status filter for pagination
+    // Helper method to get total count with status filter for pagination
     public int getTotalServicesCountByStatus(boolean status) {
         String sql = "SELECT COUNT(*) FROM service WHERE status = ?";
 
@@ -416,6 +440,45 @@ public class ServiceDAO extends DBContext {
             e.printStackTrace();
         }
 
+        return 0;
+    }
+
+    public List<Service> getServicesByCategoryWithPagination(int categoryId, int page, int servicesPerPage) {
+        List<Service> services = new ArrayList<>();
+        int offset = (page - 1) * servicesPerPage;
+
+        String sql = "SELECT * FROM service WHERE category_id = ? AND status = 1 LIMIT ?, ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+            ps.setInt(2, offset);
+            ps.setInt(3, servicesPerPage);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Service service = getFromResultSet(rs);
+                services.add(service);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return services;
+    }
+
+    public int getTotalServiceCountByCategory(int categoryId) {
+        String sql = "SELECT COUNT(*) FROM service WHERE category_id = ? AND status = 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 

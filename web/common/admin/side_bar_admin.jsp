@@ -36,7 +36,7 @@
                 <li><a href="managerSliderList"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Slider</a></li>
                 <li><a href="managerFeedbackList"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Feedback</a></li>
                 <li><a href="reservation-manager"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Reservation</a></li>
-                <li><a href="service-list-manager"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Service</a></li>
+                <li><a href="service-list-admin"><i class="uil uil-dashboard me-2 d-inline-block"></i>Manage Service</a></li>
                 <li class="">
                     <a href="patients"><i class="uil uil-wheelchair me-2 d-inline-block"></i>Manage Customer</a>
                 </li>

@@ -151,7 +151,7 @@
         <!-- page-wrapper -->
 
         <!-- TinyMCE Script -->
-        <script src="https://cdn.tiny.cloud/1/xj9owi87s6jlcm4kuhjjrbmgmkuc5iml198grpm1obgvw7r1/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+        <script src="https://cdn.tiny.cloud/1/y94nqpbwrk79akc3uj95ndt98wboci9arz3j4e3os3jnnwm4/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
         <script>
             tinymce.init({
                 selector: '.tinymce',

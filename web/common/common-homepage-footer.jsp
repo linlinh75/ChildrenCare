@@ -11,7 +11,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <!-- Nice Select CSS -->
-    <link rel="stylesheet" href="css/nice-select.css">
+<%--    <link rel="stylesheet" href="css/nice-select.css">--%>
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <!-- icofont CSS -->
@@ -118,7 +118,7 @@
 <!-- ScrollUp JS -->
 <script src="js/jquery.scrollUp.min.js"></script>
 <!-- Niceselect JS -->
-<script src="js/niceselect.js"></script>
+<%--<script src="js/niceselect.js"></script>--%>
 <!-- Tilt Jquery JS -->
 <script src="js/tilt.jquery.min.js"></script>
 <!-- Owl Carousel JS -->

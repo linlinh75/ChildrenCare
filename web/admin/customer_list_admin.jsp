@@ -74,7 +74,7 @@
                     <jsp:include page="../common/common-homepage-header.jsp"></jsp:include>
                         <div class="layout-specing">
                             <div class="d-md-flex justify-content-between">
-                                <h5 class="mb-0">Patients List</h5>
+                                <h5 class="mb-0">Patients List Test</h5>
 
                                 <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
                                     <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
@@ -259,7 +259,7 @@
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label class="form-label">Gender</label>
+                                        <label class="">Gender</label>
                                         <select name="gender" id="editProfileGender" class="">
                                             <option value="true">Male</option>
                                             <option value="false">Female</option>
@@ -311,6 +311,7 @@
                             document.getElementById('viewProfileAddress').textContent = customer.address;
                         })
                         .catch(error => {
+                            console.error('View Error:', error);
                             console.error('Error:', error);
                             alert('Error loading customer data');
                         });
@@ -328,11 +329,21 @@
                             document.getElementById('editProfileId').value = customer.id;
                             document.getElementById('editProfileFullName').value = customer.fullName;
                             document.getElementById('editProfileEmail').value = customer.email;
-                            document.getElementById('editProfileGender').value = customer.gender;
+                            const genderSelect = document.getElementById('editProfileGender');
+                            const maleOption = genderSelect.querySelector('option[value="true"]');
+                            const femaleOption = genderSelect.querySelector('option[value="false"]');
+                            if (customer.gender) {
+                                maleOption.selected = true;
+                                femaleOption.selected = false;
+                            } else {
+                                maleOption.selected = false;
+                                femaleOption.selected = true;
+                            }
                             document.getElementById('editProfileMobile').value = customer.mobile;
                             document.getElementById('editProfileAddress').value = customer.address;
                         })
                         .catch(error => {
+                            console.error('Edit Error:', error);
                             console.error('Error:', error);
                             alert('Error loading customer data');
                         });

@@ -164,7 +164,7 @@
         </div>
         <!-- page-wrapper -->
         <!-- TinyMCE Script -->
-        <script src="https://cdn.tiny.cloud/1/1q5ygrh06doqe4owfsqgzgl5b4tg7lf6w0cz3udj2fseytwd/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+        <script src="https://cdn.tiny.cloud/1/y94nqpbwrk79akc3uj95ndt98wboci9arz3j4e3os3jnnwm4/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
         <script>
             tinymce.init({
                 selector: '.tinymce',

@@ -9,9 +9,6 @@ import dal.PostCategoryDAO;
 import dal.PostDAO;
 import dal.ServiceCategoryDAO;
 import dal.ServiceDAO;
-import dal.PostDAO;
-import dal.ServiceDAO;
-import dal.SettingDAO;
 import dal.SliderDAO;
 import dal.UserDAO;
 import jakarta.servlet.ServletException;
@@ -31,8 +28,6 @@ import model.Post;
 import model.PostCategory;
 import model.Service;
 import model.ServiceCategory;
-import model.Service;
-import model.Setting;
 import model.Slider;
 import model.User;
 
@@ -87,6 +82,9 @@ public class ServiceServlet extends HttpServlet {
                 break;
             case "search":
                 searchServices(request, response);
+                break;
+            case "category":
+                listServicesByCategory(request, response);
                 break;
             case "list":
             default:
@@ -180,7 +178,7 @@ public class ServiceServlet extends HttpServlet {
         }
 
         try {
-            List<Service> searchResults = serviceDAO.searchServices(query, (page - 1) * recordsPerPage, recordsPerPage);
+            List<Service> searchResults = serviceDAO.searchServicesStatusOne(query, (page - 1) * recordsPerPage, recordsPerPage);
             int noOfRecords = serviceDAO.getNoOfSearchRecords(query);
             int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
 
@@ -188,12 +186,47 @@ public class ServiceServlet extends HttpServlet {
             request.setAttribute("noOfPages", noOfPages);
             request.setAttribute("currentPage", page);
             request.setAttribute("searchQuery", query);
+            request.setAttribute("pageType", "search");
             request.getRequestDispatcher("service.jsp").forward(request, response);
         } catch (Exception e) {
             getServletContext().log("An error occurred while searching for services", e);
             response.sendRedirect("error.jsp");
         }
     }
+
+    private void listServicesByCategory(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+            int page = 1;
+            int recordsPerPage = 6;
+
+            if (request.getParameter("page") != null) {
+                page = Integer.parseInt(request.getParameter("page"));
+            }
+
+            List<Service> serviceList = serviceDAO.getServicesByCategoryWithPagination(categoryId, page, recordsPerPage);
+            int noOfRecords = serviceDAO.getTotalServiceCountByCategory(categoryId);
+            int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+
+            // Get all categories for the sidebar
+//            List<ServiceCategory> allCategories = serviceDAO.getAll();
+
+            request.setAttribute("serviceList", serviceList);
+            request.setAttribute("noOfPages", noOfPages);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("categoryId", categoryId);
+            request.setAttribute("pageType", "category");
+            request.getRequestDispatcher("service.jsp").forward(request, response);
+        } catch (NumberFormatException e) {
+            getServletContext().log("Invalid category ID", e);
+            response.sendRedirect("error.jsp");
+        } catch (Exception e) {
+            getServletContext().log("An error occurred while retrieving services by category", e);
+            response.sendRedirect("error.jsp");
+        }
+    }
+
 
     public double getAverageRating(int serviceId) {
         double totalRating = 0;

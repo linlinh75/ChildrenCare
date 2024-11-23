@@ -95,7 +95,7 @@ public class ProfileUserServlet extends HttpServlet {
                 String mobile = request.getParameter("mobile");
                 String gender = request.getParameter("gender");
                 String address = request.getParameter("address");
-
+                request.setAttribute("role", new UserDAO().getRoleString(loggedInUser.getRoleId()));
                 // Kiểm tra các trường không được bỏ trống
                 if (fullName == null || fullName.trim().isEmpty()
                         || mobile == null || mobile.trim().isEmpty()
@@ -134,7 +134,6 @@ public class ProfileUserServlet extends HttpServlet {
                 loggedInUser.setMobile(mobile);
                 loggedInUser.setGender("Male".equalsIgnoreCase(gender));
                 loggedInUser.setAddress(address);
-
                 boolean updateSuccess = userDAO.updateProfile(loggedInUser);
 
                 if (updateSuccess) {

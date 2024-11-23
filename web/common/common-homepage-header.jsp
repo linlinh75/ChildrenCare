@@ -12,7 +12,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <!-- Nice Select CSS -->
-    <link rel="stylesheet" href="css/nice-select.css">
+<%--    <link rel="stylesheet" href="css/nice-select.css">--%>
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <!-- icofont CSS -->
@@ -82,8 +82,8 @@
                                     <li class="${active == 'service' ? 'active' : ''}">
                                         <a href="DataServlet?action=service">Services<i class="icofont-rounded-down"></i></a>
                                         <ul class="dropdown">
-                                            <c:forEach var="service" items="${list_sc}">
-                                                <li><a href="#">${service.getName()}</a></li>
+                                            <c:forEach var="service" items="${listServiceCategory}">
+                                                <li><a href="${pageContext.request.contextPath}/service?action=category&categoryId=${service.id}">${service.getName()}</a></li>
                                                 </c:forEach>
                                         </ul>
                                     </li>
@@ -91,8 +91,8 @@
                                     <li class="${active == 'post' ? 'active' : ''}">
                                         <a href="DataServlet?action=post">Blogs<i class="icofont-rounded-down"></i></a>
                                         <ul class="dropdown">
-                                            <c:forEach var="post" items="${list_pc}">
-                                                <li><a href="#">${post.getName()}</a></li>
+                                            <c:forEach var="post" items="${listPostCategory}">
+                                                <li><a href="${pageContext.request.contextPath}/post?action=category&categoryId=${post.id}">${post.getName()}</a></li>
                                                 </c:forEach>
                                         </ul>
                                     </li> 
@@ -115,7 +115,7 @@
                                     <c:if test="${account.roleId == 2}">
                                         <li class="nav-item">
                                             <a class="nav-link ${active == 'dashboard' ? 'active' : ''}" 
-                                               href="/profile">Manager Dashboard</a>
+                                               href="/ChildrenCare/profile">Manager Dashboard</a>
                                         </li>
                                     </c:if>
                                 </ul>

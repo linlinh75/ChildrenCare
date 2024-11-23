@@ -16,14 +16,18 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import model.PostCategory;
 import model.ServiceCategory;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import model.Post;
 import model.PostComment;
 import model.Service;
@@ -33,7 +37,7 @@ import model.User;
 public class PostServlet extends HttpServlet {
 
     private final PostDAO postDAO = new PostDAO();
-    private final int POSTS_PER_PAGE = 6; 
+    private final int POSTS_PER_PAGE = 6;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -77,6 +81,8 @@ public class PostServlet extends HttpServlet {
             handlePostDetail(request, response);
         } else if ("search".equals(action)) {
             handleSearch(request, response, pageNumber);
+        } else if ("category".equals(action)) {
+            handleCategoryPosts(request, response, pageNumber);
         } else {
             handleListPosts(request, response, pageNumber);
         }
@@ -133,6 +139,32 @@ public class PostServlet extends HttpServlet {
         request.setAttribute("currentPage", pageNumber);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("pageType", "list"); // To differentiate between search and list in JSP
+
+        request.getRequestDispatcher("blog-grid.jsp").forward(request, response);
+    }
+
+    private void handleCategoryPosts(HttpServletRequest request, HttpServletResponse response, int pageNumber)
+            throws ServletException, IOException {
+        int categoryId;
+        try {
+            categoryId = Integer.parseInt(request.getParameter("categoryId"));
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid category ID");
+            return;
+        }
+
+        List<Post> categoryPosts = postDAO.getPostsByCategoryWithPagination(categoryId, pageNumber, POSTS_PER_PAGE);
+        List<Post> recentPosts = postDAO.getNewest();
+        System.out.println(categoryPosts.size() + "-----------------");
+        int totalPosts = postDAO.getTotalPostsByCategory(categoryId);
+        int totalPages = (int) Math.ceil((double) totalPosts / POSTS_PER_PAGE);
+
+        request.setAttribute("listPost", categoryPosts);
+        request.setAttribute("recentPosts", recentPosts);
+        request.setAttribute("currentPage", pageNumber);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("categoryId", categoryId);
+        request.setAttribute("pageType", "category"); // To differentiate in JSP
 
         request.getRequestDispatcher("blog-grid.jsp").forward(request, response);
     }

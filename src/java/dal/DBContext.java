@@ -12,7 +12,7 @@ public class DBContext {
         String user = "root"; 
 
 
-        String password = "nguyetanh2311"; 
+        String password = "123456"; 
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");

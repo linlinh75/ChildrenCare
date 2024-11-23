@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import model.Post;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,9 +74,9 @@ public class PostDAO extends DBContext {
         try (
                 PreparedStatement statement = connection.prepareStatement(
                         "SELECT c.name AS categoryName "
-                        + "FROM posts p "
-                        + "JOIN categories c ON p.categoryId = c.id "
-                        + "WHERE p.id = ?")) {
+                                + "FROM posts p "
+                                + "JOIN categories c ON p.categoryId = c.id "
+                                + "WHERE p.id = ?")) {
             statement.setInt(1, postId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -111,8 +113,8 @@ public class PostDAO extends DBContext {
     /**
      * Search for posts by title or content.
      *
-     * @param query the search query
-     * @param pageSize the number of posts to display per page
+     * @param query      the search query
+     * @param pageSize   the number of posts to display per page
      * @param pageNumber the current page number (starting from 1)
      * @return a list of matching posts
      */
@@ -196,7 +198,8 @@ public class PostDAO extends DBContext {
 
     public List<Post> getPostsWithPagination(int page, int postsPerPage) {
         List<Post> posts = new ArrayList<>();
-        String query = "SELECT * FROM post WHERE status = 'Published' ORDER BY updated_date DESC LIMIT ? OFFSET ?";;
+        String query = "SELECT * FROM post WHERE status = 'Published' ORDER BY updated_date DESC LIMIT ? OFFSET ?";
+        ;
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, postsPerPage);
@@ -337,22 +340,22 @@ public class PostDAO extends DBContext {
         List<Post> posts = new ArrayList<>();
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT * FROM post WHERE 1=1");
-        
+
         // Add search condition if search query exists
         if (searchQuery != null && !searchQuery.trim().isEmpty()) {
             queryBuilder.append(" AND (LOWER(title) LIKE LOWER(?) OR LOWER(content) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))");
         }
-        
+
         // Add status condition if status is specified
         if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("all")) {
             queryBuilder.append(" AND LOWER(status) = LOWER(?)");
         }
-        
+
         queryBuilder.append(" ORDER BY updated_date DESC LIMIT ? OFFSET ?");
-        
+
         try (PreparedStatement stmt = connection.prepareStatement(queryBuilder.toString())) {
             int paramIndex = 1;
-            
+
             // Set search parameters if search query exists
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
                 String likePattern = "%" + searchQuery.toLowerCase() + "%";
@@ -360,16 +363,16 @@ public class PostDAO extends DBContext {
                 stmt.setString(paramIndex++, likePattern);
                 stmt.setString(paramIndex++, likePattern);
             }
-            
+
             // Set status parameter if status is specified
             if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("all")) {
                 stmt.setString(paramIndex++, status);
             }
-            
+
             // Set pagination parameters
             stmt.setInt(paramIndex++, postsPerPage);
             stmt.setInt(paramIndex++, (page - 1) * postsPerPage);
-            
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Post post = getFromResultSet(rs);
@@ -381,34 +384,34 @@ public class PostDAO extends DBContext {
         }
         return posts;
     }
-    
+
     // Also update the count method to be case-insensitive
     public int getTotalSearchResults(String searchQuery, String status) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT COUNT(*) FROM post WHERE 1=1");
-        
+
         if (searchQuery != null && !searchQuery.trim().isEmpty()) {
             queryBuilder.append(" AND (LOWER(title) LIKE LOWER(?) OR LOWER(content) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))");
         }
-        
+
         if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("all")) {
             queryBuilder.append(" AND LOWER(status) = LOWER(?)");
         }
-        
+
         try (PreparedStatement stmt = connection.prepareStatement(queryBuilder.toString())) {
             int paramIndex = 1;
-            
+
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
                 String likePattern = "%" + searchQuery.toLowerCase() + "%";
                 stmt.setString(paramIndex++, likePattern);
                 stmt.setString(paramIndex++, likePattern);
                 stmt.setString(paramIndex++, likePattern);
             }
-            
+
             if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("all")) {
                 stmt.setString(paramIndex++, status);
             }
-            
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1);
@@ -419,6 +422,45 @@ public class PostDAO extends DBContext {
         }
         return 0;
     }
+
+    public List<Post> getPostsByCategoryWithPagination(int categoryId, int page, int postsPerPage) {
+        List<Post> posts = new ArrayList<>();
+        String query = "SELECT * FROM post WHERE category_id = ? AND status = 'Published' ORDER BY updated_date DESC LIMIT ? OFFSET ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, categoryId);
+            stmt.setInt(2, postsPerPage);
+            stmt.setInt(3, (page - 1) * postsPerPage);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Post post = getFromResultSet(rs);
+                    posts.add(post);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error getting posts by category", ex);
+        }
+        return posts;
+    }
+
+    public int getTotalPostsByCategory(int categoryId) {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM post WHERE category_id = ? AND status = 'Published'";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, categoryId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error counting posts by category", ex);
+        }
+        return count;
+    }
+
 
     public static void main(String[] args) {
         PostDAO postDAO = new PostDAO();

@@ -20,9 +20,9 @@ import java.util.List;
 import model.Service;
 import model.ServiceCategory;
 
-@WebServlet("/service-list-manager")
+@WebServlet("/service-list-admin")
 @MultipartConfig
-public class ServiceManagerServlet extends HttpServlet {
+public class ServiceAdminServlet extends HttpServlet {
 
     private final ServiceDAO serviceDAO = new ServiceDAO();
     private final ServiceCategoryDAO serviceCategoryDAO = new ServiceCategoryDAO();
@@ -52,6 +52,9 @@ public class ServiceManagerServlet extends HttpServlet {
             case "toggle":
                 toggleServiceStatus(request, response);
                 break;
+            case "search":
+                searchServices(request, response);
+                break;
             default:
                 listServices(request, response);
                 break;
@@ -80,7 +83,7 @@ public class ServiceManagerServlet extends HttpServlet {
                 services = serviceDAO.searchServicesWithStatus(searchQuery, page, servicesPerPage, statusBool);
                 totalServices = serviceDAO.getTotalSearchCountWithStatus(searchQuery, statusBool);
             } else {
-                services = serviceDAO.searchServicesStatusOne(searchQuery, page, servicesPerPage);
+                services = serviceDAO.searchServicesWithStatus(searchQuery, page, servicesPerPage, true);
                 totalServices = serviceDAO.getTotalSearchCount(searchQuery);
             }
         } else {
@@ -119,7 +122,7 @@ public class ServiceManagerServlet extends HttpServlet {
             request.setAttribute("service", service);
             request.getRequestDispatcher("admin/edit_service_admin.jsp").forward(request, response);
         } else {
-            response.sendRedirect(request.getContextPath() + "/service-list-manager?action=list");
+            response.sendRedirect(request.getContextPath() + "/service-list-admin?action=list");
         }
     }
 
@@ -137,7 +140,7 @@ public class ServiceManagerServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "Invalid service ID.");
         }
-        response.sendRedirect(request.getContextPath() + "/service-list-manager?action=list");
+        response.sendRedirect(request.getContextPath() + "/service-list-admin?action=list");
     }
 
     @Override
@@ -199,7 +202,7 @@ public class ServiceManagerServlet extends HttpServlet {
         boolean success = serviceDAO.addService(newService);
 
         if (success) {
-            response.sendRedirect(request.getContextPath() + "/service-list-manager?action=list");
+            response.sendRedirect(request.getContextPath() + "/service-list-admin?action=list");
         } else {
             request.setAttribute("error", "Failed to add the service. Please try again.");
             request.getRequestDispatcher("admin/add_service_admin.jsp").forward(request, response);
@@ -247,11 +250,54 @@ public class ServiceManagerServlet extends HttpServlet {
         boolean success = serviceDAO.updateService(service, newImagePath);
 
         if (success) {
-            response.sendRedirect(request.getContextPath() + "/service-list-manager?action=list");
+            response.sendRedirect(request.getContextPath() + "/service-list-admin?action=list");
         } else {
             request.setAttribute("error", "Failed to update the service. Please try again.");
             request.setAttribute("service", service);
             request.getRequestDispatcher("admin/edit_service_admin.jsp").forward(request, response);
         }
+    }
+
+    private void searchServices(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Get the search query from the request parameters
+        String searchQuery = request.getParameter("searchQuery");
+
+        // Get the status filter from the request parameters
+        String status = request.getParameter("status");
+
+        // Initialize default values for pagination
+        int page = 1;
+        int servicesPerPage = 8;
+
+        // Get the requested page number from the request parameters
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+
+        // Declare variables to hold the list of services and total count
+        List<Service> services;
+        int totalServices;
+
+        // Search services without status filter
+        services = serviceDAO.searchServices(searchQuery, (page - 1) * servicesPerPage, servicesPerPage);
+
+        // Get total count of services matching the search query
+        totalServices = serviceDAO.getTotalSearchCount(searchQuery);
+
+        // Calculate the total number of pages
+        int totalPages = (int) Math.ceil((double) totalServices / servicesPerPage);
+
+        // Set attributes for the JSP
+        request.setAttribute("services", services);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("selectedStatus", status);
+        request.setAttribute("searchQuery", searchQuery);
+
+        // Forward the request to the JSP page
+        request.getRequestDispatcher("admin/service_list_admin.jsp").forward(request, response);
+
     }
 }
