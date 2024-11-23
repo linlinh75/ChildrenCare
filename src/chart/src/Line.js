@@ -63,6 +63,7 @@ const ReservationChart = () => {
     'rgba(54, 162, 235, 1)',
     'rgba(255, 206, 86, 1)',
     'rgba(153, 102, 255, 1)',
+    'rgba(255, 204, 255, 1)',
   ];
   const chartData = dateStats && dates && dates.length > 0 ? {
     labels: dates.map(date => date.date), // Use the dates for x-axis labels
@@ -115,6 +116,16 @@ const ReservationChart = () => {
           return pendingStat ? pendingStat.quantity : 0;
         }),
         borderColor: colors[4],
+        fill: false,
+      },
+      {
+        label: 'All',
+        data: dates.map(date => {
+          const dayStats = dateStats.find(day => day.date === date.date)?.stats || [];
+          const pendingStat = dayStats.find(stat => stat.name === "all");
+          return pendingStat ? pendingStat.quantity : 0;
+        }),
+        borderColor: colors[5],
         fill: false,
       },
     ],

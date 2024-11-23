@@ -72,6 +72,7 @@ public class ReservationStatsServlet extends HttpServlet {
         listStatsPerDay.add(new StatToMap(3,"submitted", reservationDAO.getReservationCount("Submitted", currentDate)));
         listStatsPerDay.add(new StatToMap(4,"approved", reservationDAO.getReservationCount("Approved", currentDate)));
         listStatsPerDay.add(new StatToMap(5,"pending", reservationDAO.getReservationCount("Pending", currentDate)));
+        listStatsPerDay.add(new StatToMap(5,"all", reservationDAO.getReservationCount("", currentDate)));
         statsPerDay.put(currentDate, listStatsPerDay);
         }
         int i=1;

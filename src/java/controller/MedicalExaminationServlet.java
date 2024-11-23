@@ -49,15 +49,15 @@ public class MedicalExaminationServlet extends HttpServlet {
             case "list":
                 handleListExaminations(request, response, user);
                 break;
-            case "edit":
-                handleEditExamination(request, response);
+            case "detail":
+                handleDetailExamination(request,response);
                 break;
-            case "update":
-                handleUpdateExamination(request, response);
-                break;
-            case "delete":
-                handleDeleteExamination(request, response);
-                break;
+//            case "update":
+//                handleUpdateExamination(request, response);
+//                break;
+//            case "delete":
+//                handleDeleteExamination(request, response);
+//                break;
             default:
                 handleListExaminations(request, response, user);
                 break;
@@ -71,7 +71,13 @@ public class MedicalExaminationServlet extends HttpServlet {
         request.setAttribute("pendingReservations", pendingReservations);
         request.getRequestDispatcher("add_medical_examination.jsp").forward(request, response);
     }
-
+    private void handleDetailExamination(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        // Get pending reservations for the add form
+        List<Reservation> pendingReservations = medicalExaminationDAO.getPendingReservations();
+        request.setAttribute("pendingReservations", pendingReservations);
+        request.getRequestDispatcher("add_medical_examination.jsp").forward(request, response);
+    }
     private void handleListExaminations(HttpServletRequest request, HttpServletResponse response, User user) 
             throws ServletException, IOException {
         // Get all examinations for this doctor
@@ -125,76 +131,76 @@ public class MedicalExaminationServlet extends HttpServlet {
         }
     }
 
-    private void handleEditExamination(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        try {
-            int id = Integer.parseInt(request.getParameter("id"));
-            MedicalExamination examination = medicalExaminationDAO.getExaminationById(id);
-            
-            if (examination != null) {
-                request.setAttribute("examination", examination);
-                request.getRequestDispatcher("edit_medical_examination.jsp").forward(request, response);
-            } else {
-                response.sendRedirect("staff-exam");
-            }
-        } catch (NumberFormatException e) {
-            response.sendRedirect("staff-exam");
-        }
-    }
+//    private void handleEditExamination(HttpServletRequest request, HttpServletResponse response) 
+//            throws ServletException, IOException {
+//        try {
+//            int id = Integer.parseInt(request.getParameter("id"));
+//            MedicalExamination examination = medicalExaminationDAO.getExaminationById(id);
+//            
+//            if (examination != null) {
+//                request.setAttribute("examination", examination);
+//                request.getRequestDispatcher("edit_medical_examination.jsp").forward(request, response);
+//            } else {
+//                response.sendRedirect("staff-exam");
+//            }
+//        } catch (NumberFormatException e) {
+//            response.sendRedirect("staff-exam");
+//        }
+//    }
+//
+//    private void handleUpdateExamination(HttpServletRequest request, HttpServletResponse response) 
+//            throws ServletException, IOException {
+//        try {
+//            int examId = Integer.parseInt(request.getParameter("examId"));
+//            String prescription = request.getParameter("prescription");
+//            
+//            MedicalExamination exam = medicalExaminationDAO.getExaminationById(examId);
+//            if (exam != null) {
+//                exam.setPrescription(prescription);
+//                
+//                boolean success = medicalExaminationDAO.updateMedicalExamination(exam);
+//                
+//                if (success) {
+//                    response.sendRedirect("staff-exam?success=true");
+//                } else {
+//                    request.setAttribute("error", "Failed to update medical examination");
+//                    request.setAttribute("examination", exam);
+//                    request.getRequestDispatcher("edit_medical_examination.jsp").forward(request, response);
+//                }
+//            } else {
+//                response.sendRedirect("staff-exam");
+//            }
+//        } catch (NumberFormatException e) {
+//            response.sendRedirect("staff-exam");
+//        }
+//    }
 
-    private void handleUpdateExamination(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        try {
-            int examId = Integer.parseInt(request.getParameter("examId"));
-            String prescription = request.getParameter("prescription");
-            
-            MedicalExamination exam = medicalExaminationDAO.getExaminationById(examId);
-            if (exam != null) {
-                exam.setPrescription(prescription);
-                
-                boolean success = medicalExaminationDAO.updateMedicalExamination(exam);
-                
-                if (success) {
-                    response.sendRedirect("staff-exam?success=true");
-                } else {
-                    request.setAttribute("error", "Failed to update medical examination");
-                    request.setAttribute("examination", exam);
-                    request.getRequestDispatcher("edit_medical_examination.jsp").forward(request, response);
-                }
-            } else {
-                response.sendRedirect("staff-exam");
-            }
-        } catch (NumberFormatException e) {
-            response.sendRedirect("staff-exam");
-        }
-    }
-
-    private void handleDeleteExamination(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        try {
-            int id = Integer.parseInt(request.getParameter("id"));
-            
-            // Check if the examination exists and belongs to the logged-in doctor
-            HttpSession session = request.getSession();
-            User doctor = (User) session.getAttribute("account");
-            MedicalExamination exam = medicalExaminationDAO.getExaminationById(id);
-            
-            if (exam != null && exam.getAuthor_id() == doctor.getId()) {
-                boolean success = medicalExaminationDAO.deleteMedicalExamination(id);
-                
-                if (success) {
-                    response.sendRedirect("staff-exam?success=true");
-                } else {
-                    request.setAttribute("error", "Failed to delete medical examination");
-                    handleListExaminations(request, response, doctor);
-                }
-            } else {
-                response.sendRedirect("staff-exam");
-            }
-        } catch (NumberFormatException e) {
-            response.sendRedirect("staff-exam");
-        }
-    }
+//    private void handleDeleteExamination(HttpServletRequest request, HttpServletResponse response) 
+//            throws ServletException, IOException {
+//        try {
+//            int id = Integer.parseInt(request.getParameter("id"));
+//            
+//            // Check if the examination exists and belongs to the logged-in doctor
+//            HttpSession session = request.getSession();
+//            User doctor = (User) session.getAttribute("account");
+//            MedicalExamination exam = medicalExaminationDAO.getExaminationById(id);
+//            
+//            if (exam != null && exam.getAuthor_id() == doctor.getId()) {
+//                boolean success = medicalExaminationDAO.deleteMedicalExamination(id);
+//                
+//                if (success) {
+//                    response.sendRedirect("staff-exam?success=true");
+//                } else {
+//                    request.setAttribute("error", "Failed to delete medical examination");
+//                    handleListExaminations(request, response, doctor);
+//                }
+//            } else {
+//                response.sendRedirect("staff-exam");
+//            }
+//        } catch (NumberFormatException e) {
+//            response.sendRedirect("staff-exam");
+//        }
+//    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -212,9 +218,9 @@ public class MedicalExaminationServlet extends HttpServlet {
                 case "add":
                     handleSaveExamination(request, response);
                     break;
-                case "update":
-                    handleUpdateExamination(request, response);
-                    break;
+//                case "update":
+//                    handleUpdateExamination(request, response);
+//                    break;
                 default:
                     processRequest(request, response);
                     break;

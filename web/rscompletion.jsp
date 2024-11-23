@@ -79,9 +79,11 @@
     <h2 style="margin-top:2%; font-size: 20px" class="mb-1">Your reservation has been submitted</h2>  
 </c:if>
                                                             
+
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%;" class="text-success">Reservation ID: ${requestScope.res.getId()}</div>
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%;" class="text-success">Reserved Date: ${requestScope.res.getReservation_date()}</div>
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%;" class="text-success">Reserved Status: ${requestScope.res.getStatus()}</div>
+
                                                             <c:if test="${requestScope.staff!=null}">
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%;" class="text-success">Assigned Staff: ${requestScope.staff.getFullName()}</div>
                                                             <div style="font-size:15px; margin-bottom: 1%; text-align: left; margin-left: 10%;" class="text-success">Staff Contact Email: ${requestScope.staff.getEmail()}</div>
