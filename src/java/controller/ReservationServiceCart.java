@@ -187,7 +187,7 @@ public class ReservationServiceCart extends HttpServlet {
             String address = request.getParameter("address");
             String paymentMethod = request.getParameter("paymentMethod");
             String checkupTimeStr = request.getParameter("checkupTime");
-
+            System.out.println(paymentMethod);
             // Validate required fields
             validateBookingData(fullName, email, phone, address, paymentMethod, checkupTimeStr);
 

@@ -85,7 +85,7 @@ public class FeedbackServlet extends HttpServlet {
             Reservation res = iterator.next();
             Feedback feedback = feedbackDAO.getFeedbackByReservationId(res.getId());
 
-            if (feedback != null && "Processed".equals(feedback.getStatus()) || !"Successful".equals(res.getStatus()) || !feedbackDAO.isFeedback(res.getId())) {
+            if (feedback != null && "Processed".equals(feedback.getStatus()) || !"Completed".equals(res.getStatus()) || !feedbackDAO.isFeedback(res.getId())) {
                 iterator.remove();
             }
         }

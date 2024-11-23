@@ -4,29 +4,29 @@
  */
 package controller;
 
-import dal.PostCategoryDAO;
+import dal.ReservationDAO;
+import dal.ServiceDAO;
+import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import dal.ServiceDAO;
-import dal.PostDAO;
-import dal.ServiceCategoryDAO;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import model.Service;
-import model.Post;
-import dal.SliderDAO;
-import model.PostCategory;
-import model.ServiceCategory;
-import model.Slider;
+import model.Reservation;
+import model.User;
 
 /**
  *
  * @author admin
  */
-public class HomeServlet extends HttpServlet {
+@WebServlet(name = "ReservationCashierServlet", urlPatterns = {"/cashier-reservation"})
+public class ReservationCashierServlet extends HttpServlet {
+
+    private final ReservationDAO reservationDAO = new ReservationDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,37 +42,15 @@ public class HomeServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            ServiceDAO s = new ServiceDAO();
-            List<Service> list_service = s.getAllService();
-            List<Service> firstThreeServices = list_service.subList(0, Math.min(3, list_service.size()));
-            PostDAO p = new PostDAO();
-            List<Post> list_post = p.getAllPosts();
-            List<Post> new_post = p.getNewest();
-            ServiceCategoryDAO sc = new ServiceCategoryDAO();
-            List<ServiceCategory> s_category=sc.getAll1();
-            PostCategoryDAO pc = new PostCategoryDAO();
-            List<PostCategory> p_category= pc.getAll1();
-            SliderDAO sliderDAO = new SliderDAO();
-            List<Slider> list_sliders = sliderDAO.getAllSliders();
-            request.setAttribute("list_sliders", list_sliders);
-            if (s_category == null || s_category.isEmpty()) {
-            } else {
-                request.setAttribute("list_sc", s_category);
-            }
-            if (p_category == null || p_category.isEmpty()) {
-            } else {
-                request.setAttribute("list_pc", p_category);
-            }
-            if (list_service == null || list_service.isEmpty()) {
-            } else {
-                request.setAttribute("services", firstThreeServices);
-            }
-            if (list_post == null || list_post.isEmpty()) {
-            } else {
-                request.setAttribute("posts", list_post);
-            }
-            request.setAttribute("new_posts", new_post);
-            request.getRequestDispatcher("homepage.jsp").forward(request, response);
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ReservationCashierServlet</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ReservationCashierServlet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
     }
 
@@ -88,7 +66,35 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+        ServiceDAO sv = new ServiceDAO();
+        List<Reservation> list_reservation = reservationDAO.getAllReservation();
+        UserDAO u = new UserDAO();
+        List<User> ulist = u.getAllUser();
+        request.setAttribute("service", sv);
+        request.setAttribute("users", ulist);
+        request.setAttribute("reservation", list_reservation);
+        ReservationDAO r = new ReservationDAO();
+        String action = request.getParameter("action");
+        if (action != null) {
+            if (action.equals("checkin")) {
+                double totalcost = Double.parseDouble(request.getParameter("totalCost"));
+                int res_id = Integer.parseInt(request.getParameter("rid"));
+                r.checkin(res_id, (int) totalcost);
+                response.sendRedirect("cashier-reservation");
+                return;
+            }
+            else if (action.equals("checkout")) {
+                double totalcost = Double.parseDouble(request.getParameter("totalCost"));
+                int res_id = Integer.parseInt(request.getParameter("rid"));
+                Reservation res = r.getReservationById(res_id);
+                r.checkout(res_id, (int) totalcost,res.getCustomer_id());
+                response.sendRedirect("cashier-reservation");
+                return;
+            }
+        }
+        request.getRequestDispatcher("cashier-reservation.jsp").forward(request, response);
     }
 
     /**

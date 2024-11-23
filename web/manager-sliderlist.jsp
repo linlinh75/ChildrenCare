@@ -285,18 +285,27 @@
                                                 <div style="display: flex; align-items: center; margin-bottom: 10px;">
                                                     <label for="sliderImage" style="width: 100px; font-weight: bold">Image<span style="color: red;">*</span></label>
                                                     <img id="sliderImagePreview" style="width: 200px; height: 100px; margin-right: 10px;" alt="Image Preview"/>
-                                                    <input type="file" id="sliderImageInput" name="sliderImage" accept="image/*" >
+                                                    <input type="file" id="sliderImageInput" name="sliderImage" accept="image/*">
                                                 </div>
                                                 <div style="display: flex; align-items: center; margin-bottom: 10px;">
                                                     <label for="sliderBacklink" style="width: 100px; font-weight: bold">Back Link<span style="color: red;">*</span></label>
-                                                    <input type="text" name="sliderBacklink" id="sliderBacklink" required>
+                                                    <input type="text" name="sliderBacklink" id="sliderBacklink" style="width: 200px;" required>
                                                 </div>
                                                 <div style="display: flex; align-items: center; margin-bottom: 10px;">
                                                     <label for="sliderNote" style="width: 100px; font-weight: bold">Notes</label>
                                                     <input style="width: 80%; height: 80px;" type="text" name="sliderNote" id="sliderNote">
                                                 </div>
                                                 <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                                    <label for="sliderStatus" style="width: 100px; font-weight: bold">Status</label>
+                                                    <select name="sliderStatus" id="sliderStatus" style="width: 80%; padding: 5px;">
+                                                        <option value="1" >Public</option>
+                                                        <option value="0" >Hidden</option>
+                                                        <option value="deleted">Deleted</option>
+                                                    </select>
+                                                </div>
+                                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
                                                     <button style="text-align: center !important; margin-bottom: 20px;" type="submit" name="submit" value="edit" class="btn btn-edit" onclick="return confirmEdit()">Save</button>
+                                                </div>
                                             </form>
                                         </div>
                                     </div>
@@ -462,9 +471,9 @@
             document.getElementById('sliderBacklink').value = slider.backlink;
             document.getElementById('sliderImagePreview').src = slider.imageLink;
             document.getElementById('sliderNote').value = slider.note;
-
+            document.getElementById('sliderStatus').value = slider.status;
+            console.log(slider);
             document.getElementById('editPopup').style.display = 'block';
-
             document.getElementById("sliderTitle").addEventListener("input", validateTitle);
             document.getElementById("sliderImageInput").addEventListener("change", validateImage);
             document.getElementById("sliderBacklink").addEventListener("input", validateBacklink);

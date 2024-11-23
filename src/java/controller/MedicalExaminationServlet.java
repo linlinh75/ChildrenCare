@@ -43,11 +43,11 @@ public class MedicalExaminationServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setAttribute("active", "med");
-        
+
         // Get the logged-in user (doctor) ID from session
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("account");
-        
+
         if (user == null || user.getRoleId() != 3) { // Assuming role_id 3 is for doctors
             response.sendRedirect("login.jsp");
             return;
@@ -66,7 +66,7 @@ public class MedicalExaminationServlet extends HttpServlet {
                 handleListExaminations(request, response, user);
                 break;
             case "detail":
-                handleDetailExamination(request,response);
+                handleDetailExamination(request, response);
                 break;
 //            case "update":
 //                handleUpdateExamination(request, response);
@@ -80,21 +80,27 @@ public class MedicalExaminationServlet extends HttpServlet {
         }
     }
 
-    private void handleAddExamination(HttpServletRequest request, HttpServletResponse response) 
+    private void handleAddExamination(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Get pending reservations for the add form
-        List<Reservation> pendingReservations = medicalExaminationDAO.getApprovedReservations();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("account");
+        List<Reservation> pendingReservations = medicalExaminationDAO.getApprovedReservations(user.getId());
         request.setAttribute("pendingReservations", pendingReservations);
         request.getRequestDispatcher("add_medical_examination.jsp").forward(request, response);
     }
-    private void handleDetailExamination(HttpServletRequest request, HttpServletResponse response) 
+
+    private void handleDetailExamination(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Get pending reservations for the add form
-        List<Reservation> pendingReservations = medicalExaminationDAO.getApprovedReservations();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("account");
+        List<Reservation> pendingReservations = medicalExaminationDAO.getApprovedReservations(user.getId());
         request.setAttribute("pendingReservations", pendingReservations);
         request.getRequestDispatcher("add_medical_examination.jsp").forward(request, response);
     }
-    private void handleListExaminations(HttpServletRequest request, HttpServletResponse response, User user) 
+
+    private void handleListExaminations(HttpServletRequest request, HttpServletResponse response, User user)
             throws ServletException, IOException {
         // Get all examinations for this doctor
         List<MedicalExamination> examinations = medicalExaminationDAO.getAllExaminationByAuthor(user.getId());
@@ -102,7 +108,7 @@ public class MedicalExaminationServlet extends HttpServlet {
         request.getRequestDispatcher("medical_examinations.jsp").forward(request, response);
     }
 
-    private void handleSaveExamination(HttpServletRequest request, HttpServletResponse response) 
+    private void handleSaveExamination(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, DocumentException {
 //        try {
 //            // Get form parameters
@@ -145,109 +151,109 @@ public class MedicalExaminationServlet extends HttpServlet {
 //            request.setAttribute("error", "Invalid input parameters");
 //            request.getRequestDispatcher("staff-exam?action=add").forward(request, response);
 //        }
-    int reservationId = Integer.parseInt(request.getParameter("reservationId"));
-    String prescription = request.getParameter("prescription");
-    HttpSession session = request.getSession();
-     User doctor = (User) session.getAttribute("account");
-     int authorId = doctor.getId();
-     ReservationDAO rdao = new ReservationDAO();
-     Reservation rnow = rdao.getReservationById(reservationId);
-     int patientId = rnow.getCustomer_id();
-     UserDAO udao = new UserDAO();
-     User patient = udao.getUserById(patientId);
+        int reservationId = Integer.parseInt(request.getParameter("reservationId"));
+        String prescription = request.getParameter("prescription");
+        HttpSession session = request.getSession();
+        User doctor = (User) session.getAttribute("account");
+        int authorId = doctor.getId();
+        ReservationDAO rdao = new ReservationDAO();
+        Reservation rnow = rdao.getReservationById(reservationId);
+        int patientId = rnow.getCustomer_id();
+        UserDAO udao = new UserDAO();
+        User patient = udao.getUserById(patientId);
 
-    // Retrieve Medicines
-    String[] medicineNames = request.getParameterValues("medicineName[]");
-    String[] dosages = request.getParameterValues("dosage[]");
-    String[] instructions = request.getParameterValues("instructions[]");
+        // Retrieve Medicines
+        String[] medicineNames = request.getParameterValues("medicineName[]");
+        String[] dosages = request.getParameterValues("dosage[]");
+        String[] instructions = request.getParameterValues("instructions[]");
 
-    // Create Medical Examination
-    MedicalExamination exam = new MedicalExamination();
-    exam.setReservationService(new ReservationService(reservationId));
-    exam.setPrescription(prescription);
-    exam.setAuthor_id(authorId);
-   exam.setUser(patient);
-    List<Medicine> medicines = new ArrayList<>();
-    for (int i = 0; i < medicineNames.length; i++) {
-        Medicine med = new Medicine();
-        med.setMedicineName(medicineNames[i]);
-        med.setDosage(dosages[i]);
-        med.setInstructions(instructions[i]);
-        medicines.add(med);
-    }
-    exam.setMedicines(medicines);
-   exam.setDate(Timestamp.valueOf(LocalDateTime.now()));
-    // Save to database using DAO
-    MedicalExaminationDAO dao = new MedicalExaminationDAO();
-    boolean success = dao.addMedicalExamination(exam);
-
-    if (success) {
-        request.setAttribute("success", "Successfully save examination");
-        createPdfExam(exam,request, response);
-        response.sendRedirect("staff-exam?action=list"); // Redirect to the list of examinations
-    } else {
-        request.setAttribute("error", "Failed to save examination");
-        request.getRequestDispatcher("add_medical_examination.jsp").forward(request, response);
-    }
-    
-}
-
-   private void createPdfExam(MedicalExamination exam, HttpServletRequest request, HttpServletResponse response) throws DocumentException {
-    try {
-        // Define the file path
-        Date examDate = exam.getDate();
-SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  // Format date as yyyy-MM-dd
-String formattedDate = dateFormat.format(examDate);
-        String fileName = "D:\\MedicalExamination\\" + exam.getUser().getFullName().replaceAll("\\s+", "") + "_" + formattedDate+ ".pdf";
-        
-        // Create a new document
-        Document doc = new Document();
-        PdfWriter.getInstance(doc, new FileOutputStream(fileName));
-        
-        doc.open();
-        
-        // Add a title to the PDF
-        doc.add(new Paragraph("Medical Examination Report"));
-        doc.add(new Paragraph("------------------------------------------------"));
-        
-        // Add patient details
-        doc.add(new Paragraph("Patient Name: " + exam.getUser().getFullName()));
-        doc.add(new Paragraph("Patient ID: " + exam.getUser().getId()));
-        doc.add(new Paragraph("Date of Examination: " + exam.getDate().toString()));
-        doc.add(new Paragraph("Prescription: " + exam.getPrescription()));
-        
-        // Add doctor details (author)
-        User doctor = (User) request.getSession().getAttribute("account"); // Get the doctor from session
-        doc.add(new Paragraph("Doctor Name: " + doctor.getFullName()));
-        
-        // Add Medicines prescribed
-        List<Medicine> medicines = exam.getMedicines();
-        if (medicines != null && !medicines.isEmpty()) {
-            doc.add(new Paragraph("Medicines Prescribed:"));
-            for (Medicine med : medicines) {
-                doc.add(new Paragraph("  - " + med.getMedicineName() + " | Dosage: " + med.getDosage() + " | Instructions: " + med.getInstructions()));
-            }
-        } else {
-            doc.add(new Paragraph("No medicines prescribed."));
+        // Create Medical Examination
+        MedicalExamination exam = new MedicalExamination();
+        exam.setReservationService(new ReservationService(reservationId));
+        exam.setPrescription(prescription);
+        exam.setAuthor_id(authorId);
+        exam.setUser(patient);
+        List<Medicine> medicines = new ArrayList<>();
+        for (int i = 0; i < medicineNames.length; i++) {
+            Medicine med = new Medicine();
+            med.setMedicineName(medicineNames[i]);
+            med.setDosage(dosages[i]);
+            med.setInstructions(instructions[i]);
+            medicines.add(med);
         }
-        
-        // Add reservation details (if needed)
-        Reservation rnow = new ReservationDAO().getReservationById(exam.getReservationService().getReservation_id());
-        doc.add(new Paragraph("Reservation ID: " + rnow.getId()));
-        doc.add(new Paragraph("Reservation Date: " + rnow.getReservation_date().toString()));
-        
-        doc.add(new Paragraph("------------------------------------------------"));
-        
-        // Close the document
-        doc.close();
-        String body = "Your reservation has been completed, below is your examination details, please carry this to nearest pharmacy to take pills. Thanks again for chosing our service! ";
-        
-        EmailSender.sendEmailWithAttachment(exam.getUser().getEmail(), "Medical Examination Claimed", body, fileName);
-    } catch (FileNotFoundException ex) {
-        Logger.getLogger(MedicalExaminationServlet.class.getName()).log(Level.SEVERE, null, ex);
-    }
-}
+        exam.setMedicines(medicines);
+        exam.setDate(Timestamp.valueOf(LocalDateTime.now()));
+        // Save to database using DAO
+        MedicalExaminationDAO dao = new MedicalExaminationDAO();
+        boolean success = dao.addMedicalExamination(exam);
 
+        if (success) {
+            request.setAttribute("success", "Successfully save examination");
+            createPdfExam(exam, request, response);
+            rdao.statusReservation(reservationId, "Examined", patientId);
+            response.sendRedirect("staff-exam?action=list"); // Redirect to the list of examinations
+        } else {
+            request.setAttribute("error", "Failed to save examination");
+            request.getRequestDispatcher("add_medical_examination.jsp").forward(request, response);
+        }
+
+    }
+
+    private void createPdfExam(MedicalExamination exam, HttpServletRequest request, HttpServletResponse response) throws DocumentException {
+        try {
+            // Define the file path
+            Date examDate = exam.getDate();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  // Format date as yyyy-MM-dd
+            String formattedDate = dateFormat.format(examDate);
+            String fileName = "D:\\MedicalExamination\\" + exam.getUser().getFullName().replaceAll("\\s+", "") + "" + formattedDate + "_" + exam.getReservationService().getReservation_id() + ".pdf";
+
+            // Create a new document
+            Document doc = new Document();
+            PdfWriter.getInstance(doc, new FileOutputStream(fileName));
+
+            doc.open();
+
+            // Add a title to the PDF
+            doc.add(new Paragraph("Medical Examination Report"));
+            doc.add(new Paragraph("------------------------------------------------"));
+
+            // Add patient details
+            doc.add(new Paragraph("Patient Name: " + exam.getUser().getFullName()));
+            doc.add(new Paragraph("Patient ID: " + exam.getUser().getId()));
+            doc.add(new Paragraph("Date of Examination: " + exam.getDate().toString()));
+            doc.add(new Paragraph("Prescription: " + exam.getPrescription()));
+
+            // Add doctor details (author)
+            User doctor = (User) request.getSession().getAttribute("account"); // Get the doctor from session
+            doc.add(new Paragraph("Doctor Name: " + doctor.getFullName()));
+
+            // Add Medicines prescribed
+            List<Medicine> medicines = exam.getMedicines();
+            if (medicines != null && !medicines.isEmpty()) {
+                doc.add(new Paragraph("Medicines Prescribed:"));
+                for (Medicine med : medicines) {
+                    doc.add(new Paragraph("  - " + med.getMedicineName() + " | Dosage: " + med.getDosage() + " | Instructions: " + med.getInstructions()));
+                }
+            } else {
+                doc.add(new Paragraph("No medicines prescribed."));
+            }
+
+            // Add reservation details (if needed)
+            Reservation rnow = new ReservationDAO().getReservationById(exam.getReservationService().getReservation_id());
+            doc.add(new Paragraph("Reservation ID: " + rnow.getId()));
+            doc.add(new Paragraph("Reservation Date: " + rnow.getReservation_date().toString()));
+
+            doc.add(new Paragraph("------------------------------------------------"));
+
+            // Close the document
+            doc.close();
+            String body = "Your reservation has been completed, below is your examination details, please carry this to nearest pharmacy to take pills. Thanks again for chosing our service! ";
+
+            EmailSender.sendEmailWithAttachment(exam.getUser().getEmail(), "Medical Examination Claimed", body, fileName);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MedicalExaminationServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
 //    private void handleEditExamination(HttpServletRequest request, HttpServletResponse response) 
 //            throws ServletException, IOException {
@@ -292,7 +298,6 @@ String formattedDate = dateFormat.format(examDate);
 //            response.sendRedirect("staff-exam");
 //        }
 //    }
-
 //    private void handleDeleteExamination(HttpServletRequest request, HttpServletResponse response) 
 //            throws ServletException, IOException {
 //        try {
@@ -319,7 +324,6 @@ String formattedDate = dateFormat.format(examDate);
 //            response.sendRedirect("staff-exam");
 //        }
 //    }
-    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -330,18 +334,17 @@ String formattedDate = dateFormat.format(examDate);
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        
+
         if (action != null) {
             switch (action) {
-                case "add":
-                {
+                case "add": {
                     try {
                         handleSaveExamination(request, response);
                     } catch (DocumentException ex) {
                         Logger.getLogger(MedicalExaminationServlet.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                    break;
+                break;
 
 //                case "update":
 //                    handleUpdateExamination(request, response);

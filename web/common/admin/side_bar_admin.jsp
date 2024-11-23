@@ -25,8 +25,8 @@
     <div class="sidebar-content" data-simplebar style="height: calc(100% - 60px)">
         <ul class="sidebar-menu pt-3" >
             <li><a href="profile"><i class="uil uil-users-alt me-2 d-inline-block"></i>Profile</a></li>
-            <%-- Admin Side Bar --%>
-            <c:if test="${sessionScope.account.roleId == 1}">
+                <%-- Admin Side Bar --%>
+                <c:if test="${sessionScope.account.roleId == 1}">
                 <li><a href="admin-manage-user"><i class="uil uil-users-alt me-2 d-inline-block"></i>User List</a></li>
                 <li><a href="admin-manage-settings"><i class="uil uil-setting me-2 d-inline-block"></i>Setting List</a></li>
                 </c:if>
@@ -48,7 +48,12 @@
             <c:if test="${sessionScope.account.roleId == 3}">
                 <li><a href="staff-work-schedule"><i class="uil uil-users-alt me-2 d-inline-block"></i>Work Schedule</a></li>
                 </c:if>
-                <%-- Common function --%>
+                <%--Customer Side Bar --%>
+                <c:if test="${sessionScope.account.roleId == 4}">
+                <li><a href="/ChildrenCare/ReservationServlet"><i class="uil uil-users-alt me-2 d-inline-block"></i>My Reservation</a></li>
+                <li><a href="customer-feedback"><i class="uil uil-users-alt me-2 d-inline-block"></i>My Feedback</a></li>
+            </c:if>
+            <%-- Common function --%>
             <li><a href="changePw.jsp"><i class="uil uil-user me-2 d-inline-block"></i>Change password</a></li>
         </ul>
     </div>  

@@ -8,6 +8,10 @@
         <title>My Work Schedule</title>
         <link rel="shortcut icon" href="img/favicon.png">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
         <style>
             .table-container {
                 width: 100%;
@@ -243,6 +247,7 @@
                                             </c:forEach>
 
                                         </select>
+                                        <input type="text" id="dateRangePicker" class="form-control" name="date" placeholder="Filter by Date">
                                     </div>
                                 </div>
                             </div>
@@ -258,28 +263,21 @@
                                 <tbody id="reservationTableBody">
                                     <c:forEach var="s" items="${schedule}">
                                         <tr style="cursor: pointer;" >
-                                            <td>${s.getReservation_id()}</td>
+                                            <td>${s.getReservationId()}</td>
                                             <c:forEach var="user" items="${users}">
-                                                <c:if test="${user.getId() == reservation.getReservationById(s.getReservation_id()).getCustomer_id()}">
+                                                <c:if test="${user.getId() == reservation.getReservationById(s.getReservationId()).getCustomer_id()}">
                                                     <td>${user.getFullName()}</td>
                                                 </c:if>
                                             </c:forEach>
-                                            <td>${s.getStart_at()}</td>
-                                            <td>${s.getEnd_at()}</td>
+                                            <td>${s.getStartAt()}</td>
+                                            <td>${s.getEndAt()}</td>
                                             <td>
-                                                <c:forEach var="service" items="${reservation.getReservationById(s.getReservation_id()).getList_service()}">
+                                                <c:forEach var="service" items="${reservation.getReservationById(s.getReservationId()).getList_service()}">
                                                     ${service.getService_name()}<br/>
                                                 </c:forEach>
                                             </td>
                                             <td>
-                                                <button type="button" 
-                                                        class="btn btn-primary btn-sm" 
-                                                        style="margin-bottom: 8px"
-                                                        onclick="event.stopPropagation(); viewReservationDetails(${s.getReservation_id()})" 
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#reservationModal">
-                                                    View Details
-                                                </button>
+                                                <a href="staff-work-schedule?action=detail&rid=${s.getReservationId()}" class="btn btn-primary-sm">View Detail</a>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -293,33 +291,34 @@
             </main>
         </div>
     </body>
-    <!-- Bootstrap Modal -->
-    <!-- Update your modal HTML -->
-    <div class="modal fade" id="reservationModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Reservation Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="modalContent">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-                <!--                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>-->
-            </div>
-        </div>
-    </div>
-    <!-- JavaScript for filtering reservations -->
+
     <script>
         let currentPage = 1;
         const rowsPerPage = 5;
         let allRows = [];
         let filteredRows = [];
+        $(function () {
+            const today = moment().startOf('day');
+            const endOfDay = moment().endOf('day');
 
+            $('input[name="date"]').daterangepicker({
+                opens: 'left',
+                startDate: today,
+                endDate: endOfDay,
+                autoUpdateInput: true,
+            }, function (start, end, label) {
+                let adjustedStart = start.startOf('day');
+                let adjustedEnd = end.endOf('day');
+
+                console.log("A new date selection was made: " + adjustedStart.format('YYYY-MM-DD HH:mm:ss') + ' to ' + adjustedEnd.format('YYYY-MM-DD HH:mm:ss'));
+
+                $('input[name="date"]').val(adjustedStart.format('YYYY-MM-DD') + ' - ' + adjustedEnd.format('YYYY-MM-DD'));
+
+                applyFilters(adjustedStart, adjustedEnd);
+            });
+
+            $('input[name="date"]').val(today.format('YYYY-MM-DD') + ' - ' + endOfDay.format('YYYY-MM-DD'));
+        });
         function initializeTable() {
             const table = document.getElementById('reservationTableBody');
             allRows = Array.from(table.getElementsByTagName('tr'));
@@ -329,15 +328,27 @@
         function applyFilters() {
             const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
             const serviceFilter = document.getElementById("serviceFilter").value.toLowerCase();
-
+            const dateInput = document.getElementById('dateRangePicker').value;
+            console.log(dateInput);
+            let startDate = null, endDate = null;
+            if (dateInput) {
+                const dates = dateInput.split(' - ');
+                startDate = new Date(dates[0]);
+                endDate = new Date(dates[1]);
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(23, 59, 59, 999);
+            }
             filteredRows = allRows.filter(row => {
                 const cells = row.getElementsByTagName("td");
                 const fullname = cells[1].innerText.toLowerCase();
                 const serviceCell = cells[4].innerText.toLowerCase();
                 const servicesList = serviceCell.split('\n');
                 const serviceMatch = serviceFilter === "all" || servicesList.some(service => service.includes(serviceFilter));
-
-                return (fullname.includes(searchValue) && serviceMatch);
+                const checkupDateText = cells[2].innerText;
+                const checkupDate = new Date(checkupDateText);
+                 const dateCondition = (!startDate || checkupDate >= startDate) &&
+                        (!endDate || checkupDate <= endDate);
+                return (fullname.includes(searchValue) && serviceMatch&&dateCondition);
             });
             currentPage = 1;
             displayTable();
@@ -445,49 +456,6 @@
         }
 
         window.onload = initializeTable;
-    </script>
-    <script>
-        // Add this after your modal HTML
-        document.getElementById('reservationModal').addEventListener('hidden.bs.modal', function () {
-            document.body.classList.remove('modal-open');
-            document.querySelector('.modal-backdrop').remove();
-        });
-
-        // Update your viewReservationDetails function
-        function viewReservationDetails(reservationId) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            const modalContent = document.getElementById("modalContent");
-            modalContent.innerHTML = `
-        <div class="text-center">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>`;
-
-            const modal = new bootstrap.Modal(document.getElementById('reservationModal'));
-            modal.show();
-
-            $.ajax({
-                url: 'ReservationServlet',
-                type: 'POST',
-                data: {
-                    action: 'getDetails',
-                    id: reservationId
-                },
-                success: function (response) {
-                    modalContent.innerHTML = response;
-                },
-                error: function (xhr, status, error) {
-                    modalContent.innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    Error loading reservation details. Please try again later.
-                </div>`;
-                }
-            });
-        }
-
     </script>
 
 </html>

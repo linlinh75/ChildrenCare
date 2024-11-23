@@ -386,7 +386,6 @@
             <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
                 <main class="page-content bg-light">
                 <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
-<<<<<<< HEAD
                     <div class="dashboard-container container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px;">
                         <!-- Sidebar -->
 
@@ -394,18 +393,6 @@
                         <div class="user-container container-fluid">
                             <div class="user-list-container fade-in">
                                 <h1 class="user-container-table">User Management</h1>
-
-=======
-
-                    <div class="dashboard-container container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px;">
-                        <!-- Sidebar -->
-
-                        <!-- Main Content -->
-                        <div class="user-container container-fluid">
-                            <div class="user-list-container fade-in">
-                                <h1 class="user-container-table">User Management</h1>
-
->>>>>>> 6f7a46a34f5211dd9e6716d0fc79c3d34d16a1c5
                                 <!-- Success/Error Messages -->
                             <c:if test="${not empty sessionScope.successMessage}">
                                 <div class="alert alert-success">
@@ -765,7 +752,7 @@
             // Define all functions first
             window.showAddModal = function () {
                 document.getElementById('addUserModal').style.display = 'block';
-            }
+            };
 
             window.showEditModal = function (userId) {
                 // Fetch user data
@@ -817,11 +804,11 @@
                     document.body.appendChild(form);
                     form.submit();
                 }
-            }
+            };
 
             window.changeLocation = function (url) {
                 window.location.href = url;
-            }
+            };
 
             // Modal handling
             document.addEventListener('DOMContentLoaded', function () {
@@ -830,7 +817,7 @@
                 Array.from(closeButtons).forEach(button => {
                     button.onclick = function () {
                         this.closest('.modal').style.display = 'none';
-                    }
+                    };
                 });
 
                 // Close modal buttons
@@ -838,7 +825,7 @@
                 Array.from(closeModalButtons).forEach(button => {
                     button.onclick = function () {
                         this.closest('.modal').style.display = 'none';
-                    }
+                    };
                 });
 
                 // Close when clicking outside
@@ -846,7 +833,7 @@
                     if (event.target.classList.contains('modal')) {
                         event.target.style.display = 'none';
                     }
-                }
+                };
 
                 // Debug log
                 console.log('Modal handlers initialized');

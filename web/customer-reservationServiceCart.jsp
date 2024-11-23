@@ -280,17 +280,29 @@
                                                   rows="2" required>${sessionScope.account.address}</textarea>
                                     </div>
 
-                                    <!-- Replace the hidden payment method with a readonly display -->
                                     <div class="form-group">
                                         <label for="paymentMethod" class="form-label">Payment Method</label>
-                                        <input type="text" class="form-control" value="VNPAY" readonly>
-                                        <input type="hidden" name="paymentMethod" value="vnpay">
+                                        <div>
+                                            <input type="radio" id="paymentDirect" name="paymentMethod" value="DIRECT" checked>
+                                            <label for="paymentDirect">Direct Payment</label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="paymentVNPAY" name="paymentMethod" value="VNPAY">
+                                            <label for="paymentVNPAY">VNPAY</label>
+                                        </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="checkupTime">Preferred Checkup Time</label>
-                                        <input type="datetime-local" class="form-control" id="checkupTime" 
-                                               name="checkupTime" required>
+                                        <label for="checkupDate">Preferred Checkup Date</label>
+                                        <input type="date" class="form-control" id="checkupDate" name="checkupDate" required >
+                                    </div>
+
+                                    <div class="form-group mt-3">
+                                        <label>Available Shifts</label>
+                                        <div id="shiftButtons" class="d-flex flex-wrap gap-2">
+                                        </div>
+                                        <input type="hidden" id="selectedShift" name="checkupShift" required>
+                                        <input type="hidden" id="checkupTime" name="checkupTime">
                                     </div>
 
                                     <div class="modal-footer">
@@ -306,135 +318,169 @@
         </div>
         <!-- Footer Area -->
         <jsp:include page="common/common-homepage-footer.jsp"></jsp:include>
-
-        <!-- jquery Min JS -->
-        <script src="js/jquery.min.js"></script>
-        <!-- jquery Migrate JS -->
-        <script src="js/jquery-migrate-3.0.0.js"></script>
-        <!-- jquery Ui JS -->
-        <script src="js/jquery-ui.min.js"></script>
-        <!-- Easing JS -->
-        <script src="js/easing.js"></script>
-        <!-- Color JS -->
-        <script src="js/colors.js"></script>
-        <!-- Popper JS -->
-        <script src="js/popper.min.js"></script>
-        <!-- Bootstrap Datepicker JS -->
-        <script src="js/bootstrap-datepicker.js"></script>
-        <!-- Jquery Nav JS -->
-        <script src="js/jquery.nav.js"></script>
-        <!-- Slicknav JS -->
-        <script src="js/slicknav.min.js"></script>
-        <!-- ScrollUp JS -->
-        <script src="js/jquery.scrollUp.min.js"></script>
-        <!-- Niceselect JS -->
-        <!--<script src="js/niceselect.js"></script>-->
-        <!-- Tilt Jquery JS -->
-        <script src="js/tilt.jquery.min.js"></script>
-        <!-- Owl Carousel JS -->
-        <script src="js/owl-carousel.js"></script>
-        <!-- counterup JS -->
-        <script src="js/jquery.counterup.min.js"></script>
-        <script src="js/waypoints.min.js"></script>
-        <!-- Steller JS -->
-        <script src="js/steller.js"></script>
-        <!-- Wow JS -->
-        <script src="js/wow.min.js"></script>
-        <!-- Magnific Popup JS -->
-        <script src="js/jquery.magnific-popup.min.js"></script>
-        <!-- Counter Up CDN JS -->
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
-        <!-- Bootstrap JS -->
-        <script src="js/bootstrap.min.js"></script>
-        <!-- Main JS -->
-        <script src="js/main.js"></script>
+        </body>
         <script>
             // Hiển thị thông báo
-            if(<%= request.getAttribute("message")!=null %>){
+            if (<%= request.getAttribute("message")!=null %>) {
                 alert("<%= request.getAttribute("message") %>");
             }
-            
-        </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Phone validation
-                const phoneInput = document.getElementById('phone');
-                const phoneError = document.getElementById('phoneError');
-                const form = document.getElementById('appointmentForm');
-                
-                // Function to validate phone number
-                function validatePhone(phone) {
-                    return /^0\d{9}$/.test(phone);
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Phone validation
+            const phoneInput = document.getElementById('phone');
+            const phoneError = document.getElementById('phoneError');
+            const form = document.getElementById('appointmentForm');
+
+            // Function to validate phone number
+            function validatePhone(phone) {
+                return /^0\d{9}$/.test(phone);
+            }
+
+            // Phone input validation
+            phoneInput.addEventListener('input', function () {
+                const isValid = validatePhone(this.value);
+                if (!isValid) {
+                    phoneError.style.display = 'block';
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                } else {
+                    phoneError.style.display = 'none';
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
                 }
-                
-                // Phone input validation
-                phoneInput.addEventListener('input', function() {
-                    const isValid = validatePhone(this.value);
-                    if (!isValid) {
-                        phoneError.style.display = 'block';
-                        this.classList.add('is-invalid');
-                        this.classList.remove('is-valid');
-                    } else {
-                        phoneError.style.display = 'none';
-                        this.classList.remove('is-invalid');
-                        this.classList.add('is-valid');
-                    }
-                });
-                
-                // Checkup time validation
-                const checkupTimeInput = document.getElementById('checkupTime');
-                if (checkupTimeInput) {
-                    // Set minimum date to tomorrow
-                    const tomorrow = new Date();
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    tomorrow.setHours(8, 0, 0, 0);
+            });
 
-                    // Set maximum date to 3 months from now
-                    const maxDate = new Date();
-                    maxDate.setMonth(maxDate.getMonth() + 3);
+            // Checkup time validation
+            const checkupTimeInput = document.getElementById('checkupTime');
+            if (checkupTimeInput) {
+                // Set minimum date to tomorrow (without time)
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);  // Remove time part for today
 
-                    checkupTimeInput.addEventListener('input', function() {
-                        const selectedDate = new Date(this.value);
-                        const hours = selectedDate.getHours();
-                        const isValidTime = hours >= 8 && hours < 20;
-                        const isValidDate = selectedDate >= tomorrow && selectedDate <= maxDate;
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() + 1);  // Set tomorrow's date
 
-                        if (!isValidTime) {
-                            alert('Please select a time between 8:00 AM and 8:00 PM');
-                            this.value = '';
-                        } else if (!isValidDate) {
-                            alert('Please select a date between tomorrow and 3 months from now');
-                            this.value = '';
-                        }
-                    });
-                }
-                
-                // Form submission validation
-                form.addEventListener('submit', function(event) {
-                    // Phone validation
-                    const isValidPhone = validatePhone(phoneInput.value);
-                    if (!isValidPhone) {
-                        event.preventDefault();
-                        phoneError.style.display = 'block';
-                        phoneInput.classList.add('is-invalid');
-                        phoneInput.focus();
-                        return false;
-                    }
+                // Set maximum date to 3 months from now
+                const maxDate = new Date(today);
+                maxDate.setMonth(today.getMonth() + 3);  // Set maxDate 3 months from today
 
-                    // Checkup time validation
-                    const selectedDate = new Date(checkupTimeInput.value);
-                    const hours = selectedDate.getHours();
-                    const isValidTime = hours >= 8 && hours < 20;
+                // Log for debugging
+                console.log("Today:", today);
+                console.log("Tomorrow:", tomorrow);
+                console.log("Max Date:", maxDate);
+
+                checkupTimeInput.addEventListener('input', function () {
+                    const selectedDate = new Date(this.value);
+                    // Log the selected date for debugging
+                    console.log("Selected Date:", selectedDate);
+
                     const isValidDate = selectedDate >= tomorrow && selectedDate <= maxDate;
 
-                    if (!isValidTime || !isValidDate) {
-                        event.preventDefault();
-                        alert('Please select a valid appointment time (8:00 AM - 8:00 PM, between tomorrow and 3 months from now)');
-                        checkupTimeInput.focus();
-                        return false;
+                    if (!isValidDate) {
+                        alert('Please select a date between tomorrow and 3 months from now');
+                        this.value = '';  // Clear input if invalid
                     }
                 });
+            }
+
+            // Form submission validation
+            form.addEventListener('submit', function (event) {
+                // Phone validation
+                const isValidPhone = validatePhone(phoneInput.value);
+                if (!isValidPhone) {
+                    event.preventDefault();
+                    phoneError.style.display = 'block';
+                    phoneInput.classList.add('is-invalid');
+                    phoneInput.focus();
+                    return false;
+                }
+
+                // Checkup time validation
+                const selectedDate = new Date(checkupTimeInput.value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);  // Remove time part for today
+
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() + 1);  // Set tomorrow's date
+
+                const maxDate = new Date(today);
+                maxDate.setMonth(today.getMonth() + 3);  // Set maxDate 3 months from today
+
+                console.log("Today:", today);
+                console.log("Tomorrow:", tomorrow);
+                console.log("Max Date:", maxDate);
+
+                const isValidDate = selectedDate >= tomorrow && selectedDate <= maxDate;
+                if (!isValidDate) {
+                    event.preventDefault();
+                    alert('Please select a valid appointment date (between tomorrow and 3 months from now)');
+                    checkupTimeInput.focus();
+                    return false;
+                }
             });
-        </script>
-    </body>
+
+            // Shift update logic (no changes needed here)
+            function updateShifts() {
+                const dateInput = document.getElementById("checkupDate").value;
+                const shiftContainer = document.getElementById("shiftButtons");
+                const selectedShiftInput = document.getElementById("selectedShift");
+                const checkupTimeInput = document.getElementById("checkupTime");
+                const day = new Date(dateInput).getDay();
+                shiftContainer.innerHTML = "";
+                selectedShiftInput.value = "";
+
+                const morningShifts = ["08:00-9:00", "09:00-10:00", "10:00-11:00", "11:00-12:00"];
+                const afternoonShifts = ["13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00",
+                    "17:00-18:00", "18:00-19:00", "19:00-20:00"];
+                const sundayShifts = ["09:00-10:00", "10:00-11:00", "11:00-12:00",
+                    "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00"];
+
+                let shiftsToDisplay = [];
+                if (day === 0) {
+                    shiftsToDisplay = sundayShifts;
+                } else {
+                    shiftsToDisplay = [...morningShifts, ...afternoonShifts];
+                }
+
+                shiftsToDisplay.forEach(shift => {
+                    const button = document.createElement("button");
+                    button.type = "button";
+                    button.className = "btn btn-outline-primary";
+                    button.textContent = shift;
+                    button.onclick = () => selectShift(shift);
+                    shiftContainer.appendChild(button);
+                });
+            }
+
+            function selectShift(shift) {
+                const buttons = document.querySelectorAll("#shiftButtons button");
+                buttons.forEach(button => button.classList.remove("btn-primary"));
+                buttons.forEach(button => button.classList.add("btn-outline-primary"));
+
+                const selectedButton = Array.from(buttons).find(button => button.textContent === shift);
+                selectedButton.classList.remove("btn-outline-primary");
+                selectedButton.classList.add("btn-primary");
+
+                document.getElementById("selectedShift").value = shift;
+
+                const checkupDate = document.getElementById('checkupDate').value;
+                const shiftStart = shift.split('-')[0].trim();
+                const formattedCheckupTime = checkupDate + " " + shiftStart;
+
+                document.getElementById("checkupTime").value = formattedCheckupTime;
+            }
+
+            const dateInput = document.getElementById("checkupDate");
+            dateInput.addEventListener("change", updateShifts);
+        });
+        const paymentMethodRadios = document.getElementsByName('paymentMethod');
+
+        paymentMethodRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+                console.log(selectedPaymentMethod); 
+            });
+        });
+    </script>
 </html>

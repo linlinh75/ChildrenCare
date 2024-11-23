@@ -27,8 +27,6 @@ import model.User;
 import model.WorkSchedule;
 import util.EmailSender;
 
-
-
 @WebServlet(name = "ReservationManagerServlet", urlPatterns = {"/reservation-manager"})
 public class ReservationManagerServlet extends HttpServlet {
 
@@ -42,7 +40,7 @@ public class ReservationManagerServlet extends HttpServlet {
         ServiceDAO sv = new ServiceDAO();
         List<Reservation> list_reservation = reservationDAO.getAllReservation();
         UserDAO u = new UserDAO();
-        List<User> ulist= u.getAllUser();
+        List<User> ulist = u.getAllUser();
         request.setAttribute("service", sv);
         request.setAttribute("users", ulist);
         request.setAttribute("reservation", list_reservation);
@@ -57,7 +55,6 @@ public class ReservationManagerServlet extends HttpServlet {
 
         switch (action) {
             case "approveReservation":
-                
                 reservationDAO.updateReservationStatus(reservationId, "Approved");
                 UserDAO userDao = new UserDAO();
                 Reservation res = reservationDAO.getReservationById(reservationId);
@@ -77,44 +74,74 @@ public class ReservationManagerServlet extends HttpServlet {
                 if (countFreeDoctors > 0) {
 
                     try {
-                        
+
                         int n = (countFreeDoctors == 1) ? 0 : rand.nextInt(countFreeDoctors);
                         User assignDoctor = listDoctorFree.get(n);
-                        
-                        
                         reservationDAO.changeStaffReservation(res.getId(), assignDoctor.getId());
                         reservationDAO.assignWorkSchedule(res.getId(), assignDoctor.getId(), res.getCheckup_time());
-                        
+
                         System.out.println("Assigned Doctor ID: " + assignDoctor.getId());
-                        
                         User user = userDao.getProfileById(res.getCustomer_id());
-                        try {
-                            String content = "<p>Your reservation has been approved. Your doctor is Dr. "
-                                    + assignDoctor.getFullName() + ". Email: " + assignDoctor.getEmail()
-                                    + ". Mobile: " + assignDoctor.getMobile()
-                                    + ". Please complete the transaction by transfering the fees by VNPAY: </p>"
-                                    + "<a href='http://localhost:8080/ChildrenCare/vnpay_pay.jsp?amount=" + amount + "&rid="+res.getId()+"'>Click this link to pay fees</a>";
-                            String subject = "Reservation Completion and Payment Guide";
-                            EmailSender.sendHtml(user.getEmail(), content, subject);
-                            request.setAttribute("res", res);
-                            session.setAttribute("rid", res.getId());
-                            
-                        } catch (MessagingException ex) {
-                            Logger.getLogger(ReservationCompletionServlet.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println(res.getPay_option());
+                        if ("VNPAY".equals(res.getPay_option())) {
+                            reservationDAO.statusReservation(reservationId, "Waiting for payment", res.getCustomer_id());
+                            try {
+                                String content = "<p>Your reservation has been approved. Your doctor is Dr. "
+                                        + assignDoctor.getFullName() + ". Email: " + assignDoctor.getEmail()
+                                        + ". Mobile: " + assignDoctor.getMobile()
+                                        + ". Please complete the transaction by transferring the fees via VNPAY: </p>"
+                                        + "<a href='http://localhost:8080/ChildrenCare/vnpay_pay.jsp?amount=" + amount + "&rid=" + res.getId() + "'>Click this link to pay fees</a>";
+                                String subject = "Reservation Completion and Payment Guide";
+                                EmailSender.sendHtml(user.getEmail(), content, subject);
+                                request.setAttribute("res", res);
+                                session.setAttribute("rid", res.getId());
+                            } catch (MessagingException ex) {
+                                Logger.getLogger(ReservationCompletionServlet.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            // Send an email without payment details if the method is not VNPAY
+                            reservationDAO.statusReservation(reservationId, "In Progress", res.getCustomer_id());
+                            try {
+                                String content = "<p>Your reservation has been approved. Your doctor is Dr. "
+                                        + assignDoctor.getFullName() + ". Email: " + assignDoctor.getEmail()
+                                        + ". Mobile: " + assignDoctor.getMobile() + ".</p>";
+                                String subject = "Reservation Confirmation";
+                                EmailSender.sendHtml(user.getEmail(), content, subject);
+                                request.setAttribute("res", res);
+                                session.setAttribute("rid", res.getId());
+                            } catch (MessagingException ex) {
+                                Logger.getLogger(ReservationCompletionServlet.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     } catch (SQLException ex) {
                         Logger.getLogger(ReservationManagerServlet.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
                     System.out.println("No available doctors at this time.");
-                    
                 }
                 response.sendRedirect("reservation-manager");
                 break;
             case "cancelReservation":
                 reservationDAO.updateReservationStatus(reservationId, "Cancelled");
+                Reservation cancelledRes = reservationDAO.getReservationById(reservationId);
+                userDao = new UserDAO();
+                // Send email with cancellation reason and apology
+                try {
+                    User cancelUser = userDao.getProfileById(cancelledRes.getCustomer_id());
+
+                    String content = "<p>Your reservation has been cancelled. We regret to inform you that your reservation could not be processed at this time. "
+                            + "Please accept our sincere apologies for the inconvenience caused.</p>";
+                    String subject = "Reservation Cancellation Notice";
+                    EmailSender.sendHtml(cancelUser.getEmail(), content, subject);
+                } catch (MessagingException ex) {
+                    Logger.getLogger(ReservationManagerServlet.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ReservationManagerServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
                 response.sendRedirect("reservation-manager");
                 break;
+
         }
     }
 

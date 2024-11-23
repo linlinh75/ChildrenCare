@@ -323,10 +323,12 @@
 
     <body>
 
-        <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
-        <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
-            <div class="dashboard-container">
-                <!--Sidebar-->
+        <div class="page-wrapper doctris-theme toggled">
+            <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
+                <main class="page-content bg-light">
+                <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
+                    <div class="dashboard-container container-fluid" style="padding: 20px; margin-top: 30px; margin-bottom: 30px;">
+                        <!--Sidebar-->
 
 
                         <div class="user-container container-fluid">
@@ -601,319 +603,319 @@
             </main>
         </div>
     </body>
-                <script>
-                    function sortTable(column) {
-                        const currentUrl = new URL(window.location.href);
-                        const params = new URLSearchParams(currentUrl.search);
+    <script>
+        function sortTable(column) {
+            const currentUrl = new URL(window.location.href);
+            const params = new URLSearchParams(currentUrl.search);
 
-                        // Get current sort parameters
-                        const currentSortBy = params.get('sortBy');
-                        const currentSortOrder = params.get('sortOrder');
+            // Get current sort parameters
+            const currentSortBy = params.get('sortBy');
+            const currentSortOrder = params.get('sortOrder');
 
-                        // Determine new sort order
-                        let newSortOrder = 'asc';
-                        if (column === currentSortBy && currentSortOrder === 'asc') {
-                            newSortOrder = 'desc';
+            // Determine new sort order
+            let newSortOrder = 'asc';
+            if (column === currentSortBy && currentSortOrder === 'asc') {
+                newSortOrder = 'desc';
+            }
+
+            // Update sort parameters
+            params.set('sortBy', column);
+            params.set('sortOrder', newSortOrder);
+
+            // Reset to first page when sorting changes
+            params.set('page', '1');
+
+            // Maintain other parameters (type, status, search)
+            const type = params.get('type');
+            const status = params.get('status');
+            const search = params.get('search');
+
+            if (type)
+                params.set('type', type);
+            if (status)
+                params.set('status', status);
+            if (search)
+                params.set('search', search);
+
+            // Redirect with all parameters
+            window.location.href = 'admin-manage-settings?' + params.toString();
+        }
+
+        function changeLocation(url) {
+            window.location.href = url;
+        }
+
+        function showAddModal() {
+            document.getElementById('addSettingModal').style.display = 'block';
+        }
+
+        function showEditModalWithData(value, type, name, description, status) {
+            document.getElementById('editSettingId').value = value;
+            document.getElementById('editName').value = name;
+            document.getElementById('editDescription').value = description || '';
+            document.getElementById('editValue').value = value;
+
+            // Set radio buttons for type
+            const typeRadios = document.querySelectorAll('#editSettingForm input[name="type"]');
+            typeRadios.forEach(radio => {
+                radio.checked = radio.value === type;
+            });
+
+            // Set radio buttons for status
+            const statusRadios = document.querySelectorAll('#editSettingForm input[name="status"]');
+            statusRadios.forEach(radio => {
+                radio.checked = radio.value === status.toString();
+            });
+
+            document.getElementById('editSettingModal').style.display = 'block';
+        }
+
+        // Close modal handlers
+        document.querySelectorAll('.close, .close-modal').forEach(element => {
+            element.onclick = function () {
+                this.closest('.modal').style.display = 'none';
+            }
+        });
+
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Form validation
+        document.getElementById('addSettingForm').onsubmit = validateForm;
+        document.getElementById('editSettingForm').onsubmit = validateForm;
+
+        function validateForm(e) {
+            const form = e.target;
+            const name = form.querySelector('[name="name"]').value.trim();
+            const value = form.querySelector('[name="value"]').value;
+
+            if (name.length < 2) {
+                alert('Name must be at least 2 characters long');
+                return false;
+            }
+
+            if (isNaN(value) || value < 0) {
+                alert('Value must be a positive number');
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById('editSettingForm').onsubmit = function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            const name = formData.get('name').trim();
+            const description = formData.get('description').trim();
+
+            if (name.length < 2) {
+                alert('Name must be at least 2 characters long');
+                return false;
+            }
+
+            if (description.length < 10) {
+                alert('Description must be at least 10 characters long');
+                return false;
+            }
+
+            fetch('edit-setting', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+                    .then(response => {
+                        if (response.ok) {
+                            document.getElementById('editSettingModal').style.display = 'none';
+                            window.location.reload();
+                        } else {
+                            throw new Error('Failed to update setting');
                         }
-
-                        // Update sort parameters
-                        params.set('sortBy', column);
-                        params.set('sortOrder', newSortOrder);
-
-                        // Reset to first page when sorting changes
-                        params.set('page', '1');
-
-                        // Maintain other parameters (type, status, search)
-                        const type = params.get('type');
-                        const status = params.get('status');
-                        const search = params.get('search');
-
-                        if (type)
-                            params.set('type', type);
-                        if (status)
-                            params.set('status', status);
-                        if (search)
-                            params.set('search', search);
-
-                        // Redirect with all parameters
-                        window.location.href = 'admin-manage-settings?' + params.toString();
-                    }
-
-                    function changeLocation(url) {
-                        window.location.href = url;
-                    }
-
-                    function showAddModal() {
-                        document.getElementById('addSettingModal').style.display = 'block';
-                    }
-
-                    function showEditModalWithData(value, type, name, description, status) {
-                        document.getElementById('editSettingId').value = value;
-                        document.getElementById('editName').value = name;
-                        document.getElementById('editDescription').value = description || '';
-                        document.getElementById('editValue').value = value;
-
-                        // Set radio buttons for type
-                        const typeRadios = document.querySelectorAll('#editSettingForm input[name="type"]');
-                        typeRadios.forEach(radio => {
-                            radio.checked = radio.value === type;
-                        });
-
-                        // Set radio buttons for status
-                        const statusRadios = document.querySelectorAll('#editSettingForm input[name="status"]');
-                        statusRadios.forEach(radio => {
-                            radio.checked = radio.value === status.toString();
-                        });
-
-                        document.getElementById('editSettingModal').style.display = 'block';
-                    }
-
-                    // Close modal handlers
-                    document.querySelectorAll('.close, .close-modal').forEach(element => {
-                        element.onclick = function () {
-                            this.closest('.modal').style.display = 'none';
-                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error updating setting: ' + error.message);
                     });
+        };
 
-                    window.onclick = function (event) {
-                        if (event.target.classList.contains('modal')) {
-                            event.target.style.display = 'none';
-                        }
-                    }
+        document.querySelectorAll('.modal textarea').forEach(textarea => {
+            textarea.style.minHeight = '100px';
+            textarea.style.resize = 'vertical';
+        });
+    </script>
 
-                    // Form validation
-                    document.getElementById('addSettingForm').onsubmit = validateForm;
-                    document.getElementById('editSettingForm').onsubmit = validateForm;
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
 
-                    function validateForm(e) {
-                        const form = e.target;
-                        const name = form.querySelector('[name="name"]').value.trim();
-                        const value = form.querySelector('[name="value"]').value;
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
 
-                        if (name.length < 2) {
-                            alert('Name must be at least 2 characters long');
-                            return false;
-                        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
 
-                        if (isNaN(value) || value < 0) {
-                            alert('Value must be a positive number');
-                            return false;
-                        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-                        return true;
-                    }
+        .close:hover {
+            color: black;
+        }
 
-                    document.getElementById('editSettingForm').onsubmit = function (e) {
-                        e.preventDefault();
-                        const formData = new FormData(this);
+        .form-group {
+            margin-bottom: 15px;
+        }
 
-                        const name = formData.get('name').trim();
-                        const description = formData.get('description').trim();
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
 
-                        if (name.length < 2) {
-                            alert('Name must be at least 2 characters long');
-                            return false;
-                        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
 
-                        if (description.length < 10) {
-                            alert('Description must be at least 10 characters long');
-                            return false;
-                        }
+        .required-field::after {
+            content: "*";
+            color: red;
+            margin-left: 4px;
+        }
 
-                        fetch('edit-setting', {
-                            method: 'POST',
-                            body: new URLSearchParams(formData)
-                        })
-                                .then(response => {
-                                    if (response.ok) {
-                                        document.getElementById('editSettingModal').style.display = 'none';
-                                        window.location.reload();
-                                    } else {
-                                        throw new Error('Failed to update setting');
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                    alert('Error updating setting: ' + error.message);
-                                });
-                    };
+        .modal-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            text-align: right;
+        }
 
-                    document.querySelectorAll('.modal textarea').forEach(textarea => {
-                        textarea.style.minHeight = '100px';
-                        textarea.style.resize = 'vertical';
-                    });
-                </script>
+        /* Button styling in table rows */
+        .table td .btn {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
 
-                <style>
-                    .modal {
-                        display: none;
-                        position: fixed;
-                        z-index: 1000;
-                        left: 0;
-                        top: 0;
-                        width: 100%;
-                        height: 100%;
-                        background-color: rgba(0, 0, 0, 0.5);
-                    }
+        .table td .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            color: white;
+        }
 
-                    .modal-content {
-                        background-color: #fefefe;
-                        margin: 5% auto;
-                        padding: 20px;
-                        border: 1px solid #888;
-                        width: 80%;
-                        max-width: 600px;
-                        border-radius: 8px;
-                    }
+        .table td .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
 
-                    .modal-header {
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        margin-bottom: 20px;
-                        padding-bottom: 10px;
-                        border-bottom: 1px solid #ddd;
-                    }
+        .table td .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
 
-                    .close {
-                        color: #aaa;
-                        font-size: 28px;
-                        font-weight: bold;
-                        cursor: pointer;
-                    }
+        .table td .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+        }
 
-                    .close:hover {
-                        color: black;
-                    }
+        .table td .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
 
-                    .form-group {
-                        margin-bottom: 15px;
-                    }
+        /* Action buttons container */
+        .table td {
+            white-space: nowrap;
+        }
 
-                    .form-group label {
-                        display: block;
-                        margin-bottom: 5px;
-                        font-weight: 500;
-                    }
+        /* Icon styling inside buttons */
+        .table td .btn i {
+            font-size: 14px;
+            margin-right: 0;
+        }
 
-                    .form-group input,
-                    .form-group select,
-                    .form-group textarea {
-                        width: 100%;
-                        padding: 8px;
-                        border: 1px solid #ddd;
-                        border-radius: 4px;
-                    }
+        /* Status badge styling */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
 
-                    .required-field::after {
-                        content: "*";
-                        color: red;
-                        margin-left: 4px;
-                    }
+        .status-badge.active {
+            background-color: #28a745;
+            color: white;
+        }
 
-                    .modal-footer {
-                        margin-top: 20px;
-                        padding-top: 15px;
-                        border-top: 1px solid #ddd;
-                        text-align: right;
-                    }
+        .status-badge.inactive {
+            background-color: #dc3545;
+            color: white;
+        }
 
-                    /* Button styling in table rows */
-                    .table td .btn {
-                        padding: 6px 12px;
-                        margin: 0 3px;
-                        border-radius: 4px;
-                        transition: all 0.3s ease;
-                    }
+        .modal textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.5;
+        }
 
-                    .table td .btn-info {
-                        background-color: #17a2b8;
-                        border-color: #17a2b8;
-                        color: white;
-                    }
+        .modal textarea:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
 
-                    .table td .btn-primary {
-                        background-color: #007bff;
-                        border-color: #007bff;
-                        color: white;
-                    }
+        .form-error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
 
-                    .table td .btn:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                    }
+        .form-group.has-error .form-error {
+            display: block;
+        }
 
-                    .table td .btn-info:hover {
-                        background-color: #138496;
-                        border-color: #117a8b;
-                    }
+        .form-group.has-error input,
+        .form-group.has-error textarea,
+        .form-group.has-error select {
+            border-color: #dc3545;
+        }
+    </style>
 
-                    .table td .btn-primary:hover {
-                        background-color: #0069d9;
-                        border-color: #0062cc;
-                    }
-
-                    /* Action buttons container */
-                    .table td {
-                        white-space: nowrap;
-                    }
-
-                    /* Icon styling inside buttons */
-                    .table td .btn i {
-                        font-size: 14px;
-                        margin-right: 0;
-                    }
-
-                    /* Status badge styling */
-                    .status-badge {
-                        padding: 5px 10px;
-                        border-radius: 15px;
-                        font-size: 12px;
-                        font-weight: 500;
-                    }
-
-                    .status-badge.active {
-                        background-color: #28a745;
-                        color: white;
-                    }
-
-                    .status-badge.inactive {
-                        background-color: #dc3545;
-                        color: white;
-                    }
-
-                    .modal textarea {
-                        width: 100%;
-                        padding: 8px;
-                        border: 1px solid #ddd;
-                        border-radius: 4px;
-                        font-family: inherit;
-                        font-size: 14px;
-                        line-height: 1.5;
-                    }
-
-                    .modal textarea:focus {
-                        border-color: #007bff;
-                        outline: none;
-                        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-                    }
-
-                    .form-error {
-                        color: #dc3545;
-                        font-size: 12px;
-                        margin-top: 4px;
-                        display: none;
-                    }
-
-                    .form-group.has-error .form-error {
-                        display: block;
-                    }
-
-                    .form-group.has-error input,
-                    .form-group.has-error textarea,
-                    .form-group.has-error select {
-                        border-color: #dc3545;
-                    }
-                </style>
-
-                </html>
+</html>

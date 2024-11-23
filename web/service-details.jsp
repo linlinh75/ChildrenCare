@@ -185,7 +185,6 @@
                 <div class="service-details-content single-main">
                     <h2>${service.fullname}</h2>
                     <img src="${service.thumbnailLink}" alt="${service.fullname}" class="img-fluid mb-4">
-                    <!--                            <p>Last Updated: ${service.updatedDate}</p>-->
                     <p>${service.details}</p>
                 </div>
             </div>

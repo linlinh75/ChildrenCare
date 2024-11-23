@@ -161,7 +161,7 @@ public boolean addMedicalExamination(MedicalExamination exam) {
     }
 }
 
-    public List<Reservation> getApprovedReservations() {
+    public List<Reservation> getApprovedReservations(int staff_id) {
         List<Reservation> list = new ArrayList<>();
         try {
             String sql = "SELECT r.*, u.full_name "
@@ -169,9 +169,10 @@ public boolean addMedicalExamination(MedicalExamination exam) {
                     + "JOIN user u ON r.customer_id = u.id "
                     + "WHERE r.checkup_time <= NOW() "
                     + "AND r.id NOT IN (SELECT reservation_id FROM medical_examination)"
-                    + "AND r.status='Successful'";
+                    + "AND r.status='Examining' AND r.staff_id=?";
 
             stm = connection.prepareStatement(sql);
+            stm.setInt(1, staff_id);
             rs = stm.executeQuery();
 
             while (rs.next()) {

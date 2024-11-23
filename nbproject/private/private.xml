@@ -3,15 +3,22 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/ChildrenCare/src/java/dal/MedicalExaminationDAO.java</file>
-            <file>file:/D:/ChildrenCare/web/add_medical_examination.jsp</file>
-            <file>file:/D:/ChildrenCare/src/java/model/Medicine.java</file>
-            <file>file:/D:/ChildrenCare/src/java/dal/ReservationDAO.java</file>
-            <file>file:/D:/ChildrenCare/web/medical_examinations.jsp</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/ManageFeedbackServlet.java</file>
-            <file>file:/D:/ChildrenCare/src/java/model/MedicalExamination.java</file>
-            <file>file:/D:/ChildrenCare/src/java/model/Reservation.java</file>
-            <file>file:/D:/ChildrenCare/src/java/controller/MedicalExaminationServlet.java</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/web/staff-work-schedule.jsp</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/src/java/dal/ServiceCategoryDAO.java</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/src/java/controller/AdminDashboardServlet.java</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/src/java/controller/ServiceServlet.java</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/src/java/dal/DashboardDAO.java</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/src/java/dal/ReservationDAO.java</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/src/java/dal/ServiceDAO.java</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/src/java/controller/ReservationStatsServlet.java</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/web/admin_dashboard.jsp</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/web/cashier-reservation.jsp</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/web/customer-feedback.jsp</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/src/java/dal/PostCategoryDAO.java</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/src/java/controller/HomeServlet.java</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/web/service-details.jsp</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/web/common/common-homepage-header.jsp</file>
+            <file>file:/D:/HK5/SWP391/ChildrenCare-Thanh/src/java/controller/ServiceBlogListener.java</file>
         </group>
     </open-files>
 </project-private>

@@ -18,7 +18,9 @@ import model.Feedback;
 import model.WorkSchedule;
 
 public class WorkScheduleDAO extends DBContext {
+
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public List<WorkSchedule> getWorkScheduleByDoctorId(int serviceId) {
         List<WorkSchedule> listWorkSchedules = new ArrayList<>();
         String sql = "SELECT * FROM swp.work_schedule WHERE doctor_id =? order by start_at desc;";
@@ -27,7 +29,7 @@ public class WorkScheduleDAO extends DBContext {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setObject(1, serviceId);
                 ResultSet rs = statement.executeQuery();
-                while (rs.next()) { 
+                while (rs.next()) {
                     WorkSchedule ws = getFromResultSet(rs);
                     listWorkSchedules.add(ws);
                 }
@@ -41,12 +43,15 @@ public class WorkScheduleDAO extends DBContext {
     }
 
     public WorkSchedule getFromResultSet(ResultSet rs) throws SQLException {
+        DateTimeFormatter formatte = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         WorkSchedule ws = new WorkSchedule(
                 rs.getInt("reservation_id"),
                 rs.getInt("doctor_id"),
-                LocalDateTime.parse(rs.getString("start_at").trim(), formatter).toLocalDate(),
-                LocalDateTime.parse(rs.getString("end_at").trim(), formatter).toLocalDate()
+                LocalDateTime.parse(rs.getString("start_at").trim(), formatte), 
+                LocalDateTime.parse(rs.getString("end_at").trim(), formatte) 
         );
+
         return ws;
     }
 
@@ -57,5 +62,5 @@ public class WorkScheduleDAO extends DBContext {
 //            System.out.println(w.getReservation_id());
 //        }
 //    }
-}
+    }
 }

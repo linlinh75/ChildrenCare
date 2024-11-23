@@ -166,7 +166,6 @@
                                                     <a href="admin-dashboard">Dashboard</a>
                                                 </li>
                                             </c:if>
-
                                             <c:if test="${account.roleId == 2}">
                                                 <li class="nav-item">
                                                     <a class="nav-link ${active == 'dashboard' ? 'active' : ''}" 
@@ -192,7 +191,11 @@
                                                         <a class="dropdown-item" href="DataServlet?action=profile">Profile</a>
                                                         <c:if test="${sessionScope.account.roleId == 4}">
                                                             <a class="dropdown-item" href="/ChildrenCare/ReservationServlet">My Reservation</a>
-                                                        </c:if>                                                        <div class="dropdown-divider"></div>
+                                                        </c:if>   
+                                                        <c:if test="${sessionScope.account.roleId == 5}">
+                                                            <a class="dropdown-item" href="/ChildrenCare/cashier-reservation"> Reception</a>
+                                                        </c:if>
+                                                        <div class="dropdown-divider"></div>
                                                         <a class="dropdown-item" href="LogoutServlet">Logout</a>
                                                     </div>
                                                 </div>

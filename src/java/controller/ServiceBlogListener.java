@@ -15,9 +15,9 @@ public class ServiceBlogListener implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
-        context.setAttribute("listServiceCategory", serviceDAO.getAll());
+        context.setAttribute("listServiceCategory", serviceDAO.getAll1());
         System.out.println("dang hien thi list service category");
-        context.setAttribute("listPostCategory", postDAO.getAll());
+        context.setAttribute("listPostCategory", postDAO.getAll1());
         System.out.println("dang hien thi list post category");
     }
 }

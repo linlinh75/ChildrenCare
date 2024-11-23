@@ -104,6 +104,7 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
+
     public User getUserByPhoneNumber(String phone) throws SQLException {
         String sql = "SELECT * FROM user WHERE mobile = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -128,6 +129,7 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
+
     public void updateToken(String email, String token) {
         String s = "Update password_reset_tokens set token";
     }
@@ -208,16 +210,16 @@ public class UserDAO extends DBContext {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 User u = new User(
-                    rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getString("full_name"),
-                    rs.getBoolean("gender"),
-                    rs.getString("mobile"),
-                    rs.getString("address"),
-                    rs.getString("image_link"),
-                    rs.getInt("role_id"),
-                    rs.getString("status")
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("full_name"),
+                        rs.getBoolean("gender"),
+                        rs.getString("mobile"),
+                        rs.getString("address"),
+                        rs.getString("image_link"),
+                        rs.getInt("role_id"),
+                        rs.getString("status")
                 );
                 ulist.add(u);
             }
@@ -237,7 +239,7 @@ public class UserDAO extends DBContext {
         if (isMobileExistsExceptUser(user.getMobile(), 0)) {
             return -2; // Số điện thoại đã tồn tại
         }
-        
+
         String sql = "INSERT INTO user (email, password, full_name, gender, mobile, address, image_link, role_id, status) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -285,17 +287,17 @@ public class UserDAO extends DBContext {
             return false;
         }
     }
-    public List<WorkSchedule> listDoctorBusy(Timestamp registeredTime){
+
+    public List<WorkSchedule> listDoctorBusy(Timestamp registeredTime) {
         List<WorkSchedule> busyDoctors = new ArrayList<>();
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            String sql = "Select * from work_schedule where start_at< ? and end_at >?";
+            String sql = "Select * from work_schedule where start_at=?";
             stm = connection.prepareStatement(sql);
             stm.setTimestamp(1, registeredTime);
-            stm.setTimestamp(2, registeredTime);
             rs = stm.executeQuery();
-            while(rs.next()){
-                WorkSchedule w = new WorkSchedule(rs.getInt("reservation_id"), rs.getInt("doctor_id"), LocalDate.parse(rs.getString("start_at"),formatter), LocalDate.parse(rs.getString("end_at"),formatter));
+            while (rs.next()) {
+                WorkSchedule w = new WorkSchedule(rs.getInt("reservation_id"), rs.getInt("doctor_id"), LocalDateTime.parse(rs.getString("start_at"), formatter), LocalDateTime.parse(rs.getString("end_at"), formatter));
                 busyDoctors.add(w);
             }
             return busyDoctors;
@@ -303,11 +305,23 @@ public class UserDAO extends DBContext {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        
-        
+
     }
+
     public static void main(String[] args) {
         UserDAO userdao = new UserDAO();
+        String dateString = "2024-11-27 09:00:00.0";
+        Timestamp timestamp = Timestamp.valueOf(dateString);
+        System.out.println(timestamp);
+        List<WorkSchedule> listw = userdao.listDoctorBusy(timestamp);
+        for (WorkSchedule w : listw) {
+            System.out.println(w.getDoctorId());
+        }
+        List<User> allDoctors = userdao.getUserByRoleId(3);
+        System.out.println("Number of doctor:" + allDoctors.size());
+        for (User u : allDoctors) {
+            System.out.println(u.getId());
+        }
 //        List<User> ulist = userdao.getAllUser();
 //        for (User u : ulist) {
 //            System.out.println(u.getId());
@@ -339,35 +353,34 @@ public class UserDAO extends DBContext {
 //        } catch (SQLException ex) {
 //            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            //        LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("registeredTime"), formatter);
-            LocalDateTime dateTime = LocalDateTime.parse("2024-10-20 08:19:10", formatter);
-            Timestamp registeredTime = Timestamp.valueOf(dateTime);
-             
-   }
-            
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        //        LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("registeredTime"), formatter);
+        LocalDateTime dateTime = LocalDateTime.parse("2024-10-20 08:19:10", formatter);
+        Timestamp registeredTime = Timestamp.valueOf(dateTime);
+
+    }
 
     public List<User> searchUsersByName(String name) {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM user WHERE full_name LIKE ?";
-        
+
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, "%" + name + "%");
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 User user = new User(
-                    rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getString("full_name"),
-                    rs.getBoolean("gender"),
-                    rs.getString("mobile"),
-                    rs.getString("address"),
-                    rs.getString("image_link"),
-                    rs.getInt("role_id"),
-                    rs.getString("status")
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("full_name"),
+                        rs.getBoolean("gender"),
+                        rs.getString("mobile"),
+                        rs.getString("address"),
+                        rs.getString("image_link"),
+                        rs.getInt("role_id"),
+                        rs.getString("status")
                 );
                 userList.add(user);
             }
@@ -392,25 +405,25 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     public List<User> getUsersWithPagination(int offset, int recordsPerPage) {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM user LIMIT ? OFFSET ?";
-        
+
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, recordsPerPage);
             stmt.setInt(2, offset);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 User user = new User(
-                    rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getString("full_name"),
-                    rs.getBoolean("gender"),
-                    rs.getString("mobile"),
-                    rs.getString("address"),
-                    rs.getString("image_link"),
-                    rs.getInt("role_id"),
-                    rs.getString("status")
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("full_name"),
+                        rs.getBoolean("gender"),
+                        rs.getString("mobile"),
+                        rs.getString("address"),
+                        rs.getString("image_link"),
+                        rs.getInt("role_id"),
+                        rs.getString("status")
                 );
                 userList.add(user);
             }
@@ -423,19 +436,19 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     public List<User> getAllUsersWithPagination(int page, int recordsPerPage) {
         List<User> userList = new ArrayList<>();
         int start = (page - 1) * recordsPerPage;
-        
+
         String sql = "SELECT u.*, r.role_name FROM user u "
                 + "LEFT JOIN role r ON u.role_id = r.id "
                 + "ORDER BY u.id "
                 + "LIMIT ? OFFSET ?";
-                
+
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, recordsPerPage);
             stmt.setInt(2, start);
-            
+
             System.out.println("Executing query with recordsPerPage=" + recordsPerPage + ", start=" + start); // Debug log
-            
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 User user = new User();
@@ -450,9 +463,9 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                 user.setStatus(rs.getString("status"));
                 userList.add(user);
             }
-            
+
             System.out.println("Found " + userList.size() + " users"); // Debug log
-            
+
         } catch (SQLException ex) {
             System.out.println("Error in getAllUsersWithPagination: " + ex.getMessage());
             ex.printStackTrace();
@@ -479,14 +492,14 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         String sql = "SELECT u.*, r.role_name FROM user u "
                 + "JOIN role r ON u.role_id = r.id "
                 + "WHERE u.full_name LIKE ? OR u.email LIKE ? OR u.mobile LIKE ?";
-                
+
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             String searchPattern = "%" + keyword + "%";
             stmt.setString(1, searchPattern);
             stmt.setString(2, searchPattern);
             stmt.setString(3, searchPattern);
-            
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 User user = new User();
@@ -523,33 +536,33 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     public List<User> getFilteredUsers(String roleFilter, String statusFilter, int page, int recordsPerPage) {
         List<User> userList = new ArrayList<>();
         int start = (page - 1) * recordsPerPage;
-        
+
         StringBuilder sql = new StringBuilder("SELECT u.*, r.role_name FROM user u "
                 + "JOIN role r ON u.role_id = r.id WHERE 1=1");
-        
+
         if (roleFilter != null && !roleFilter.isEmpty()) {
             sql.append(" AND u.role_id = ?");
         }
         if (statusFilter != null && !statusFilter.isEmpty()) {
             sql.append(" AND u.status = ?");
         }
-        
+
         sql.append(" ORDER BY u.id LIMIT ? OFFSET ?");
-        
+
         try {
             PreparedStatement stmt = connection.prepareStatement(sql.toString());
             int paramIndex = 1;
-            
+
             if (roleFilter != null && !roleFilter.isEmpty()) {
                 stmt.setInt(paramIndex++, Integer.parseInt(roleFilter));
             }
             if (statusFilter != null && !statusFilter.isEmpty()) {
                 stmt.setString(paramIndex++, statusFilter);
             }
-            
+
             stmt.setInt(paramIndex++, recordsPerPage);
             stmt.setInt(paramIndex, start);
-            
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 User user = new User();
@@ -572,25 +585,25 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     public int getTotalFilteredUsers(String roleFilter, String statusFilter) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM user WHERE 1=1");
-        
+
         if (roleFilter != null && !roleFilter.isEmpty()) {
             sql.append(" AND role_id = ?");
         }
         if (statusFilter != null && !statusFilter.isEmpty()) {
             sql.append(" AND status = ?");
         }
-        
+
         try {
             PreparedStatement stmt = connection.prepareStatement(sql.toString());
             int paramIndex = 1;
-            
+
             if (roleFilter != null && !roleFilter.isEmpty()) {
                 stmt.setInt(paramIndex++, Integer.parseInt(roleFilter));
             }
             if (statusFilter != null && !statusFilter.isEmpty()) {
                 stmt.setString(paramIndex, statusFilter);
             }
-            
+
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -644,10 +657,10 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         if (isMobileExistsExceptUser(user.getMobile(), user.getId())) {
             return -2; // Số điện thoại đã tồn tại
         }
-        
-        String sql = "UPDATE user SET email=?, full_name=?, gender=?, mobile=?, " +
-                    "address=?, role_id=?, status=? WHERE id=?";
-                    
+
+        String sql = "UPDATE user SET email=?, full_name=?, gender=?, mobile=?, "
+                + "address=?, role_id=?, status=? WHERE id=?";
+
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, user.getEmail());
@@ -658,34 +671,36 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             stmt.setInt(6, user.getRoleId());
             stmt.setString(7, user.getStatus());
             stmt.setInt(8, user.getId());
-            
+
             return stmt.executeUpdate(); // Trả về số dòng được cập nhật
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
             return -3; // Lỗi SQL
         }
     }
-    public List<User> getUserByRoleId(int roleId){
-         String sql = "SELECT * FROM user WHERE role_id = ?";
-          try {
-               DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-              List<User> usersByRole = new ArrayList<>();
+
+    public List<User> getUserByRoleId(int roleId) {
+        String sql = "SELECT * FROM user WHERE role_id = ?";
+        List<User> usersByRole = new ArrayList<>();
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, roleId);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                usersByRole.add( new User(
-                    rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getString("full_name"),
-                    rs.getBoolean("gender"),
-                    rs.getString("mobile"),
-                    rs.getString("address"),
-                    rs.getString("image_link"),
-                    rs.getInt("role_id"),
-                    rs.getString("status"),
-                    LocalDateTime.parse(rs.getString("created_date").trim(), formatter).toLocalDate()
+
+            while (rs.next()) {
+                usersByRole.add(new User(
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("full_name"),
+                        rs.getBoolean("gender"),
+                        rs.getString("mobile"),
+                        rs.getString("address"),
+                        rs.getString("image_link"),
+                        rs.getInt("role_id"),
+                        rs.getString("status"),
+                        LocalDateTime.parse(rs.getString("created_date").trim(), formatter).toLocalDate()
                 ));
             }
             return usersByRole;
@@ -694,45 +709,46 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         }
         return null;
     }
-    
-   public User getUserById(int id) {
-    String sql = "SELECT * FROM user WHERE id = ?";
-    try {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setInt(1, id);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            return new User(
-                rs.getInt("id"),
-                rs.getString("email"),
-                rs.getString("password"),
-                rs.getString("full_name"),
-                rs.getBoolean("gender"),
-                rs.getString("mobile"),
-                rs.getString("address"),
-                rs.getString("image_link"),
-                rs.getInt("role_id"),
-                rs.getString("status"),
-                LocalDateTime.parse(rs.getString("created_date").trim(), formatter).toLocalDate() // Ensure no extra spaces
-            );
+
+    public User getUserById(int id) {
+        String sql = "SELECT * FROM user WHERE id = ?";
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("full_name"),
+                        rs.getBoolean("gender"),
+                        rs.getString("mobile"),
+                        rs.getString("address"),
+                        rs.getString("image_link"),
+                        rs.getInt("role_id"),
+                        rs.getString("status"),
+                        LocalDateTime.parse(rs.getString("created_date").trim(), formatter).toLocalDate() // Ensure no extra spaces
+                );
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DateTimeParseException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Date parsing error: " + ex.getMessage(), ex);
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (DateTimeParseException ex) {
-        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Date parsing error: " + ex.getMessage(), ex);
+        return null;
     }
-    return null;
-}
-    public List<User> getFilteredAndSortedUsers(String genderFilter, String roleFilter, String statusFilter, 
-                                          String searchKeyword, String sortBy, String sortOrder, 
-                                          int page, int recordsPerPage) {
+
+    public List<User> getFilteredAndSortedUsers(String genderFilter, String roleFilter, String statusFilter,
+            String searchKeyword, String sortBy, String sortOrder,
+            int page, int recordsPerPage) {
         List<User> userList = new ArrayList<>();
         int start = (page - 1) * recordsPerPage;
-        
+
         StringBuilder sql = new StringBuilder("SELECT * FROM user WHERE 1=1");
         List<Object> params = new ArrayList<>();
-        
+
         // Add filters
         if (genderFilter != null && !genderFilter.isEmpty()) {
             sql.append(" AND gender = ?");
@@ -746,7 +762,7 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             sql.append(" AND status = ?");
             params.add(statusFilter);
         }
-        
+
         // Add search
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
             sql.append(" AND (full_name LIKE ? OR email LIKE ? OR mobile LIKE ?)");
@@ -755,7 +771,7 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             params.add(searchPattern);
             params.add(searchPattern);
         }
-        
+
         // Add sorting
         if (sortBy != null && !sortBy.isEmpty()) {
             sql.append(" ORDER BY ").append(sortBy);
@@ -767,32 +783,32 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         } else {
             sql.append(" ORDER BY id ASC");
         }
-        
+
         // Add pagination
         sql.append(" LIMIT ? OFFSET ?");
         params.add(recordsPerPage);
         params.add(start);
-        
+
         try {
             PreparedStatement stmt = connection.prepareStatement(sql.toString());
             // Set parameters
             for (int i = 0; i < params.size(); i++) {
                 stmt.setObject(i + 1, params.get(i));
             }
-            
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 User user = new User(
-                    rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getString("full_name"),
-                    rs.getBoolean("gender"),
-                    rs.getString("mobile"),
-                    rs.getString("address"),
-                    rs.getString("image_link"),
-                    rs.getInt("role_id"),
-                    rs.getString("status")
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("full_name"),
+                        rs.getBoolean("gender"),
+                        rs.getString("mobile"),
+                        rs.getString("address"),
+                        rs.getString("image_link"),
+                        rs.getInt("role_id"),
+                        rs.getString("status")
                 );
                 userList.add(user);
             }
@@ -805,7 +821,7 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     public int getTotalFilteredUsers(String genderFilter, String roleFilter, String statusFilter, String searchKeyword) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM user WHERE 1=1");
         List<Object> params = new ArrayList<>();
-        
+
         if (genderFilter != null && !genderFilter.isEmpty()) {
             sql.append(" AND gender = ?");
             params.add(Boolean.parseBoolean(genderFilter));
@@ -818,7 +834,7 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             sql.append(" AND status = ?");
             params.add(statusFilter);
         }
-        
+
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
             sql.append(" AND (full_name LIKE ? OR email LIKE ? OR mobile LIKE ?)");
             String searchPattern = "%" + searchKeyword.trim() + "%";
@@ -826,7 +842,7 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             params.add(searchPattern);
             params.add(searchPattern);
         }
-        
+
         try {
             PreparedStatement stmt = connection.prepareStatement(sql.toString());
             for (int i = 0; i < params.size(); i++) {

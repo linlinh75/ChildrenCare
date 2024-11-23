@@ -156,7 +156,7 @@ public class FeedbackDAO extends DBContext {
     }
 
     public void updateFeedback(int reservationId, int serviceId, int ratedStar, String content, String status) throws SQLException {
-        String sql = "UPDATE feedback SET rated_star = ?, content = ?, status = ?, feedback_time = NOW() WHERE reservation_id = ? AND service_id = ?";
+        String sql = "UPDATE feedback SET rated_star = ?, content = ?, status = ?, feedback_time = NOW(),isPublic=1 WHERE reservation_id = ? AND service_id = ?";
 
         try (
                 PreparedStatement preparedStatement = connection.prepareStatement(sql)) {

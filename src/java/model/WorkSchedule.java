@@ -4,19 +4,15 @@
  */
 package model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-/**
- *
- * @author Admin
- */
 public class WorkSchedule {
     private int reservationId;
     private int doctorId;
-    private LocalDate startAt;
-    private LocalDate endAt;
+    private LocalDateTime startAt;  
+    private LocalDateTime endAt; 
 
-    public WorkSchedule(int reservationId, int doctorId, LocalDate startAt, LocalDate endAt) {
+    public WorkSchedule(int reservationId, int doctorId, LocalDateTime startAt, LocalDateTime endAt) {
         this.reservationId = reservationId;
         this.doctorId = doctorId;
         this.startAt = startAt;
@@ -39,19 +35,19 @@ public class WorkSchedule {
         this.doctorId = doctorId;
     }
 
-    public LocalDate getStartAt() {
+    public LocalDateTime getStartAt() {
         return startAt;
     }
 
-    public void setStartAt(LocalDate startAt) {
+    public void setStartAt(LocalDateTime startAt) {
         this.startAt = startAt;
     }
 
-    public LocalDate getEndAt() {
+    public LocalDateTime getEndAt() {
         return endAt;
     }
 
-    public void setEndAt(LocalDate endAt) {
+    public void setEndAt(LocalDateTime endAt) {
         this.endAt = endAt;
     }
 }

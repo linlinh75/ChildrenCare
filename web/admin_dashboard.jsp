@@ -26,7 +26,7 @@
                 <div class="col-md-3">
                     <div class="card bg-primary text-white">
                         <div class="card-body">
-                            <h5 class="card-title">New Reservations</h5>
+                            <h5 class="card-title">Reservations</h5>
                             <h2>${stats.newReservations}</h2>
                         </div>
                     </div>
@@ -34,7 +34,7 @@
                 <div class="col-md-3">
                     <div class="card bg-success text-white">
                         <div class="card-body">
-                            <h5 class="card-title">Successful</h5>
+                            <h5 class="card-title">Completed</h5>
                             <h2>${stats.successfulReservations}</h2>
                         </div>
                     </div>

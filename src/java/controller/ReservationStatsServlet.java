@@ -67,12 +67,15 @@ public class ReservationStatsServlet extends HttpServlet {
         for (int i = 0; i <= 6; i++) {
             List<StatToMap> listStatsPerDay = new ArrayList<>();
             LocalDate currentDate = startDate.plusDays(i);
-             listStatsPerDay.add(new StatToMap(1,"success", reservationDAO.getReservationCount("Successful", currentDate)));
+             listStatsPerDay.add(new StatToMap(1,"inprogress", reservationDAO.getReservationCount("In Progress", currentDate)));
         listStatsPerDay.add(new StatToMap(2,"cancelled", reservationDAO.getReservationCount("Cancelled", currentDate)));
-        listStatsPerDay.add(new StatToMap(3,"submitted", reservationDAO.getReservationCount("Submitted", currentDate)));
-        listStatsPerDay.add(new StatToMap(4,"approved", reservationDAO.getReservationCount("Approved", currentDate)));
-        listStatsPerDay.add(new StatToMap(5,"pending", reservationDAO.getReservationCount("Pending", currentDate)));
-        listStatsPerDay.add(new StatToMap(5,"all", reservationDAO.getReservationCount("", currentDate)));
+        listStatsPerDay.add(new StatToMap(3,"wait", reservationDAO.getReservationCount("Waiting for payment", currentDate)));
+        listStatsPerDay.add(new StatToMap(4,"arrived", reservationDAO.getReservationCount("Arrived", currentDate)));
+        listStatsPerDay.add(new StatToMap(5,"examining", reservationDAO.getReservationCount("Examining", currentDate)));
+        listStatsPerDay.add(new StatToMap(6,"all", reservationDAO.getReservationCount("", currentDate)));
+        listStatsPerDay.add(new StatToMap(7,"examined", reservationDAO.getReservationCount("Examined", currentDate)));
+        listStatsPerDay.add(new StatToMap(8,"completed", reservationDAO.getReservationCount("Completed", currentDate)));
+        listStatsPerDay.add(new StatToMap(9,"pending", reservationDAO.getReservationCount("Pending", currentDate)));
         statsPerDay.put(currentDate, listStatsPerDay);
         }
         int i=1;

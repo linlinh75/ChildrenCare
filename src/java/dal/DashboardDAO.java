@@ -19,7 +19,7 @@ public class DashboardDAO extends DBContext {
             String reservationSql = """
                 SELECT 
                     COUNT(*) as total,
-                    COUNT(CASE WHEN status = 'Successful' THEN 1 END) as successful,
+                    COUNT(CASE WHEN status = 'Completed' THEN 1 END) as successful,
                     COUNT(CASE WHEN status = 'Cancelled' THEN 1 END) as cancelled,
                     COUNT(CASE WHEN status = 'Pending' THEN 1 END) as submitted
                 FROM reservation 
@@ -47,7 +47,7 @@ public class DashboardDAO extends DBContext {
                 JOIN service s ON rs.service_id = s.id
                 JOIN service_category sc ON s.category_id = sc.id
                 JOIN reservation r ON rs.reservation_id = r.id
-                WHERE r.status = 'Successful' and DATE(r.reservation_date) BETWEEN ? AND ?
+                WHERE r.status = 'Completed' and DATE(r.reservation_date) BETWEEN ? AND ?
                 GROUP BY sc.id, sc.name
                 """;
                 

@@ -123,7 +123,7 @@
                         </div>
                         <!--/ End Main Menu -->
                     </div>
-                     <!-- User Avatar -->                   
+                    <!-- User Avatar -->                   
                     <div class="col-lg-3 col-12">
                         <div class="get-quote">
                             <c:choose>
@@ -139,8 +139,11 @@
                                                 <c:if test="${sessionScope.account.roleId == 4}">
                                                     <a class="dropdown-item" href="/ChildrenCare/ReservationServlet">My Reservation</a>
                                                 </c:if>
+                                                <c:if test="${sessionScope.account.roleId == 5}">
+                                                    <a class="dropdown-item" href="/ChildrenCare/cashier-reservation"> Reception</a>
+                                                </c:if>
                                                 <c:if test="${sessionScope.account.roleId == 3}">
-                                                    <a class="dropdown-item" href="/ChildrenCare//staff-work-schedule">My Work Schedule</a>
+                                                    <a class="dropdown-item" href="/ChildrenCare/staff-work-schedule">My Work Schedule</a>
                                                 </c:if>
                                                 <div class="dropdown-divider"></div>
                                                 <a class="dropdown-item" href="LogoutServlet">Logout</a>
@@ -155,7 +158,7 @@
                             </c:choose>
                         </div>
                     </div>
-                     <!--/ End User Avatar -->
+                    <!--/ End User Avatar -->
                 </div>
             </div>
         </div>
