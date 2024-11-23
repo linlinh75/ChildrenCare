@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.util.List;
+
 /**
  *
  * @author Admin
@@ -13,6 +15,7 @@ public class MedicalExamination {
     private ReservationService reservationService;
     private User user;
     private String prescription;
+    private List<Medicine> medicines;
     private int author_id;
 
     public int getAuthor_id() {
@@ -54,6 +57,14 @@ public class MedicalExamination {
 
     public void setPrescription(String prescription) {
         this.prescription = prescription;
+    }
+
+    public List<Medicine> getMedicines() {
+        return medicines;
+    }
+
+    public void setMedicines(List<Medicine> medicines) {
+        this.medicines = medicines;
     }
     
     

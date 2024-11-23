@@ -41,7 +41,7 @@
                                 
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary">Save Examination</button>
-                                    <a href="medical-examination" class="btn btn-secondary">Cancel</a>
+                                    <a href="staff-exam" class="btn btn-secondary">Cancel</a>
                                 </div>
                             </form>
                         </div>

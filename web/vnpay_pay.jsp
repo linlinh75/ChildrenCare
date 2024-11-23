@@ -18,7 +18,9 @@
         <script src="assets/jquery-1.11.3.min.js"></script>
     </head>
     <%
+
     session.setAttribute("rid", request.getParameter("rid"));
+
     %>
     <jsp:include page="/common/common-homepage-header.jsp"></jsp:include>
     <body>

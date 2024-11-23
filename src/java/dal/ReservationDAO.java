@@ -409,9 +409,11 @@ public class ReservationDAO extends DBContext {
         return 0;
     }
     public int getReservationCount(String status, LocalDate date) {
+        if(!status.isEmpty()){
             String query = "SELECT COUNT(*) FROM reservation WHERE status = ? AND reservation_date BETWEEN ? AND ?  ";
             try  {
                 stm  = connection.prepareStatement(query);
+
                 stm.setString(1, status);
                 stm.setString(2,  date.toString()+" 00:00:00");
                 stm.setString(3,  date.toString()+" 23:59:59");
@@ -423,6 +425,22 @@ public class ReservationDAO extends DBContext {
                 e.printStackTrace();
             }
             return 0;
+        }else{
+            String query = "SELECT COUNT(*) FROM reservation WHERE reservation_date BETWEEN ? AND ?  ";
+            try  {
+                stm  = connection.prepareStatement(query);
+                stm.setString(1,  date.toString()+" 00:00:00");
+                stm.setString(2,  date.toString()+" 23:59:59");
+                ResultSet rs = stm.executeQuery();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return 0;
+        }
+            
         }
     public static void main(String[] args) {
         ReservationDAO userdao = new ReservationDAO();
