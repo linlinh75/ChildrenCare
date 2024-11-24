@@ -243,6 +243,10 @@ String formattedDate = dateFormat.format(examDate);
         String body = "Your reservation has been completed, below is your examination details, please carry this to nearest pharmacy to take pills. Thanks again for chosing our service! ";
         
         EmailSender.sendEmailWithAttachment(exam.getUser().getEmail(), "Medical Examination Claimed", body, fileName);
+        
+        ReservationDAO rdao = new ReservationDAO();
+        rdao.statusReservation(rnow.getId(), "Completed");
+        
     } catch (FileNotFoundException ex) {
         Logger.getLogger(MedicalExaminationServlet.class.getName()).log(Level.SEVERE, null, ex);
     }
