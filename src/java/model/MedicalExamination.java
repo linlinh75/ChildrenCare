@@ -4,6 +4,7 @@
  */
 package model;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -17,7 +18,16 @@ public class MedicalExamination {
     private String prescription;
     private List<Medicine> medicines;
     private int author_id;
+    private Timestamp date;
 
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+    
     public int getAuthor_id() {
         return author_id;
     }

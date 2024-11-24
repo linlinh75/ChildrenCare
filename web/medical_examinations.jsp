@@ -3,6 +3,9 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Medical Examination</title>
@@ -54,19 +57,24 @@
             font-size: 12px;
         }
         tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
+            background-color: #f2f2f2;
+        }
     </style>
-</style>
+
 <body>
     <div class="page-wrapper doctris-theme toggled">
         <jsp:include page="./common/admin/side_bar_admin.jsp"></jsp:include>
             <main class="page-content bg-light">
             <jsp:include page="./common/common-homepage-header.jsp"></jsp:include>
                 <div class="container mt-5 ">
-                <c:if test="${param.success == 'true'}">
+                <c:if test="${param.success!=null }">
                     <div class="alert alert-success">
                         You have been added medical examination for reservation 
+                    </div>
+                </c:if>
+                    <c:if test="${param.error!=null}">
+                    <div class="alert alert-danger">
+                        ${param.error}
                     </div>
                 </c:if>
                 <h2>Medical Examinations</h2>
@@ -89,20 +97,28 @@
                                 <th onclick="sortTable(2)" style="cursor: pointer;">Gender <span id="sort-indicator-2"><i class="fa fa-fw fa-sort"></i></span></th>
                                 <th onclick="sortTable(3)" style="cursor: pointer;">Email <span id="sort-indicator-3"><i class="fa fa-fw fa-sort"></i></span></th>
                                 <th onclick="sortTable(4)" style="cursor: pointer;">Prescription <span id="sort-indicator-4"><i class="fa fa-fw fa-sort"></i></span></th>
+                                <th onclick="sortTable(5)" style="cursor: pointer;">Create Date <span id="sort-indicator-5"><i class="fa fa-fw fa-sort"></i></span></th>
                                 <th>Medicines</th>
                             </tr>
                         </thead>
                         <tbody id="medicalTable">
-                            <c:forEach var="exam" items="${examinations}">
+                            <c:forEach var="exam" items="${examinations}" varStatus="status">
                                 <tr class="exam-row">
-                                    <td>${exam.getId()}</td>
+                                    <td class="row-number">${status.index + 1}</td>
 
                                     <td>${exam.user.fullName}</td>
                                     <td>${exam.user.gender ? 'Male' : 'Female'}</td>
                                     <td>${exam.user.email}</td>
                                     <td>${exam.prescription}</td>
+                                    <td>${exam.date}</td>
                                     <td>
-                                        <button class="btn btn-danger"><a href="staff-exam?">View Details</a></button>
+                                        <button 
+                                            class="btn btn-danger"
+                                            data-id="${exam.id}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#examinationDetailsModal">
+                                            View Details
+                                        </button>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -111,14 +127,70 @@
                     <div id="pagination"></div>
                 </div>
             </div>
-<jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>            
+            <jsp:include page="./common/common-homepage-footer.jsp"></jsp:include>            
 
-        </main>
-    </div>
+            </main>
+        </div>
+        <!-- Modal -->
+<!--        <div class="modal fade" id="examinationDetailsModal" tabindex="-1" aria-labelledby="examinationDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="examinationDetailsModalLabel">Examination Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                         Examination details go here 
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Patient Name:</th>
+                                    <td id="patientName"></td>
+                                </tr>
+                                <tr>
+                                    <th>Prescription:</th>
+                                    <td id="prescription"></td>
+                                </tr>
+                                <tr>
+                                    <th>Author Name:</th>
+                                    <td id="authorName"></td>
+                                </tr>
+                                <tr>
+                                    <th>Create Date:</th>
+                                    <td id="createDate"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h5 class="mt-4">Medicines</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Medicine Name</th>
+                                    <th>Dosage</th>
+                                    <th>Instructions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="medicineDetails"></tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+        
 </body>
 
 
 <script>
+    function updateRowNumbers() {
+        const visibleRows = Array.from(document.querySelectorAll("#medicalTable tr")).filter(row => row.style.display !== "none");
+        visibleRows.forEach((row, index) => {
+            // Update the row number based on the visible order
+            row.querySelector(".row-number").innerText = index + 1;
+        });
+    }
     function sortTable(columnIndex) {
         const table = document.getElementById("examinationTable");
         const tbody = table.getElementsByTagName("tbody")[0];
@@ -152,24 +224,24 @@
         rows.forEach(row => tbody.appendChild(row));
 
 // Reapply the striped row styles and pagination
-        
+
         displayTable(); // This ensures pagination and row display updates
 // Update sort indicators
         updateSortIndicators(columnIndex, isAscending, totalColumns);
     }
 
     function reapplyStripedRows() {
-    const visibleRows = Array.from(document.querySelectorAll("#medicalTable tr")).filter(row => row.style.display !== "none");
+        const visibleRows = Array.from(document.querySelectorAll("#medicalTable tr")).filter(row => row.style.display !== "none");
 
-    visibleRows.forEach((row, index) => {
-        // Apply alternating background colors
-        if (index % 2 === 0) {
-            row.style.backgroundColor = "#f9f9f9"; // Light gray for odd rows
-        } else {
-            row.style.backgroundColor = "#ffffff"; // White for even rows
-        }
-    });
-}
+        visibleRows.forEach((row, index) => {
+            // Apply alternating background colors
+            if (index % 2 === 0) {
+                row.style.backgroundColor = "#f9f9f9"; // Light gray for odd rows
+            } else {
+                row.style.backgroundColor = "#ffffff"; // White for even rows
+            }
+        });
+    }
 
     function updateSortIndicators(columnIndex, isAscending, totalColumns) {
 // Get all table headers
@@ -213,6 +285,7 @@
         });
         currentPage = 1;
         displayTable();
+        updateRowNumbers();
     }
 
     function displayTable() {
@@ -238,6 +311,7 @@
 
 // Create pagination
         createPagination(Math.ceil(totalRows / rowsPerPage), currentPage);
+        updateRowNumbers();
     }
 
     function createPagination(totalPages, currentPage) {

@@ -14,8 +14,12 @@ public class ReservationService {
     int quantity;
     float unit_price;
     String service_name;
-    public ReservationService(){
-        
+
+    public ReservationService() {
+    }
+    
+    public ReservationService(int reservation_id){
+         this.reservation_id = reservation_id;
     }
 
     public ReservationService(int reservation_id, int service_id, int quantity, float unit_price, String service_name) {
